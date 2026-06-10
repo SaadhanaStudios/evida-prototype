@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<title>Evida — Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+
+  .section-card { padding: 20px; margin-bottom: 16px; }
+  .section-card h2 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--evida-fg); }
+
+  .profile-header { text-align: center; padding: 24px 0 20px; }
+  .profile-header .big-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--evida-teal); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700; margin: 0 auto 12px; }
+  .profile-header .name { font-size: 18px; font-weight: 700; font-family: var(--font-display); }
+  .profile-header .email { font-size: 13px; color: var(--evida-muted); margin-top: 4px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--evida-fg-secondary); margin-bottom: 6px; }
+  .form-group .input { width: 100%; height: 40px; padding: 0 14px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px; color: var(--evida-fg); background: var(--evida-surface); outline: none; transition: border-color 150ms; }
+  .form-group .input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--evida-teal-light); }
+  .form-group .input:disabled { background: var(--evida-bg); color: var(--evida-muted); }
+
+  .row { display: flex; gap: 12px; }
+  .row .form-group { flex: 1; }
+
+  .profile-actions { display: flex; flex-direction: column; gap: 10px; }
+  .profile-actions .action-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+  .profile-actions .action-row + .action-row { border-top: 1px solid var(--evida-border); }
+  .profile-actions .action-row .action-label { font-size: 14px; font-weight: 500; }
+  .profile-actions .action-row .action-desc { font-size: 12px; color: var(--evida-muted); margin-top: 2px; }
+  .btn-ghost { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms; font-family: var(--font-body); }
+  .btn-ghost:hover { background: var(--evida-bg); }
+  .btn-primary { background: var(--color-primary); color: white; height: 40px; padding: 0 20px; border-radius: var(--radius-md); border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: background 150ms; }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 11px; }
+  .btn-danger-ghost { background: none; border: 1px solid transparent; color: var(--evida-coral); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: background 150ms; }
+  .btn-danger-ghost:hover { background: #FDE8E8; }
+
+  .id-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; }
+  .id-status.pending { background: var(--evida-amber-light); color: #8A5A2A; }
+  .id-status.verified { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .id-status.uploaded { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+
+  .id-upload-area { border: 2px dashed var(--evida-border); border-radius: var(--radius-md); padding: 24px; text-align: center; margin-top: 12px; cursor: pointer; transition: border-color 200ms; }
+  .id-upload-area:hover { border-color: var(--color-primary); }
+  .id-upload-area .file-label { font-size: 13px; font-weight: 600; }
+  .id-upload-area .file-desc { font-size: 11px; color: var(--evida-muted); margin-top: 4px; }
+  .id-upload-area .uploaded-file { display: flex; align-items: center; gap: 8px; justify-content: center; padding: 8px; background: var(--evida-teal-light); border-radius: var(--radius-sm); margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--evida-teal-dark); }
+
+  .device-summary-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+  .device-summary-item + .device-summary-item { border-top: 1px solid var(--evida-border); }
+  .device-summary-item .device-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--evida-bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--evida-teal-dark); flex-shrink: 0; }
+  .device-summary-item .device-info { flex: 1; }
+  .device-summary-item .device-info .dname { font-size: 13px; font-weight: 600; }
+  .device-summary-item .device-info .dstatus { font-size: 11px; color: var(--evida-muted); }
+  .device-summary-item .device-info .dstatus .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+  .device-summary-item .device-info .dstatus .dot.on { background: var(--color-success); }
+
+  .notif-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+  .notif-row + .notif-row { border-top: 1px solid var(--evida-border); }
+  .notif-row .notif-info { flex: 1; }
+  .notif-row .notif-info .notif-label { font-size: 13px; font-weight: 500; }
+  .notif-row .notif-info .notif-desc { font-size: 11px; color: var(--evida-muted); margin-top: 2px; }
+  .toggle { width: 44px; height: 24px; border-radius: 12px; background: var(--evida-border); cursor: pointer; position: relative; transition: background 200ms; flex-shrink: 0; }
+  .toggle.on { background: var(--color-primary); }
+  .toggle .knob { width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .toggle.on .knob { transform: translateX(20px); }
+
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
+  @media (min-width: 1024px) {
+    .app-body { padding: 32px; }
+    .app-body-inner { max-width: 900px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+    <img class="logo" src="../build/logo.svg" alt="Evida">
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge">3</span></div><div class="avatar" onclick="window.location.href='profile.html'" style="cursor:pointer">JC</div></div>
+  </header>
+  <nav class="sidebar" id="desktopSidebar">
+    <div class="logo-wrap">
+      <svg width="32" height="32" viewBox="68 25 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M123.386 81.6125C123.386 83.4833 121.889 84.9998 120.042 84.9998H102.486V63.8291H123.386V81.6125Z" fill="white"/><path d="M68.32 32.5751C68.32 30.7043 69.8172 29.1877 71.664 29.1877H89.2203V50.3584H68.32V32.5751Z" fill="white"/><path d="M71.664 85.0001C69.8172 85.0001 68.32 83.4835 68.32 81.6127L68.32 63.8293H89.2202V85.0001H71.664Z" fill="white"/><path d="M120.117 34.0259C115.586 34.0259 111.914 37.6742 111.914 42.1747C111.914 46.6753 115.586 50.3237 120.117 50.3237C124.647 50.3237 128.32 46.6753 128.32 42.1747C128.32 37.6742 124.647 34.0259 120.117 34.0259Z" fill="white"/><path d="M110.715 25C106.17 25 102.486 28.6484 102.486 33.1489C102.486 37.6494 106.17 41.2979 110.715 41.2979C115.26 41.2979 118.944 37.6494 118.944 33.1489C118.944 28.6484 115.26 25 110.715 25Z" fill="white"/><path d="M120.09 50.3235L112.489 40.4017L102.486 33.1489V50.3235H120.09Z" fill="white"/></svg><span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span>
+    </div>
+    <button class="nav-item-desktop" onclick="window.location.href='dashboard.html'">Dashboard</button>
+    <button class="nav-item-desktop" onclick="window.location.href='insights.html'">Data &amp; Insights</button>
+    <button class="nav-item-desktop" onclick="window.location.href='dashboard.html#appointments'">Appointments</button>
+    <button class="nav-item-desktop" onclick="window.location.href='documents.html'">Documents</button>
+    <button class="nav-item-desktop" onclick="window.location.href='ask-evi.html'">Ask Evi</button>
+    <div class="sidebar-spacer"></div>
+    <button class="nav-item-desktop" onclick="window.location.href='messages.html'">Messages</button>
+    <button class="nav-item-desktop" onclick="window.location.href='faq.html'">FAQ</button>
+    <button class="nav-item-desktop active" onclick="window.location.href='profile.html'">Profile</button>
+    <button class="nav-item-desktop" onclick="window.location.href='settings.html'">Settings</button>
+    <button class="sidebar-dark-toggle" id="sidebarDarkToggle" onclick="toggleDarkMode()">Dark mode</button>
+  </nav>
+  <div class="app-body">
+    <div class="app-body-inner">
+
+      <!-- Profile header -->
+      <div class="profile-header">
+        <div class="big-avatar">JC</div>
+        <div class="name">James Chen</div>
+        <div class="email">james.chen@example.com</div>
+      </div>
+
+      <!-- Personal info -->
+      <div class="evida-card-bordered section-card">
+        <h2>Personal information</h2>
+        <div class="form-group">
+          <label>Full name</label>
+          <input class="input" value="James Chen" id="nameInput">
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input class="input" value="james.chen@example.com" id="emailInput" type="email">
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Phone</label>
+            <input class="input" value="+44 7900 123456" id="phoneInput" type="tel">
+          </div>
+          <div class="form-group">
+            <label>Date of birth</label>
+            <input class="input" value="14 Mar 1988" id="dobInput">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input class="input" value="42 Maltby Street, London SE1 3PA" id="addressInput">
+        </div>
+        <button class="btn-primary" onclick="saveProfile()" style="margin-top:8px;width:100%">Save changes</button>
+      </div>
+
+      <!-- Combined photo + ID verification (—3.2.3) -->
+      <div class="evida-card-bordered section-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h2 style="margin-bottom:0">Photo &amp; ID verification</h2>
+          <span class="id-status pending" id="idStatusBadge">Pending</span>
+        </div>
+        <div style="background:var(--evida-teal-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px">
+          <p style="font-size:12px;color:var(--evida-teal-dark);line-height:1.5;margin:0">
+            <strong>Why we need this:</strong> UK clinical regulations (CQC) require us to verify your identity before delivering clinical services. Your photo is used by your GP for visual confirmation during your first consultation. Uploaded documents are encrypted and stored securely in compliance with UK data protection law.
+          </p>
+        </div>
+        <div class="id-upload-area" id="idUploadArea" onclick="uploadID()" style="margin-bottom:8px">
+          <div id="idUploadContent">
+            <div class="file-label">Upload profile photo + photo ID</div>
+            <div class="file-desc">Passport, driving licence, or national ID card. A selfie-style photo is fine for your profile.</div>
+          </div>
+          <div id="idUploadedContent" style="display:none">
+            <div class="uploaded-file">Uploaded — pending review</div>
+          </div>
+        </div>
+        <input type="file" id="idFileInput" accept="image/*,.pdf" style="display:none" onchange="handleIDUpload(event)">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn-ghost btn-sm" id="retakeBtn" style="display:none" onclick="retakeID()">Upload new files</button>
+          <span class="text-tiny" style="color:var(--evida-muted)">Accepted: JPG, PNG, PDF. Max 10MB each.</span>
+        </div>
+      </div>
+
+      <!-- Connected devices -->
+      <div class="evida-card-bordered section-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h2 style="margin-bottom:0">Connected devices</h2>
+          <button class="btn-ghost btn-sm" onclick="window.location.href='wearables.html'">Manage</button>
+        </div>
+        <div id="deviceSummaryList">
+          <div class="device-summary-item">
+            <div class="device-icon">AW</div>
+            <div class="device-info">
+              <div class="dname">Apple Watch</div>
+              <div class="dstatus"><span class="dot on"></span>Connected — synced 2 min ago</div>
+            </div>
+          </div>
+          <div class="device-summary-item">
+            <div class="device-icon">OR</div>
+            <div class="device-info">
+              <div class="dname">Oura Ring</div>
+              <div class="dstatus"><span class="dot on"></span>Connected — synced 15 min ago</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-ghost btn-sm" onclick="window.location.href='wearables.html'" style="margin-top:8px">+ Connect another device</button>
+      </div>
+
+      <!-- Account actions -->
+      <div class="evida-card-bordered section-card">
+        <h2>Account</h2>
+        <div class="profile-actions">
+          <div class="action-row">
+            <div>
+              <div class="action-label">Change password</div>
+              <div class="action-desc">Last changed 3 months ago</div>
+            </div>
+            <button class="btn-ghost btn-sm" onclick="showToast('Password reset link sent to your email')">Reset</button>
+          </div>
+          <div class="action-row">
+            <div>
+              <div class="action-label">Download my data</div>
+              <div class="action-desc">Export your health data, reports, and plan as a PDF</div>
+            </div>
+            <button class="btn-ghost btn-sm" onclick="showToast('Data export started — you will receive an email within 24 hours')">Export</button>
+          </div>
+          <div class="action-row">
+            <div>
+              <div class="action-label">Manage settings</div>
+              <div class="action-desc">Membership, payment, privacy, security</div>
+            </div>
+            <button class="btn-ghost btn-sm" onclick="window.location.href='settings.html'">Settings</button>
+          </div>
+          <div class="action-row" style="border-bottom:none">
+            <div>
+              <div class="action-label" style="color:var(--evida-coral)">Sign out</div>
+            </div>
+            <button class="btn-danger-ghost btn-sm" onclick="if(confirm('Sign out of your Evida account?')){window.location.href='login.html'}">Sign out</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item active" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script src="_uat.js"></script>
+<script>
+function saveProfile() {
+  var data = {
+    name: document.getElementById('nameInput').value.trim(),
+    email: document.getElementById('emailInput').value.trim(),
+    phone: document.getElementById('phoneInput').value.trim(),
+    dob: document.getElementById('dobInput').value.trim(),
+    address: document.getElementById('addressInput').value.trim()
+  };
+  EvidaStore.profile.save(data);
+  showToast('Profile updated');
+}
+
+function loadProfile() {
+  var data = EvidaStore.profile.get();
+  if (data) {
+    if (data.name) document.getElementById('nameInput').value = data.name;
+    if (data.email) document.getElementById('emailInput').value = data.email;
+    if (data.phone) document.getElementById('phoneInput').value = data.phone;
+    if (data.dob) document.getElementById('dobInput').value = data.dob;
+    if (data.address) document.getElementById('addressInput').value = data.address;
+  }
+}
+
+function toggleNotif(el) {
+  el.classList.toggle('on');
+}
+
+function uploadID() {
+  document.getElementById('idFileInput').click();
+}
+
+function handleIDUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('idUploadContent').style.display = 'none';
+  document.getElementById('idUploadedContent').style.display = 'block';
+  document.getElementById('retakeBtn').style.display = 'inline-flex';
+  document.getElementById('idUploadArea').style.borderColor = 'var(--evida-teal)';
+  document.getElementById('idStatusBadge').className = 'id-status uploaded';
+  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+  showToast('ID uploaded for review');
+}
+
+function retakeID() {
+  document.getElementById('idFileInput').click();
+}
+
+loadProfile();
+
+// Populate devices from localStorage
+(function() {
+  var devices = EvidaStore.wearables.list();
+  var container = document.getElementById('deviceSummaryList');
+  if (devices.length === 0) {
+    container.innerHTML = '<div class="text-body-small" style="color:var(--evida-muted);padding:8px 0">No devices connected. <a href="wearables.html" style="color:var(--color-link);text-decoration:none">Connect a wearable</a> to see your data here.</div>';
+  } else {
+    container.innerHTML = devices.map(function(d) {
+      var initial = (d.name || '??').split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+      return '<div class="device-summary-item"><div class="device-icon">' + initial + '</div><div class="device-info"><div class="dname">' + d.name + '</div><div class="dstatus"><span class="dot on"></span>Connected</div></div></div>';
+    }).join('');
+  }
+})();
+
+// UAT state definitions
+window.__UAT_STATES = [
+  { id: 'live', label: 'Live',
+    setup: function() { window.location.reload(); }
+  },
+  { id: 'no-devices', label: 'No devices',
+    setup: function() {
+      document.getElementById('deviceSummaryList').innerHTML = '<div class="text-body-small" style="color:var(--evida-muted);padding:8px 0">No devices connected. <a href="wearables.html" style="color:var(--color-link);text-decoration:none">Connect a wearable</a> to see your data here.</div>';
+    }
+  },
+  { id: 'id-verified', label: 'ID verified',
+    setup: function() {
+      document.getElementById('idStatusBadge').className = 'id-status verified';
+      document.getElementById('idStatusBadge').textContent = 'Verified';
+      document.getElementById('idUploadArea').querySelector('.file-label').textContent = 'ID verified — re-upload if needed';
+      document.getElementById('idUploadArea').querySelector('.file-desc').textContent = 'Your identity was verified on 1 Jun 2026';
+    }
+  },
+  { id: 'id-pending', label: 'ID pending',
+    setup: function() {
+      document.getElementById('idStatusBadge').className = 'id-status pending';
+      document.getElementById('idStatusBadge').textContent = 'Pending';
+      document.getElementById('idUploadContent').style.display = '';
+      document.getElementById('idUploadedContent').style.display = 'none';
+      document.getElementById('retakeBtn').style.display = 'none';
+    }
+  },
+];
+</script>
+</body>
+</html>

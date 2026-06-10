@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evida — Patient app prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="colors_and_type.css">
+<link rel="icon" type="image/png" href="build/icon.png">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body); background: var(--evida-bg);
+    color: var(--evida-fg); -webkit-font-smoothing: antialiased;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--evida-navy) 0%, #1f3358 100%);
+    color: white; padding: 48px 24px 40px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-dots {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 280px; height: 280px; opacity: 0.08; pointer-events: none;
+  }
+  .hero-dots svg { width: 100%; height: 100%; }
+  .hero-content { position: relative; z-index: 1; }
+  .hero img { height: 40px; margin-bottom: 16px; }
+  .hero h1 { font-family: var(--font-display); font-size: clamp(24px, 4vw, 36px); font-weight: 700; margin-bottom: 8px; }
+  .hero p { font-size: 14px; opacity: 0.8; max-width: 480px; margin: 0 auto; line-height: 1.5; }
+  .hero .tagline { font-size: 12px; opacity: 0.5; margin-top: 12px; font-style: italic; }
+
+  .content { max-width: 800px; margin: 0 auto; padding: 32px 16px; }
+
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title .badge { font-size: 11px; padding: 2px 10px; border-radius: var(--radius-full); background: var(--evida-teal-light); color: var(--evida-teal-dark); font-weight: 600; }
+
+  .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .screen-card {
+    padding: 20px; cursor: pointer;
+    transition: all 200ms; text-decoration: none; color: inherit; display: block;
+    position: relative; overflow: hidden;
+  }
+  .screen-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+  .screen-card .card-number {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--evida-muted); margin-bottom: 8px;
+  }
+  .screen-card .card-number-badge {
+    display: inline-block; width: 24px; height: 24px; border-radius: var(--radius-sm);
+    background: var(--evida-bg); text-align: center; line-height: 24px;
+  }
+  .screen-card .card-letter { display: block; margin-bottom: 8px; }
+  .screen-card .card-letter .initial {
+    display: inline-flex; width: 36px; height: 36px; border-radius: var(--radius-md);
+    background: var(--evida-teal-light); color: var(--evida-teal-dark);
+    align-items: center; justify-content: center;
+    transition: background var(--dur-fast, 150ms) var(--ease-out, ease-out);
+  }
+  .screen-card:hover .card-letter .initial { background: color-mix(in oklch, var(--evida-teal-light), var(--evida-teal) 18%); }
+  .screen-card .card-letter .initial svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .es-icon svg, .empty-state .es-letter svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .screen-card .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .screen-card .card-desc { font-size: 12px; color: var(--evida-fg-secondary); line-height: 1.4; }
+  .screen-card .card-state-count { font-size: 10px; color: var(--evida-muted); margin-top: 8px; }
+  .screen-card .card-arrow { position: absolute; bottom: 16px; right: 16px; font-size: 14px; color: var(--evida-muted); transition: color 200ms; font-weight: 600; }
+  .screen-card:hover .card-arrow { color: var(--color-primary); }
+
+  .legend { margin-top: 24px; padding: 16px; background: var(--evida-surface); border-radius: var(--radius-md); border: 1px solid var(--evida-border); }
+  .legend h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .legend .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .legend .tag { font-size: 11px; padding: 4px 10px; border-radius: var(--radius-full); }
+  .legend .tag-edge { background: #FDE8E8; color: #B34343; }
+  .legend .tag-auth { background: #E0F5F4; color: var(--evida-teal-dark); }
+  .legend .tag-happy { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .legend .tag-empty { background: var(--evida-amber-light); color: #8A5A2A; }
+
+  .protocol-bar {
+    display: flex; justify-content: center; gap: 0; margin: 24px 0 32px;
+    background: var(--evida-surface); border-radius: var(--radius-md);
+    border: 1px solid var(--evida-border); overflow: hidden;
+  }
+  .protocol-bar .step { flex: 1; padding: 12px; text-align: center; font-size: 13px; font-weight: 600; position: relative; }
+  .protocol-bar .step + .step { border-left: 1px solid var(--evida-border); }
+  .protocol-bar .step .step-letter {
+    display: inline-flex; width: 22px; height: 22px; border-radius: var(--radius-sm);
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; margin-bottom: 4px;
+  }
+  .protocol-bar .step.track .step-letter { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .protocol-bar .step.tailor .step-letter { background: var(--evida-amber-light); color: #8A5A2A; }
+  .protocol-bar .step.act .step-letter { background: #E0F5F0; color: var(--color-success); }
+  .protocol-bar .step.track { color: var(--evida-teal); }
+  .protocol-bar .step.tailor { color: var(--evida-amber); }
+  .protocol-bar .step.act { color: var(--color-success); }
+
+  .footer-note {
+    text-align: center; padding: 24px 16px;
+    font-size: 12px; color: var(--evida-muted);
+    border-top: 1px solid var(--evida-border);
+  }
+  .footer-note a { color: var(--color-link); text-decoration: none; }
+  .footer-note a:hover { text-decoration: underline; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--evida-navy); color: white; padding: 12px 20px; border-radius: var(--radius-md); font-size: 13px; z-index: 100; opacity: 0; transition: opacity 300ms; pointer-events: none; max-width: calc(100vw - 32px); text-align: center; }
+  .toast.visible { opacity: 1; pointer-events: auto; }
+
+  @media (min-width: 600px) {
+    .hero { padding: 64px 32px 48px; }
+    .flow-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .flow-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+<!-- Evida icon set — stroke primitives (24×24, currentColor). Reused via <use href="#ic-…">. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="ic-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></symbol>
+  <symbol id="ic-onboarding" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="ic-booking" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+  <symbol id="ic-postconsult" viewBox="0 0 24 24"><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><path d="M16 4h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M8 14h2l1 2 2-4 1 2h2"/></symbol>
+  <symbol id="ic-wearables" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6l.5-3h5l.5 3"/><path d="M9 18l.5 3h5l.5-3"/><circle cx="12" cy="12" r="2.2"/></symbol>
+  <symbol id="ic-insights" viewBox="0 0 24 24"><path d="M3 12h3l2.5-6 4 13L16 8l2 4h3"/></symbol>
+  <symbol id="ic-faq" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="ic-profile" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/></symbol>
+  <symbol id="ic-documents" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></symbol>
+  <symbol id="ic-askevi" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></symbol>
+  <symbol id="ic-messages" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></symbol>
+</svg>
+<div class="hero">
+  <div class="hero-dots">
+    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g opacity="1">
+        <circle cx="20" cy="20" r="8" fill="#216A73"/>
+        <circle cx="60" cy="20" r="8" fill="#D4893B"/>
+        <circle cx="100" cy="20" r="8" fill="#216A73"/>
+        <circle cx="20" cy="60" r="8" fill="#D4893B"/>
+        <circle cx="60" cy="60" r="8" fill="#216A73"/>
+        <circle cx="100" cy="60" r="8" fill="#D4893B"/>
+        <circle cx="20" cy="100" r="8" fill="#216A73"/>
+        <circle cx="60" cy="100" r="8" fill="#D4893B"/>
+        <circle cx="100" cy="100" r="8" fill="#216A73"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-content">
+  <img src="build/logo.svg" alt="Evida">
+  <h1>Patient app prototype</h1>
+  <p>Mobile-first patient journey — login through post-consult. Full edge-case and state coverage for the Evida preventive-health membership MVP.</p>
+  <div class="tagline">"A healthier you. Powered by data. Led by experts."</div>
+</div>
+</div>
+
+<div class="content">
+
+  <div class="protocol-bar">
+    <div class="step track"><span class="step-letter">T</span> Track</div>
+    <div class="step tailor"><span class="step-letter">→</span> Tailor</div>
+    <div class="step act"><span class="step-letter">A</span> Act</div>
+  </div>
+
+  <div class="section-title">
+    Build order <span class="badge">Linear</span>
+  </div>
+
+  <div class="flow-grid">
+    <a class="evida-card-bordered screen-card" href="screens/login.html">
+      <div class="card-number">01</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-login"/></svg></span></div>
+      <div class="card-title">Login / Sign-up</div>
+      <div class="card-desc">Sign-in, account creation (multi-step), and ID verification upload. Includes error, locked-account, validation, and loading states.</div>
+      <div class="card-state-count">7 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/onboarding.html">
+      <div class="card-number">02</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-onboarding"/></svg></span></div>
+      <div class="card-title">Onboarding</div>
+      <div class="card-desc">Guided 3-step tour introducing Evida, the Protocol, and initial setup tasks with progress tracking.</div>
+      <div class="card-state-count">4 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/booking.html">
+      <div class="card-number">03</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-booking"/></svg></span></div>
+      <div class="card-title">Booking flow</div>
+      <div class="card-desc">End-to-end Baseline booking: package selection → diagnostic type → clinic + date/time → GP (gated 4-5 day window) → cart with slot hold → Stripe payment → confirmation.</div>
+      <div class="card-state-count">12 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/dashboard.html">
+      <div class="card-number">04</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-dashboard"/></svg></span></div>
+      <div class="card-title">Dashboard</div>
+      <div class="card-desc">Portal home with onboarding progress banner, welcome card, protocol pills, appointment cards, stat cards, pre-consult checklist, 5-tab navigation (desktop sidebar + mobile bottom nav).</div>
+      <div class="card-state-count">8 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/post-consult.html">
+      <div class="card-number">05</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-postconsult"/></svg></span></div>
+      <div class="card-title">Post-consult</div>
+      <div class="card-desc">Health reports (physical + lifestyle), prevention plan with progress and action items, biomarker table with reference ranges, and one-tap adherence reminders.</div>
+      <div class="card-state-count">6 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/wearables.html">
+      <div class="card-number">06</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-wearables"/></svg></span></div>
+      <div class="card-title">Wearables</div>
+      <div class="card-desc">Terra device connection for Apple Watch, Garmin, Oura, Whoop, Fitbit. Connected/disconnected states, data preview, and privacy notice. Accessible anytime after sign-up — no booking needed. Also accessible via Data &amp; Insights hub.</div>
+      <div class="card-state-count">4 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/insights.html">
+      <div class="card-number">07</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-insights"/></svg></span></div>
+      <div class="card-title">Data &amp; Insights</div>
+      <div class="card-desc">Merged hub combining wearable data streams (activity, sleep, heart rate, trends), device management, and medical history questionnaire. Live indicators, 7-day charts, and empty state.</div>
+      <div class="card-state-count">4 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/faq.html">
+      <div class="card-number">08</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-faq"/></svg></span></div>
+      <div class="card-title">FAQ</div>
+      <div class="card-desc">Help centre with searchable accordion FAQ across 5 categories: Getting started, Membership & pricing, Appointments, Wearables & data, Technical.</div>
+      <div class="card-state-count">—</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/profile.html">
+      <div class="card-number">09</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-profile"/></svg></span></div>
+      <div class="card-title">Profile</div>
+      <div class="card-desc">Account profile with personal information, combined photo + ID verification with regulatory explainer, connected devices summary, and account actions (password, data export, settings).</div>
+      <div class="card-state-count">5 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/settings.html">
+      <div class="card-number">10</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-settings"/></svg></span></div>
+      <div class="card-title">Settings</div>
+      <div class="card-desc">Membership details with pilot pricing, payment history, privacy & data sharing consent toggles, security (password, 2FA, passkey), notification channel preferences, and account management.</div>
+      <div class="card-state-count">6 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/documents.html">
+      <div class="card-number">11</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-documents"/></svg></span></div>
+      <div class="card-title">Documents</div>
+      <div class="card-desc">Central document hub with Evida reports pinned at the top, uploaded records with rename capability, and upload modal with progress.</div>
+      <div class="card-state-count">5 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/ask-evi.html">
+      <div class="card-number">12</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-askevi"/></svg></span></div>
+      <div class="card-title">Ask Evi</div>
+      <div class="card-desc">Non-clinical AI chat for health questions. Disclaimer banner, sample conversations, working input + response simulation, suggested questions, and seek-care pathways.</div>
+      <div class="card-state-count">2 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="evida-card-bordered screen-card" href="screens/messages.html">
+      <div class="card-number">13</div>
+      <div class="card-letter"><span class="initial"><svg><use href="#ic-messages"/></svg></span></div>
+      <div class="card-title">Messages</div>
+      <div class="card-desc">Care team threads with Dr. Chen, health coach, Evida system, and Randox results. Flat thread list with unread badges and empty state for new members.</div>
+      <div class="card-state-count">4 states</div>
+      <span class="card-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="legend">
+    <h3>State coverage</h3>
+    <div class="tags">
+      <span class="tag tag-happy">Happy path</span>
+      <span class="tag tag-edge">Error / failure</span>
+      <span class="tag tag-empty">Empty / partial</span>
+      <span class="tag tag-auth">Auth gate</span>
+      <span class="tag tag-happy">Loading</span>
+      <span class="tag tag-empty">Edge case</span>
+    </div>
+  </div>
+
+  <div class="legend" style="margin-top:12px">
+    <h3>Key edge cases covered</h3>
+    <div style="font-size:12px;color:var(--evida-fg-secondary);line-height:1.6">
+      • Wearables accessible independently after sign-up — no booking required<br>
+      • GP slot gating (4–5 working day window with plain-English reason)<br>
+      • 15-min slot hold countdown during checkout<br>
+      • Payment failure recovery (slots still held)<br>
+      • Slot expiry (released → pick new)<br>
+      • Locked account (too many attempts)<br>
+      • Empty/partial: no wearables, no reports, no appointments, incomplete onboarding<br>
+      • Add-on options visible with cost context (nurse home visit £70, hormone panel £85)<br>
+      • Non-blocking pre-consult tasks with skip/connect-later<br>
+      • ID verification skip (defer to later)<br>
+      • Fasting/preparation reminder auto-offered<br>
+      • Data &amp; Insights hub merges wearables data, device management, and medical history questionnaire<br>
+      • Working Ask Evi chat with response simulation based on keyword matching<br>
+      • Document hub with Evida reports + uploaded documents with rename<br>
+      • Message threads with unread counts and flat thread list<br>
+      • FAQ with accordion, category filtering, and search
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  Evida design system &amp; patient app prototype · Built for pilot launch June 2026 ·
+  <a href="#" onclick="event.preventDefault();showToast('Full token reference: DESIGN.md, colors_and_type.css, preview/')">Design system reference</a>
+</div>
+
+<div style="max-width:800px;margin:0 auto;padding:0 16px 32px">
+  <details style="background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-md);padding:14px;font-size:13px">
+    <summary style="font-weight:600;cursor:pointer;color:var(--evida-fg-secondary)">UAT reviewer notes</summary>
+    <div style="margin-top:12px;line-height:1.6;color:var(--evida-fg-secondary)">
+      <p style="margin-bottom:8px"><strong>Navigating the prototype:</strong> Open any screen from the grid above. Each screen is a self-contained mobile-first HTML file.</p>
+      <p style="margin-bottom:8px"><strong>State explorer:</strong> Click the <strong>U</strong> button (bottom-right corner of any screen) to toggle the UAT toolbar on/off. The toolbar lets you switch between empty, loading, error, and edge-case states without manipulating localStorage. Once enabled, the toolbar persists across page navigation.</p>
+    <p style="margin-bottom:8px"><strong>Keyboard shortcuts (booking flow):</strong> The 15-min slot hold timer starts at step 5. Payment has ~20% random failure rate for testing recovery.</p>
+    <p style="margin-bottom:8px"><strong>Test accounts:</strong> <code>locked@evida.co.uk</code> (any password) triggers the locked-account state on the sign-in screen.</p>
+    <p style="margin-bottom:8px"><strong>Nav note:</strong> Bottom nav labels say "Data &amp; Insights" (merged Insights + Wearables). The standalone Wearables page is still accessible for device management. No notification centre in MVP.</p>
+    <p><strong>Known limitations:</strong> Standalone GP consult (non-Baseline) removed from dashboard — baseline-only MVP. Multi-device wearables connect via Terra simulation. Ask Evi responses are simulated (keyword-matching, no real AI backend).</p>
+    </div>
+  </details>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<title>Evida — Book your Baseline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+  .app-body { padding: 0 0 32px; }
+
+  .progress-track { padding: 16px 16px 0; max-width: var(--max-w); margin: 0 auto; }
+  .progress-steps { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .progress-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; }
+  .progress-step .circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--evida-border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--evida-muted); background: var(--evida-surface); transition: all 200ms; }
+  .progress-step.active .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+  .progress-step.done .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+  .progress-step .label { font-size: 10px; color: var(--evida-muted); text-align: center; line-height: 1.2; }
+  .progress-step.active .label { color: var(--color-primary); font-weight: 600; }
+  .progress-step.done .label { color: var(--evida-fg-secondary); }
+  .progress-bar-bg { height: 3px; background: var(--evida-border); border-radius: 2px; margin: 0 14px; position: relative; }
+  .progress-bar-fill { height: 100%; background: var(--color-primary); border-radius: 2px; transition: width 300ms ease-out; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .card-option { background: var(--evida-surface); border: 2px solid var(--evida-border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: border-color 150ms, box-shadow 150ms; margin-bottom: 12px; }
+  .card-option:hover { border-color: var(--color-primary); }
+  .card-option.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .card-option.disabled { opacity: 0.5; cursor: not-allowed; }
+  .card-option.disabled:hover { border-color: var(--evida-border); }
+  .card-option .top { display: flex; align-items: flex-start; gap: 12px; }
+  .card-option .radio-outline { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: border-color 150ms; }
+  .card-option.selected .radio-outline { border-color: var(--color-primary); }
+  .card-option.selected .radio-outline::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); }
+  .card-option .info { flex: 1; }
+  .card-option .title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .card-option .desc { font-size: 13px; color: var(--evida-fg-secondary); line-height: 1.4; }
+  .card-option .meta { display: flex; gap: 8px; margin-top: 6px; }
+  .card-option .pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-full); }
+  .card-option .pill-coming { background: var(--evida-amber-light); color: #8A5A2A; }
+  .card-option .pill-price { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .card-option .pill-free { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+
+  .location-card { background: var(--evida-surface); border: 1px solid var(--evida-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: border-color 150ms; }
+  .location-card:hover { border-color: var(--color-primary); }
+  .location-card.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .location-card .name { font-size: 15px; font-weight: 600; }
+  .location-card .addr { font-size: 13px; color: var(--evida-fg-secondary); margin-top: 2px; }
+  .location-card .dist { font-size: 12px; color: var(--evida-muted); }
+  .location-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .location-card .avail { font-size: 12px; padding: 4px 10px; border-radius: var(--radius-full); background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+
+  .date-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin: 12px 0; }
+  .date-cell { background: var(--evida-surface); border: 1px solid var(--evida-border); border-radius: var(--radius-sm); padding: 8px 4px; text-align: center; cursor: pointer; transition: all 150ms; }
+  .date-cell:hover { border-color: var(--color-primary); }
+  .date-cell.selected { border-color: var(--color-primary); background: var(--evida-teal-light); }
+  .date-cell .day { font-size: 11px; color: var(--evida-muted); }
+  .date-cell .num { font-size: 18px; font-weight: 700; line-height: 1.3; }
+  .date-cell .month { font-size: 10px; color: var(--evida-muted); }
+  .date-cell.disabled { opacity: 0.35; cursor: not-allowed; }
+  .date-cell.disabled:hover { border-color: var(--evida-border); }
+  .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .time-cell { height: 40px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: all 150ms; background: var(--evida-surface); }
+  .time-cell:hover { border-color: var(--color-primary); }
+  .time-cell.selected { border-color: var(--color-primary); background: var(--evida-teal-light); font-weight: 600; }
+  .time-cell.disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .section-label { font-size: 13px; font-weight: 600; color: var(--evida-fg-secondary); margin-bottom: 8px; margin-top: 16px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .cart-card { padding: 16px; margin-bottom: 16px; }
+  .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--evida-border); font-size: 14px; }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item .label { color: var(--evida-fg-secondary); }
+  .cart-item .value { font-weight: 600; }
+  .cart-total { display: flex; justify-content: space-between; padding: 12px 0 0; font-size: 16px; font-weight: 700; border-top: 2px solid var(--evida-fg); margin-top: 4px; }
+  .cart-total .price-original { font-size: 14px; font-weight: 400; color: var(--evida-muted); text-decoration: line-through; }
+  .cart-total .price-discount { color: var(--color-success); font-size: 13px; font-weight: 600; margin-top: 2px; }
+
+  .hold-banner { display: none; align-items: center; gap: 8px; padding: 10px 14px; background: var(--evida-amber-light); border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px; color: #8A5A2A; }
+  .hold-banner.visible { display: flex; }
+  .hold-banner .timer { font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .payment-card { padding: 16px; }
+  .payment-card .card-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); margin-bottom: 12px; cursor: pointer; transition: border-color 150ms; }
+  .payment-card .card-row:hover { border-color: var(--color-primary); }
+  .payment-card .card-row.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .payment-card .card-row .radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .payment-card .card-row.selected .radio { border-color: var(--color-primary); }
+  .payment-card .card-row.selected .radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); }
+  .payment-card .card-row .method-label { font-size: 14px; font-weight: 500; }
+  .payment-method-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .conf-card { text-align: center; padding: 32px 16px; }
+  .conf-card .check { width: 72px; height: 72px; border-radius: 50%; background: var(--evida-teal-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .conf-card .check svg { width: 32px; height: 32px; stroke: var(--evida-teal); }
+  .conf-card .check.pulse { animation: checkPulse 0.4s ease-out; }
+  @keyframes checkPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+  .btn-loading { pointer-events: none; }
+  .btn-loading .btn-text { display: none; }
+  .btn-loading .btn-spinner { display: inline-block; }
+  .conf-card h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .conf-card p { color: var(--evida-fg-secondary); font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+  .conf-detail { background: var(--evida-bg); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; text-align: left; }
+  .conf-detail .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+  .conf-detail .row .l { color: var(--evida-muted); }
+  .conf-detail .row .r { font-weight: 600; }
+  .conf-detail .divider { height: 1px; background: var(--evida-border); margin: 8px 0; }
+
+  .app-header .header-actions { margin-left: auto; }
+  .error-banner { display: none; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-md); background: #FDE8E8; color: #B34343; font-size: 13px; margin-bottom: 16px; line-height: 1.4; }
+  .error-banner.visible { display: flex; }
+  .error-banner .w-icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  /* Fasting/prep reminder banner */
+  .prep-reminder { display: none; background: var(--evida-teal-light); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px; }
+  .prep-reminder.visible { display: block; }
+  .prep-reminder .title { font-weight: 600; color: var(--evida-teal-dark); margin-bottom: 4px; }
+  .prep-reminder .desc { font-size: 13px; color: var(--evida-teal-dark); opacity: 0.8; }
+
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 0 0 48px; } }
+  @media (min-width: 1024px) {
+    :root { --max-w: 560px; }
+    .app-shell { display: flex !important; flex-direction: column !important; grid-template-columns: unset !important; padding-bottom: 0; }
+    .app-body { display: flex !important; padding: 0 24px 48px !important; grid-column: auto !important; grid-row: auto !important; }
+    .bottom-nav { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" id="backBtn" onclick="handleBack()">←</button>
+    <img class="logo" src="../build/logo.svg" alt="Evida">
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button></div>
+  </header>
+
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-steps" id="progressSteps"></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="app-body">
+    <div class="app-body-inner">
+      <div class="error-banner" id="bookingError">
+        <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
+        <span id="bookingErrorText"></span>
+      </div>
+
+      <!-- STEP 1: Choose package -->
+      <div class="step active" id="step1" data-step="1">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Your membership</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Everything you need for 12 months of preventive health.</p>
+        <div class="card-option selected" id="pkgBaseline" onclick="selectPackage('baseline')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">Evida Membership</div>
+              <div class="desc">Full diagnostic blood panel (42 biomarkers), 45-min GP consultation, health coach session, personalised prevention plan, and 12 months of data insights.</div>
+              <div class="meta">
+                <span class="pill pill-price" style="background:var(--evida-navy);color:white">£320 / year</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-form" onclick="goStep(2)">Continue</button>
+      </div>
+
+      <!-- STEP 2: Optional add-ons -->
+      <div class="step" id="step2" data-step="2">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Optional add-ons</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Enhance your Baseline with these premium additions.</p>
+        <div class="card-option selected" id="addonNone" onclick="selectAddon('none')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">No add-ons — just the Baseline</div>
+              <div class="desc">Your membership includes everything you need. Add-ons can be added later.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-option" id="addonNurse" onclick="selectAddon('nurse')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">Home nurse blood draw</div>
+              <div class="desc">A registered nurse visits your home to take your blood sample. Available in most London areas and select UK cities.</div>
+              <div class="meta"><span class="pill pill-price">£70</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-option" id="addonHormone" onclick="selectAddon('hormone')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">Hormone panel upgrade</div>
+              <div class="desc">Extended hormone analysis including cortisol, DHEA-S, testosterone (free & total), oestradiol, progesterone, and SHBG. Added to your standard blood panel.</div>
+              <div class="meta">
+                <span class="pill pill-price">£85</span>
+                <span class="pill pill-free">Add to Baseline</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-option" id="addonBoth" onclick="selectAddon('both')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">Nurse visit + Hormone panel</div>
+              <div class="desc">Both premium upgrades combined at a small saving.</div>
+              <div class="meta"><span class="pill pill-price">£140</span><span class="pill pill-free">Save £15</span></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
+      </div>
+
+      <!-- STEP 3: Clinic location + date/time -->
+      <div class="step" id="step3" data-step="3">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Choose a clinic</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Select your nearest Randox clinic and preferred time.</p>
+        <div id="clinicList"></div>
+        <div id="dateTimeSection" style="display:none">
+          <div class="section-label">Available dates</div>
+          <div class="date-grid" id="bloodDateGrid"></div>
+          <div class="section-label" id="timeLabel" style="display:none">Available times</div>
+          <div class="time-grid" id="bloodTimeGrid"></div>
+        </div>
+        <button class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Continue</button>
+      </div>
+
+      <!-- STEP 4: GP consult (gated) -->
+      <div class="step" id="step4" data-step="4">
+        <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
+          <span class="text-body-small">Your blood test is <strong>7 June 2026</strong>. Your GP consultation can be booked from <strong>12 June 2026</strong> onwards (allows 4–5 working days for results).</span>
+        </div>
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Book your GP consultation</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">45-min virtual consultation with a GP and health coach.</p>
+        <div class="section-label">Available dates</div>
+        <div class="date-grid" id="gpDateGrid"></div>
+        <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
+        <div class="time-grid" id="gpTimeGrid"></div>
+        <button class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Continue</button>
+      </div>
+
+      <!-- STEP 5: Review + cart -->
+      <div class="step" id="step5" data-step="5">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review your booking</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan at £320</p>
+        <div class="hold-banner visible" id="holdBanner">
+          <span>Slots held for <span class="timer" id="holdTimer">14:58</span></span>
+        </div>
+        <div class="evida-card cart-card">
+          <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px"><span class="label" style="font-weight:700">Evida Membership (12 months)</span><span class="value" style="font-size:18px;font-weight:700">£320</span></div>
+          <div class="cart-item"><span class="label">Blood test — Randox clinic</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
+          <div class="cart-item"><span class="label">GP consultation (45 min virtual)</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
+          <div class="cart-item"><span class="label">Blood test slot</span><span class="value" style="font-size:13px" id="cartBloodSlot">7 Jun 2026, 10:30</span></div>
+          <div class="cart-item" style="border-bottom:none"><span class="label">GP consult slot</span><span class="value" style="font-size:13px" id="cartGpSlot">12 Jun 2026, 14:00</span></div>
+          <div id="cartAddons" style="display:none">
+            <div class="cart-item" id="cartAddonRow"><span class="label" id="cartAddonLabel">Home nurse visit</span><span class="value" id="cartAddonPrice">£70</span></div>
+          </div>
+          <div class="cart-total" style="border-top:2px solid var(--evida-fg)">
+            <span>Total</span>
+            <span id="cartTotalValue">£320</span>
+          </div>
+        </div>
+        <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged £320.</p>
+        <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
+      </div>
+
+      <!-- STEP 6: Payment — Stripe-style UI -->
+      <div class="step" id="step6" data-step="6">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Complete payment</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Secure payment via Stripe. Your membership will activate immediately.</p>
+        <div class="evida-card payment-card">
+          <div class="card-row selected" onclick="selectPayment(this)">
+            <div><div class="radio"></div></div>
+            <span class="method-label">Credit or debit card</span>
+            <span style="margin-left:auto;display:flex;gap:4px">
+              <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect x="0.5" y="0.5" width="23" height="15" rx="2" fill="#fff" stroke="#ddd"/><text x="5" y="11" font-size="8" fill="#003399" font-weight="bold">VISA</text></svg>
+              <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect x="0.5" y="0.5" width="23" height="15" rx="2" fill="#fff" stroke="#ddd"/><text x="3" y="11" font-size="7" fill="#FF5F00" font-weight="bold">MC</text></svg>
+            </span>
+          </div>
+
+          <!-- Stripe Element-style card form -->
+          <div style="background:var(--evida-bg);border:1px solid var(--evida-border);border-radius:var(--radius-md);padding:16px;margin-top:12px">
+            <div class="form-group" style="margin-bottom:16px">
+              <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Card number</label>
+              <input class="evida-input" id="stripeCardNumber" style="width:100%;height:44px;font-size:16px;font-family:var(--font-mono);letter-spacing:0.5px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div class="form-group">
+                <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Expiry date</label>
+                <input class="evida-input" id="stripeExpiry" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="MM / YY" inputmode="numeric" autocomplete="cc-exp">
+              </div>
+              <div class="form-group">
+                <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">CVC</label>
+                <input class="evida-input" id="stripeCvc" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="CVC" inputmode="numeric" autocomplete="cc-csc">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Name on card</label>
+              <input class="evida-input" id="stripeName" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="James Chen" autocomplete="cc-name">
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-teal-dark)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:12px;color:var(--evida-teal-dark)">Your data is encrypted and processed securely via Stripe.</span>
+        </div>
+
+        <button class="btn btn-primary btn-form" id="payBtn" onclick="handlePayment()">
+          <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
+          <span class="btn-spinner"></span>
+        </button>
+        <button class="btn btn-ghost" onclick="goStep(5)" style="width:auto;margin-top:8px">← Back to review</button>
+        <div class="error-banner" id="paymentError" style="margin-top:12px">
+          <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
+          <span>Payment declined. Your slots are still held — please try again or use a different card.</span>
+        </div>
+      </div>
+
+      <!-- STEP 7: Confirmation -->
+      <div class="step" id="step7" data-step="7">
+        <div class="conf-card">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h2 class="text-h2">Booking confirmed!</h2>
+          <p class="text-body-small">Your Evida membership is active. Here's what happens next:</p>
+          <div class="conf-detail">
+            <div class="row"><span class="l">Blood test</span><span class="r" id="confBloodDateTime">7 Jun 2026, 10:30</span></div>
+            <div class="row"><span class="l">Location</span><span class="r" id="confLocation">Randox — Oxford Circus</span></div>
+            <div class="divider"></div>
+            <div class="row"><span class="l">GP consultation</span><span class="r" id="confGpDateTime">12 Jun 2026, 14:00</span></div>
+            <div class="row"><span class="l">Duration</span><span class="r">45 min (virtual)</span></div>
+            <div class="divider"></div>
+            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
+          </div>
+
+          <!-- Fasting/preparation reminder -->
+          <div class="prep-reminder visible" id="prepReminder">
+            <div class="title">Fasting reminder</div>
+            <div class="desc">Your blood test is at 10:30. Please fast for 10–12 hours beforehand (water is fine). We'll send a reminder the day before.</div>
+            <button class="btn-ghost" onclick="showToast('Reminder set — we\'ll notify you the day before')" style="font-size:12px;margin-top:6px">Set reminder</button>
+          </div>
+
+          <button class="btn btn-secondary btn-form" id="addToCalendarBtn" onclick="addToCalendar()">Add both to calendar</button>
+          <button class="btn btn-primary btn-form" onclick="window.location.href='dashboard.html'" style="margin-top:8px">Go to dashboard</button>
+          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered email address.</p>
+        </div>
+      </div>
+
+      <!-- Slot released state (recovery) -->
+      <div class="step" id="step-recovery">
+        <div class="conf-card">
+          <div style="color:var(--evida-amber);width:64px;height:64px;margin:0 auto 16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:64px;height:64px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h2>Your slot was released</h2>
+          <p>The hold period expired. Your selected time was not reserved. You can choose a new slot below.</p>
+          <button class="btn btn-primary btn-form" onclick="goStep(3)">Choose new slot</button>
+        </div>
+      </div>
+
+      <!-- Payment failure recovery -->
+      <div class="step" id="step-payment-failed">
+        <div class="conf-card">
+          <div style="width:64px;height:64px;margin:0 auto 16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--evida-coral)" stroke-width="1.5" style="width:64px;height:64px"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+          </div>
+          <h2>Payment unsuccessful</h2>
+          <p>Your slots are still held for <strong id="retryTimer">12:34</strong>. You can retry or choose different times.</p>
+          <button class="btn btn-primary btn-form" onclick="goStep(6)" style="margin-bottom:8px">Try paying again</button>
+          <button class="btn btn-secondary btn-form" onclick="goStep(3)">Choose different slots</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <!-- Nav overflow sheet -->
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script src="_uat.js"></script>
+
+<script>
+// State
+const state = {
+  step: 1, package: 'baseline', addon: 'none',
+  clinic: null, bloodDate: null, bloodTime: null,
+  gpDate: null, gpTime: null, selectedPayment: 'card',
+  holdInterval: null, holdSeconds: 900,
+};
+
+const addonPrices = { none: 0, nurse: 70, hormone: 85, both: 140 };
+const addonLabels = { none: null, nurse: 'Home nurse blood draw', hormone: 'Hormone panel upgrade', both: 'Nurse visit + Hormone panel' };
+
+const clinics = [
+  { id: 'oxford', name: 'Randox — Oxford Circus', addr: 'Unit 4, 200 Oxford St, London W1D 1NU', dist: '0.4 mi', avail: 'Available' },
+  { id: 'holborn', name: 'Randox — Holborn', addr: '42 Kingsway, London WC2B 6EY', dist: '1.1 mi', avail: 'Available' },
+  { id: 'liverpool', name: 'Randox — Liverpool St', addr: '15 Bishopsgate, London EC2N 3AR', dist: '1.8 mi', avail: 'Limited' },
+];
+
+const bloodSlots = [
+  { day: 'Sat', num: '7', month: 'Jun', date: '2026-06-07', times: ['09:00','09:30','10:30','11:00','11:30','13:00','14:00','15:00'] },
+  { day: 'Mon', num: '9', month: 'Jun', date: '2026-06-09', times: ['09:00','10:00','11:00','14:00','15:00','16:00'] },
+  { day: 'Tue', num: '10', month: 'Jun', date: '2026-06-10', times: ['09:30','10:30','11:30','13:00','14:30','15:30','16:30'] },
+  { day: 'Wed', num: '11', month: 'Jun', date: '2026-06-11', times: ['10:00','11:00','14:00','15:00'] },
+  { day: 'Thu', num: '12', month: 'Jun', date: '2026-06-12', times: ['09:00','10:00','11:00','14:00'] },
+];
+
+const gpSlots = [
+  { day: 'Fri', num: '12', month: 'Jun', date: '2026-06-12', times: ['09:00','10:00','11:00','13:00','14:00','15:00','16:00'] },
+  { day: 'Mon', num: '15', month: 'Jun', date: '2026-06-15', times: ['09:00','10:30','11:00','13:30','14:00','15:30'] },
+  { day: 'Tue', num: '16', month: 'Jun', date: '2026-06-16', times: ['10:00','11:00','13:00','14:00','15:00','16:00'] },
+  { day: 'Wed', num: '17', month: 'Jun', date: '2026-06-17', times: ['09:00','09:30','10:30','11:30','13:00','14:30'] },
+  { day: 'Thu', num: '18', month: 'Jun', date: '2026-06-18', times: ['10:00','11:00','14:00','15:00','16:00'] },
+];
+
+const stepLabels = ['Plan', 'Add-ons', 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
+
+function init() {
+  renderProgress();
+  renderClinics();
+  renderBloodDates();
+  renderGpDates();
+}
+
+function renderProgress() {
+  const container = document.getElementById('progressSteps');
+  container.innerHTML = stepLabels.map((label, i) => `
+    <div class="progress-step" data-idx="${i}">
+      <div class="circle">${i + 1}</div>
+      <div class="label">${label}</div>
+    </div>
+  `).join('');
+}
+
+function updateProgress(step) {
+  document.querySelectorAll('.progress-step').forEach((el, i) => {
+    el.className = 'progress-step' + (i + 1 === step ? ' active' : i + 1 < step ? ' done' : '');
+  });
+  document.getElementById('progressFill').style.width = ((step - 1) / (stepLabels.length - 1) * 100) + '%';
+}
+
+function selectPackage(pkg) {
+  state.package = pkg;
+  document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkgBaseline').classList.add('selected');
+}
+function selectDiagnostic(type) {
+  state.diagnostic = type;
+  document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+  document.getElementById('diagClinic').classList.add('selected');
+}
+
+function selectAddon(addon) {
+  state.addon = addon;
+  document.querySelectorAll('#step2 .card-option').forEach(c => c.classList.remove('selected'));
+  const el = document.getElementById('addon' + addon.charAt(0).toUpperCase() + addon.slice(1));
+  if (el) el.classList.add('selected');
+}
+
+function renderClinics() {
+  const list = document.getElementById('clinicList');
+  list.innerHTML = clinics.map(c => `
+    <div class="location-card" data-id="${c.id}" onclick="selectClinic('${c.id}')">
+      <div class="name">${c.name}</div>
+      <div class="addr">${c.addr}</div>
+      <div class="bottom">
+        <span class="dist">${c.dist}</span>
+        <span class="avail" style="background:${c.avail === 'Limited' ? 'var(--evida-amber-light)' : 'var(--evida-teal-light)'};color:${c.avail === 'Limited' ? '#8A5A2A' : 'var(--evida-teal-dark)'}">${c.avail}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function checkStep3Ready() {
+  // Demo: step always navigable so reviewers can click through
+}
+
+function selectClinic(id) {
+  state.clinic = id;
+  document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.location-card[data-id="${id}"]`).classList.add('selected');
+  document.getElementById('dateTimeSection').style.display = 'block';
+  checkStep3Ready();
+}
+
+function renderBloodDates() {
+  const grid = document.getElementById('bloodDateGrid');
+  grid.innerHTML = bloodSlots.map(d => `
+    <div class="date-cell" data-date="${d.date}" onclick="selectBloodDate('${d.date}')">
+      <div class="day">${d.day}</div>
+      <div class="num">${d.num}</div>
+      <div class="month">${d.month}</div>
+    </div>
+  `).join('');
+}
+
+function selectBloodDate(date) {
+  state.bloodDate = date;
+  document.querySelectorAll('#bloodDateGrid .date-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#bloodDateGrid .date-cell[data-date="${date}"]`).classList.add('selected');
+  const slot = bloodSlots.find(d => d.date === date);
+  const grid = document.getElementById('bloodTimeGrid');
+  if (slot) {
+    grid.innerHTML = slot.times.map(t => `<div class="time-cell" data-time="${t}" onclick="selectBloodTime('${t}')">${t}</div>`).join('');
+    document.getElementById('timeLabel').style.display = 'block';
+  }
+  state.bloodTime = null;
+  checkStep3Ready();
+}
+
+function renderGpDates() {
+  const grid = document.getElementById('gpDateGrid');
+  grid.innerHTML = gpSlots.map(d => {
+    const disabled = d.date < '2026-06-12';
+    return `<div class="date-cell${disabled ? ' disabled' : ''}" data-date="${d.date}" onclick="if(!this.classList.contains('disabled')) selectGpDate('${d.date}')" ${disabled ? 'title="Your results need 4–5 working days. Please select from 12 June onwards."' : ''}>
+      <div class="day">${d.day}</div>
+      <div class="num">${d.num}</div>
+      <div class="month">${d.month}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectBloodTime(time) {
+  state.bloodTime = time;
+  document.querySelectorAll('#bloodTimeGrid .time-cell').forEach(c => c.classList.remove('selected'));
+  var el = document.querySelector('#bloodTimeGrid .time-cell[data-time="' + time + '"]');
+  if (el) el.classList.add('selected');
+  checkStep3Ready();
+}
+
+function checkStep4Ready() {
+  // Demo: step always navigable so reviewers can click through
+}
+
+function selectGpDate(date) {
+  state.gpDate = date;
+  document.querySelectorAll('#gpDateGrid .date-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#gpDateGrid .date-cell[data-date="${date}"]`).classList.add('selected');
+  const slot = gpSlots.find(d => d.date === date);
+  const grid = document.getElementById('gpTimeGrid');
+  if (slot) {
+    grid.innerHTML = slot.times.map(t => `<div class="time-cell" data-time="${t}" onclick="selectGpTime('${t}')">${t}</div>`).join('');
+    document.getElementById('gpTimeLabel').style.display = 'block';
+  }
+  state.gpTime = null;
+  checkStep4Ready();
+}
+
+function selectGpTime(time) {
+  state.gpTime = time;
+  document.querySelectorAll('#gpTimeGrid .time-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#gpTimeGrid .time-cell[data-time="${time}"]`).classList.add('selected');
+  checkStep4Ready();
+}
+
+function goStep(n) {
+  if (n === 6) {
+    var total = 320 + addonPrices[state.addon];
+    document.getElementById('payBtnText').textContent = 'Pay £' + total + ' — Activate membership';
+  }
+  if (n === 5) {
+    startHoldTimer();
+    // Update cart with addon info
+    if (state.addon && state.addon !== 'none') {
+      document.getElementById('cartAddons').style.display = 'block';
+      document.getElementById('cartAddonLabel').textContent = addonLabels[state.addon];
+      document.getElementById('cartAddonPrice').textContent = '£' + addonPrices[state.addon];
+      document.getElementById('cartTotalValue').textContent = '£' + (320 + addonPrices[state.addon]);
+    } else {
+      document.getElementById('cartAddons').style.display = 'none';
+      document.getElementById('cartTotalValue').textContent = '£320';
+    }
+  }
+  if (n === 7) {
+    document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
+    document.getElementById('confLocation').textContent = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
+    document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
+    var totalPaid = 320 + addonPrices[state.addon];
+    document.getElementById('confTotalPaid').textContent = '£' + totalPaid;
+  }
+  state.step = n;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('step' + n);
+  if (el) el.classList.add('active');
+  updateProgress(n);
+  document.getElementById('bookingError').classList.remove('visible');
+}
+
+function handleBack() {
+  if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
+  if (state.step === 6) { goStep(5); return; }
+  if (state.step > 1) { goStep(state.step - 1); return; }
+  window.location.href = 'dashboard.html';
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function startHoldTimer() {
+  state.holdSeconds = 900;
+  document.getElementById('holdBanner').classList.add('visible');
+  document.getElementById('holdTimer').textContent = formatTimer(state.holdSeconds);
+  clearInterval(state.holdInterval);
+  state.holdInterval = setInterval(() => {
+    state.holdSeconds--;
+    document.getElementById('holdTimer').textContent = formatTimer(state.holdSeconds);
+    if (state.holdSeconds <= 60 && state.holdSeconds > 0) {
+      document.getElementById('holdBanner').style.background = '#FDE8E8';
+      document.getElementById('holdBanner').style.color = '#B34343';
+    }
+    if (state.holdSeconds <= 0) {
+      clearInterval(state.holdInterval);
+      releaseSlots();
+    }
+  }, 1000);
+}
+
+function formatTimer(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function releaseSlots() {
+  document.getElementById('holdBanner').classList.remove('visible');
+  EvidaStore.booking.clear();
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-recovery').classList.add('active');
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.card-row').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function handlePayment() {
+  const btn = document.getElementById('payBtn');
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+  document.getElementById('paymentError').classList.remove('visible');
+
+  setTimeout(() => {
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
+    if (Math.random() > 0.2) {
+      clearInterval(state.holdInterval);
+      EvidaStore.booking.confirm();
+      goStep(7);
+      setTimeout(function() { document.querySelector('.conf-card .check').classList.add('pulse'); }, 100);
+    } else {
+      document.getElementById('paymentError').classList.add('visible');
+      document.getElementById('retryTimer').textContent = formatTimer(state.holdSeconds);
+    }
+  }, 2000);
+}
+
+// Add to calendar — prefilled with event details per §5
+function addToCalendar() {
+  const bloodDate = state.bloodDate || '2026-06-07';
+  const bloodTime = state.bloodTime || '10:30';
+  const gpDate = state.gpDate || '2026-06-12';
+  const gpTime = state.gpTime || '14:00';
+  const clinic = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
+
+  const bloodStart = `${bloodDate.replace(/-/g,'')}T${bloodTime.replace(':','')}00`;
+  const gpStart = `${gpDate.replace(/-/g,'')}T${gpTime.replace(':','')}00`;
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${bloodStart}`,
+    `DTEND:${bloodStart}`,
+    `SUMMARY:Evida Baseline - Blood Test @ ${clinic}`,
+    `DESCRIPTION:Fasting blood test. Fast for 10-12 hours beforehand (water is fine).`,
+    'LOCATION:' + clinic,
+    'END:VEVENT',
+    'BEGIN:VEVENT',
+    `DTSTART:${gpStart}`,
+    `DTEND:${gpStart}`,
+    'SUMMARY:Evida Baseline - GP Consultation (Virtual)',
+    'DESCRIPTION:45-min virtual consult with Dr. Sarah Chen + health coach. Join via link in your dashboard.',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'evida-baseline.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Calendar file downloaded — open to add both appointments');
+}
+
+// UAT state definitions
+window.__UAT_STATES = [
+  { id: 'step1', label: 'Plan', setup: function() { goStep(1); } },
+  { id: 'step2', label: 'Add-ons', setup: function() { goStep(2); } },
+  { id: 'step3', label: 'Clinic',
+    setup: function() {
+      goStep(3);
+      selectClinic('oxford');
+      selectBloodDate('2026-06-07');
+      selectBloodTime('10:30');
+    }
+  },
+  { id: 'step4', label: 'GP consult',
+    setup: function() {
+      goStep(4);
+      selectGpDate('2026-06-12');
+      selectGpTime('14:00');
+    }
+  },
+  { id: 'step5', label: 'Review',
+    setup: function() {
+      state.bloodDate = '2026-06-07';
+      state.bloodTime = '10:30';
+      state.clinic = 'oxford';
+      state.gpDate = '2026-06-12';
+      state.gpTime = '14:00';
+      goStep(5);
+    }
+  },
+  { id: 'step6', label: 'Payment', setup: function() { goStep(6); } },
+  { id: 'step7', label: 'Confirmation',
+    setup: function() {
+      state.bloodDate = '2026-06-07';
+      state.bloodTime = '10:30';
+      state.clinic = 'oxford';
+      state.gpDate = '2026-06-12';
+      state.gpTime = '14:00';
+      goStep(7);
+    }
+  },
+  { id: 'payment-failed', label: 'Payment failed',
+    setup: function() {
+      state.bloodDate = '2026-06-07';
+      state.bloodTime = '10:30';
+      state.clinic = 'oxford';
+      state.gpDate = '2026-06-12';
+      state.gpTime = '14:00';
+      state.holdSeconds = 734;
+      document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('step-payment-failed').classList.add('active');
+      document.getElementById('progressFill').style.width = '83%';
+    }
+  },
+  { id: 'slot-expired', label: 'Slot expired',
+    setup: function() {
+      document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('step-recovery').classList.add('active');
+      document.getElementById('progressFill').style.width = '83%';
+    }
+  },
+];
+
+init();
+</script>
+</body>
+</html>

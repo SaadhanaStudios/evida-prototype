@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<title>Evida — Data &amp; Insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+
+  .insight-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--evida-border); }
+  .insight-tab { flex: 1; padding: 10px 8px; text-align: center; font-size: 11px; font-weight: 500; cursor: pointer; color: var(--evida-muted); transition: all 150ms; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .insight-tab.active { color: var(--color-primary); font-weight: 600; border-bottom-color: var(--color-primary); }
+  .insight-tab:hover:not(.active) { color: var(--evida-fg); }
+
+  .insight-panel { display: none; }
+  .insight-panel.active { display: block; }
+
+  .summary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .metric-card { padding: 14px; text-align: center; }
+  .metric-card .mc-value { font-family: var(--font-mono); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--evida-fg); line-height: 1.2; }
+  .metric-card .mc-label { font-size: 11px; color: var(--evida-muted); margin-top: 2px; }
+  .metric-card .mc-trend { font-size: 11px; margin-top: 4px; }
+  .metric-card .mc-trend.up { color: var(--color-success); }
+  .metric-card .mc-trend.down { color: var(--evida-coral); }
+  .metric-card .mc-trend.flat { color: var(--evida-muted); }
+
+  .section-label { font-size: 13px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-label .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); animation: pulse-dot 2s ease-in-out infinite; display: none; }
+  .section-label .live-dot.visible { display: inline-block; }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .chart-card { margin-bottom: 12px; }
+  .chart-card .chart-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; font-weight: 600; }
+  .chart-card .chart-title .range { font-weight: 400; color: var(--evida-muted); }
+
+  .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; padding-top: 8px; }
+  .bar-chart .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .bar-chart .bar { width: 100%; max-width: 28px; border-radius: 3px 3px 0 0; min-height: 4px; transition: height 300ms; background: var(--evida-teal); }
+  .bar-chart .bar-label { font-size: 9px; color: var(--evida-muted); margin-top: 6px; text-align: center; }
+  .bar-chart .bar-value { font-size: 9px; color: var(--evida-fg-secondary); margin-bottom: 2px; font-family: var(--font-mono); }
+
+  .sleep-chart { display: flex; gap: 6px; height: 80px; align-items: flex-end; }
+  .sleep-chart .sleep-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 4px; position: relative; }
+  .sleep-chart .sleep-bar .sb-label { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--evida-muted); white-space: nowrap; }
+
+  .health-ring { width: 72px; height: 72px; position: relative; margin: 0 auto 8px; }
+  .health-ring svg { transform: rotate(-90deg); }
+  .health-ring .ring-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .hr-breakdown { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .hr-item { text-align: center; padding: 10px; background: var(--evida-bg); border-radius: var(--radius-sm); }
+  .hr-item .hr-value { font-family: var(--font-mono); font-size: 18px; font-weight: 600; }
+  .hr-item .hr-label { font-size: 10px; color: var(--evida-muted); }
+
+  .sleep-stages { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .sleep-stage { text-align: center; padding: 10px; border-radius: var(--radius-sm); }
+  .sleep-stage.deep { background: var(--evida-teal-light); }
+  .sleep-stage.light { background: var(--evida-teal-light); }
+  .sleep-stage.rem { background: #E8E0F8; }
+  .sleep-stage .ss-value { font-family: var(--font-mono); font-size: 16px; font-weight: 600; }
+  .sleep-stage .ss-label { font-size: 10px; margin-top: 2px; }
+
+  .trend-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; padding: 2px 8px; border-radius: var(--radius-full); font-weight: 600; }
+  .trend-badge.up { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .trend-badge.flat { background: #F0F0F5; color: var(--evida-muted); }
+  .trend-badge.down { background: #FDE8E8; color: #B34343; }
+
+  .modal-overlay { display: none; }
+  .modal-sheet { box-shadow: 0 -4px 20px rgba(0,0,0,0.1); }
+
+  /* --- Enriched insights styles --- */
+  .correlation-card { background: var(--evida-teal-light); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; }
+  .correlation-card .cc-head { font-size: 13px; font-weight: 600; color: var(--evida-teal-dark); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .correlation-card .cc-body { font-size: 12px; color: var(--evida-teal-dark); line-height: 1.5; }
+  .correlation-card .cc-stat { font-family: var(--font-mono); font-weight: 700; }
+
+  .readiness-slab { display: grid; grid-template-columns: 72px 1fr; gap: 14px; padding: 14px; margin-bottom: 12px; align-items: center; }
+  .readiness-slab .rs-ring { width: 72px; height: 72px; position: relative; }
+  .readiness-slab .rs-ring svg { transform: rotate(-90deg); }
+  .readiness-slab .rs-ring .rs-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--evida-fg); }
+  .readiness-slab .rs-info { display: flex; flex-direction: column; gap: 2px; }
+  .readiness-slab .rs-label { font-size: 13px; font-weight: 600; }
+  .readiness-slab .rs-desc { font-size: 11px; color: var(--evida-fg-secondary); line-height: 1.4; }
+
+  .data-freshness { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .data-freshness .df-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--evida-muted); }
+  .data-freshness .df-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .data-freshness .df-dot.live { background: var(--color-success); }
+  .data-freshness .df-dot.delayed { background: var(--evida-amber); }
+  .data-freshness .df-dot.stale { background: var(--evida-muted); }
+  .data-freshness .df-dot.lab { background: var(--evida-navy); }
+
+  .goal-track { margin-bottom: 12px; }
+  .goal-track .gt-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--evida-border); }
+  .goal-track .gt-row:last-child { border-bottom: none; }
+  .goal-track .gt-label { font-size: 12px; flex: 1; min-width: 0; }
+  .goal-track .gt-bar-wrap { flex: 1; max-width: 120px; height: 6px; background: var(--evida-bg); border-radius: 3px; overflow: hidden; }
+  .goal-track .gt-bar-fill { height: 100%; border-radius: 3px; transition: width 400ms; }
+  .goal-track .gt-value { font-family: var(--font-mono); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 48px; text-align: right; color: var(--evida-fg-secondary); }
+  .goal-track .gt-target { font-size: 10px; color: var(--evida-muted); min-width: 72px; text-align: right; }
+
+  .biomarker-detail { padding: 12px; margin-bottom: 10px; }
+  .biomarker-detail .bd-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .biomarker-detail .bd-name { font-size: 13px; font-weight: 600; }
+  .biomarker-detail .bd-badge { font-size: 10px; padding: 2px 8px; border-radius: var(--radius-full); font-weight: 600; }
+  .biomarker-detail .bd-badge.normal { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .biomarker-detail .bd-badge.borderline { background: var(--evida-amber-light); color: #8A5A2A; }
+  .biomarker-detail .bd-badge.attention { background: #FDE8E8; color: #B34343; }
+  .biomarker-detail .bd-main { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .biomarker-detail .bd-value { font-family: var(--font-mono); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .biomarker-detail .bd-unit { font-size: 13px; color: var(--evida-muted); }
+  .biomarker-detail .bd-range { font-size: 11px; color: var(--evida-fg-secondary); margin-bottom: 8px; }
+  .biomarker-detail .bd-range .ref-highlight { font-weight: 600; color: var(--evida-fg); }
+  .biomarker-detail .bd-trend { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+  .biomarker-detail .bd-trend-improving { color: var(--color-success); }
+  .biomarker-detail .bd-trend-stable { color: var(--evida-muted); }
+  .biomarker-detail .bd-trend-declining { color: var(--evida-coral); }
+  .biomarker-detail .bd-spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; margin-top: 8px; }
+  .biomarker-detail .bd-spark .sp-bar { width: 6px; border-radius: 1px 1px 0 0; transition: height 300ms; }
+  .biomarker-detail .bd-spark .sp-bar.within-range { background: var(--evida-teal); }
+  .biomarker-detail .bd-spark .sp-bar.borderline-range { background: var(--evida-amber); }
+  .biomarker-detail .bd-spark .sp-bar.outside-range { background: var(--evida-coral); }
+
+  .zone-dist { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .zone-dist .zd-item { text-align: center; padding: 10px; border-radius: var(--radius-sm); }
+  .zone-dist .zd-item.z1 { background: var(--evida-bg); }
+  .zone-dist .zd-item.z2 { background: #EEF7F0; }
+  .zone-dist .zd-item.z3 { background: #FEF5E7; }
+  .zone-dist .zd-item.z4 { background: #FDE8E8; }
+  .zone-dist .zd-item .zd-value { font-family: var(--font-mono); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .zone-dist .zd-item .zd-label { font-size: 10px; color: var(--evida-muted); margin-top: 2px; }
+  .zone-dist .zd-item .zd-range { font-size: 9px; color: var(--evida-muted); margin-top: 1px; }
+
+  .trend-toggle { display: flex; gap: 4px; margin-bottom: 12px; }
+  .trend-toggle button { font-size: 11px; padding: 4px 12px; border-radius: var(--radius-full); border: 1px solid var(--evida-border); background: var(--evida-surface); color: var(--evida-muted); cursor: pointer; font-weight: 500; transition: all 150ms; }
+  .trend-toggle button.active { background: var(--evida-teal); color: white; border-color: var(--evida-teal); }
+
+  .report-card { padding: 14px; margin-bottom: 10px; }
+  .report-card .rc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .report-card .rc-title { font-size: 14px; font-weight: 700; }
+  .report-card .rc-date { font-size: 11px; color: var(--evida-muted); }
+  .report-card .rc-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .report-card .rc-stat { text-align: center; }
+  .report-card .rc-stat .rcs-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .report-card .rc-stat .rcs-label { font-size: 10px; color: var(--evida-muted); margin-top: 2px; }
+
+  .export-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .export-bar button { font-size: 11px; padding: 8px 16px; border-radius: var(--radius-sm); }
+
+  .biomarker-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+  .recovery-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 10px; border-radius: var(--radius-full); font-weight: 600; }
+  .recovery-badge.good { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .recovery-badge.fair { background: var(--evida-amber-light); color: #8A5A2A; }
+  .recovery-badge.poor { background: #FDE8E8; color: #B34343; }
+
+  @media (min-width: 600px) {
+    :root { --header-h: 64px; }
+    .app-body { padding: 24px; }
+    .summary-row { grid-template-columns: repeat(4, 1fr); }
+    .biomarker-grid { grid-template-columns: 1fr 1fr; }
+    .zone-dist { grid-template-columns: repeat(4, 1fr); }
+    .modal-overlay { align-items: center; }
+    .modal-sheet { border-radius: var(--radius-lg); max-width: 480px; margin: 0 16px; max-height: 80vh; }
+  }
+  @media (min-width: 1024px) {
+    .app-body { padding: 32px; }
+    .app-body-inner { max-width: 900px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">&larr;</button>
+    <img class="logo" src="../build/logo.svg" alt="Evida">
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge">3</span></div><div class="avatar" onclick="window.location.href='profile.html'" style="cursor:pointer">JC</div></div>
+  </header>
+  <nav class="sidebar" id="desktopSidebar">
+    <div class="logo-wrap">
+      <svg width="32" height="32" viewBox="68 25 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M123.386 81.6125C123.386 83.4833 121.889 84.9998 120.042 84.9998H102.486V63.8291H123.386V81.6125Z" fill="white"/><path d="M68.32 32.5751C68.32 30.7043 69.8172 29.1877 71.664 29.1877H89.2203V50.3584H68.32V32.5751Z" fill="white"/><path d="M71.664 85.0001C69.8172 85.0001 68.32 83.4835 68.32 81.6127L68.32 63.8293H89.2202V85.0001H71.664Z" fill="white"/><path d="M120.117 34.0259C115.586 34.0259 111.914 37.6742 111.914 42.1747C111.914 46.6753 115.586 50.3237 120.117 50.3237C124.647 50.3237 128.32 46.6753 128.32 42.1747C128.32 37.6742 124.647 34.0259 120.117 34.0259Z" fill="white"/><path d="M110.715 25C106.17 25 102.486 28.6484 102.486 33.1489C102.486 37.6494 106.17 41.2979 110.715 41.2979C115.26 41.2979 118.944 37.6494 118.944 33.1489C118.944 28.6484 115.26 25 110.715 25Z" fill="white"/><path d="M120.09 50.3235L112.489 40.4017L102.486 33.1489V50.3235H120.09Z" fill="white"/></svg><span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span>
+    </div>
+    <button class="nav-item-desktop" onclick="window.location.href='dashboard.html'">Dashboard</button>
+    <button class="nav-item-desktop active" onclick="window.location.href='insights.html'">Data &amp; Insights</button>
+    <button class="nav-item-desktop" onclick="window.location.href='dashboard.html#appointments'">Appointments</button>
+    <button class="nav-item-desktop" onclick="window.location.href='documents.html'">Documents</button>
+    <button class="nav-item-desktop" onclick="window.location.href='ask-evi.html'">Ask Evi</button>
+    <div class="sidebar-spacer"></div>
+    <button class="nav-item-desktop" onclick="window.location.href='messages.html'">Messages</button>
+    <button class="nav-item-desktop" onclick="window.location.href='faq.html'">FAQ</button>
+    <button class="nav-item-desktop" onclick="window.location.href='profile.html'">Profile</button>
+    <button class="nav-item-desktop" onclick="window.location.href='settings.html'">Settings</button>
+    <button class="sidebar-dark-toggle" id="sidebarDarkToggle" onclick="toggleDarkMode()">Dark mode</button>
+  </nav>
+  <div class="app-body">
+    <div class="app-body-inner">
+
+      <!-- Connected devices banner -->
+      <div id="connectedBanner" style="display:none">
+        <div class="evida-card" style="background:var(--evida-teal-light);padding:12px 14px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--color-success);flex-shrink:0"></span>
+            <span style="font-size:12px;color:var(--evida-teal-dark);flex:1" id="liveStatus">Data syncing from connected devices</span>
+            <button style="font-size:11px;color:var(--evida-teal-dark);font-weight:600;background:none;border:none;cursor:pointer" onclick="window.location.href='wearables.html'">Manage</button>
+          </div>
+          <div id="connectedDevicesMini" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        </div>
+      </div>
+
+      <!-- No device state -->
+      <div id="noDeviceState">
+        <div class="empty-state">
+          <span class="es-letter"><svg viewBox="0 0 24 24"><path d="M3 12h3l2.5-6 4 13L16 8l2 4h3"/></svg></span>
+          <h3 class="text-h4">Connect a wearable to see insights</h3>
+          <p class="text-body-small">Sync your Apple Watch, Garmin, Oura, Whoop, or Fitbit to track activity, sleep, and heart-rate trends over time. Your data appears here in near-real time.</p>
+          <button class="btn btn-primary btn-sm" onclick="window.location.href='wearables.html'">Connect a device</button>
+          <button class="btn btn-secondary btn-sm" onclick="simulateConnect()" style="margin-top:8px;margin-left:8px">Show demo data</button>
+        </div>
+      </div>
+
+      <!-- Main insights (hidden until device connected or demo) -->
+      <div id="insightsContent" style="display:none">
+
+        <!-- Tabs -->
+        <div class="insight-tabs">
+          <button class="insight-tab active" onclick="switchTab('overview',this)">Overview</button>
+          <button class="insight-tab" onclick="switchTab('activity',this)">Activity</button>
+          <button class="insight-tab" onclick="switchTab('sleep',this)">Sleep</button>
+          <button class="insight-tab" onclick="switchTab('heart',this)">Heart</button>
+          <button class="insight-tab" onclick="switchTab('biomarkers',this)">Biomarkers</button>
+        </div>
+
+        <!-- TAB: Overview -->
+        <div class="insight-panel active" id="tab-overview">
+          <div class="summary-row">
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="ovSteps">6,842</div>
+              <div class="mc-label">Steps today <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-trend up">12% vs last week</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="ovSleep">7.2</div>
+              <div class="mc-label">Sleep (hours) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-trend flat">Stable</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="ovHR">72</div>
+              <div class="mc-label">Heart rate (avg) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-trend flat">Normal range</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="ovHRV">42</div>
+              <div class="mc-label">HRV (ms) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-trend up">5% vs last week</div>
+            </div>
+          </div>
+
+          <!-- Latest blood results (lab) -->
+          <div class="section-label" style="margin-top:4px">Latest blood results <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-navy);color:white;font-weight:600;margin-left:4px">lab</span></div>
+          <div class="evida-card-bordered" style="padding:12px;margin-bottom:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">HbA1c</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">5.2%</div>
+                <div style="font-size:10px;color:var(--color-success)">3.9–5.6% · Normal</div>
+              </div>
+              <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">Total cholesterol</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">4.8 mmol/L</div>
+                <div style="font-size:10px;color:var(--evida-amber)">3.0–5.0 · Borderline</div>
+              </div>
+              <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">Vitamin D</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">68 nmol/L</div>
+                <div style="font-size:10px;color:var(--color-success)">50–150 · Normal</div>
+              </div>
+              <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">CRP</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">1.2 mg/L</div>
+                <div style="font-size:10px;color:var(--color-success)">0–5.0 · Normal</div>
+              </div>
+            </div>
+            <div style="font-size:10px;color:var(--evida-muted);margin-top:8px;line-height:1.4">Results from Randox · 3 Jun 2026 · Full report in Documents</div>
+          </div>
+
+          <!-- Reference context for biomarkers -->
+          <div style="margin-bottom:16px">
+            <div class="evida-card" style="background:var(--evida-bg);padding:10px 14px;border-radius:var(--radius-sm)">
+              <div style="font-size:11px;color:var(--evida-muted);line-height:1.5">
+                <strong>Reference ranges:</strong> HbA1c 3.9–5.6% · Total cholesterol 3.0–5.0 mmol/L · HDL 1.0–1.6 mmol/L · LDL 0.0–3.0 mmol/L · Triglycerides 0.0–1.7 mmol/L · Vitamin D 50–150 nmol/L · CRP 0.0–5.0 mg/L. Lab-sourced values from Randox; wearable values from connected devices.
+              </div>
+            </div>
+          </div>
+
+          <!-- Data freshness -->
+          <div class="data-freshness">
+            <span class="df-item"><span class="df-dot live"></span>Wearable — live</span>
+            <span class="df-item"><span class="df-dot lab"></span>Lab — 3 Jun 2026</span>
+            <span class="df-item"><span class="df-dot delayed"></span>Questionnaire — pending</span>
+          </div>
+
+          <!-- Correlation insight -->
+          <div class="correlation-card" id="correlationCard">
+            <div class="cc-head">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Correlation insight
+            </div>
+            <div class="cc-body" id="correlationBody">
+              On days you sleep <span class="cc-stat">7+ hours</span>, your resting heart rate averages <span class="cc-stat">4 bpm lower</span> and your HRV is <span class="cc-stat">12% higher</span> than days with &lt;6h sleep.
+            </div>
+          </div>
+
+          <!-- Readiness score -->
+          <div class="evida-card-bordered readiness-slab" id="readinessSlab">
+            <div class="rs-ring">
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="30" fill="none" stroke="var(--evida-bg)" stroke-width="5"/>
+                <circle cx="36" cy="36" r="30" fill="none" stroke="var(--evida-teal)" stroke-width="5" stroke-dasharray="188.5" stroke-dashoffset="56.5" stroke-linecap="round" id="readinessArc"/>
+              </svg>
+              <span class="rs-value" id="readinessValue">78</span>
+            </div>
+            <div class="rs-info">
+              <span class="rs-label">Today's readiness</span>
+              <span class="rs-desc">Based on your sleep quality, HRV recovery, and activity from yesterday. A score of 78 indicates good recovery — you're ready for moderate activity today.</span>
+            </div>
+          </div>
+
+          <div class="trend-toggle" id="trendToggle">
+            <button class="active" data-days="7" onclick="switchTrendDays(7,this)">7 days</button>
+            <button data-days="30" onclick="switchTrendDays(30,this)">30 days</button>
+            <button data-days="90" onclick="switchTrendDays(90,this)">12 weeks</button>
+          </div>
+
+          <div class="section-label">Weekly activity <span class="live-dot visible" id="liveDot"></span></div>
+          <div class="evida-card-bordered chart-card">
+            <div class="chart-title"><span>Daily steps</span><span class="range" id="stepsRange">Last 7 days</span></div>
+            <div class="bar-chart" style="height:100px" id="stepsChart"></div>
+          </div>
+
+          <div class="section-label">Sleep trend</div>
+          <div class="evida-card-bordered chart-card">
+            <div class="chart-title"><span>Sleep duration</span><span class="range" id="sleepRange">Last 7 days</span></div>
+            <div class="sleep-chart" style="height:80px" id="sleepChart"></div>
+          </div>
+
+          <!-- Goal progress -->
+          <div class="section-label">Evida goal progress</div>
+          <div class="evida-card-bordered" style="padding:14px;margin-bottom:12px">
+            <div class="goal-track" id="goalTrack"></div>
+          </div>
+        </div>
+
+        <!-- TAB: Activity -->
+        <div class="insight-panel" id="tab-activity">
+          <div class="summary-row">
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="acSteps">6,842</div>
+              <div class="mc-label">Steps today</div>
+              <div class="mc-trend up">Target: 7,000</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="acWeekly">47.9k</div>
+              <div class="mc-label">Weekly total</div>
+              <div class="mc-trend up">8% vs last week</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="acGoalDays">3</div>
+              <div class="mc-label">Goal days this week</div>
+              <div class="mc-trend flat">7,000+ steps</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="acActive">28</div>
+              <div class="mc-label">Active minutes</div>
+              <div class="mc-trend up">+5 min</div>
+            </div>
+          </div>
+
+          <div class="section-label">Daily steps <span class="trend-badge up">12% vs last week</span></div>
+          <div class="evida-card-bordered chart-card">
+            <div class="bar-chart" style="height:120px" id="activityChart"></div>
+          </div>
+
+          <!-- Heart rate zone minutes -->
+          <div class="section-label">Heart rate zone minutes</div>
+          <div class="zone-dist">
+            <div class="zd-item z1">
+              <div class="zd-value">34</div>
+              <div class="zd-label">Zone 1</div>
+              <div class="zd-range">Warm-up</div>
+            </div>
+            <div class="zd-item z2">
+              <div class="zd-value">22</div>
+              <div class="zd-label">Zone 2</div>
+              <div class="zd-range">Endurance</div>
+            </div>
+            <div class="zd-item z3">
+              <div class="zd-value">12</div>
+              <div class="zd-label">Zone 3</div>
+              <div class="zd-range">Tempo</div>
+            </div>
+            <div class="zd-item z4">
+              <div class="zd-value">4</div>
+              <div class="zd-label">Zone 4</div>
+              <div class="zd-range">Threshold</div>
+            </div>
+          </div>
+
+          <!-- Activity breakdown -->
+          <div class="section-label">This week's breakdown</div>
+          <div class="evida-card-bordered" style="padding:14px;margin-bottom:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="padding:8px 0;border-bottom:1px solid var(--evida-border)">
+                <div style="font-size:12px;font-weight:600">Walking</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">4.2 km</div>
+                <div style="font-size:10px;color:var(--evida-muted)">48 min · 5,400 steps</div>
+              </div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--evida-border)">
+                <div style="font-size:12px;font-weight:600">Cycling</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">8.6 km</div>
+                <div style="font-size:10px;color:var(--evida-muted)">22 min · Commute</div>
+              </div>
+              <div style="padding:8px 0;">
+                <div style="font-size:12px;font-weight:600">Strength</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">—</div>
+                <div style="font-size:10px;color:var(--evida-muted)">No sessions logged</div>
+              </div>
+              <div style="padding:8px 0;">
+                <div style="font-size:12px;font-weight:600">Other activity</div>
+                <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">—</div>
+                <div style="font-size:10px;color:var(--evida-muted)">Data not available</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- vs Evida members -->
+          <div class="evida-card" style="background:var(--evida-bg);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px">
+            <div style="font-size:11px;color:var(--evida-muted);line-height:1.5">
+              <strong>vs. Evida members your age:</strong> Your step count is in the <strong>top 35%</strong>. The average member walks 6,200 steps/day. You're doing well — try adding 2 strength sessions per week for the Evida-recommended 150+ minutes of moderate activity.
+            </div>
+          </div>
+
+          <div class="evida-card-bordered" style="padding:14px;margin-top:0">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px">Activity insights</div>
+            <div style="font-size:12px;color:var(--evida-fg-secondary);line-height:1.6">
+              Your step count has increased 12% week-over-week. Zone 2 minutes are building your aerobic base. To improve cardiovascular fitness, try extending one walk per week to 45 minutes at a conversational pace.
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Sleep -->
+        <div class="insight-panel" id="tab-sleep">
+          <div class="summary-row">
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="slDuration">7.2</div>
+              <div class="mc-label">Duration (hours)</div>
+              <div class="mc-trend flat">Stable</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="slEfficiency">86</div>
+              <div class="mc-label">Efficiency (%)</div>
+              <div class="mc-trend up">2% vs last week</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="slBedtime">23:15</div>
+              <div class="mc-label">Bedtime (avg)</div>
+              <div class="mc-trend flat">Consistent</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="slWakeups">1</div>
+              <div class="mc-label">Wake-ups (avg)</div>
+              <div class="mc-trend flat">Normal</div>
+            </div>
+          </div>
+
+          <!-- Sleep quality score + regularity -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+            <div class="evida-card-bordered" style="padding:12px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--evida-teal-dark)" id="slQualityScore">74</div>
+              <div style="font-size:11px;color:var(--evida-muted);margin-top:2px">Sleep quality score</div>
+              <div style="font-size:10px;color:var(--color-success);margin-top:4px">Good · ↑ 3 pts</div>
+            </div>
+            <div class="evida-card-bordered" style="padding:12px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--evida-teal-dark)" id="slRegularity">82</div>
+              <div style="font-size:11px;color:var(--evida-muted);margin-top:2px">Sleep regularity index</div>
+              <div style="font-size:10px;color:var(--evida-teal-dark);margin-top:4px">Consistent bedtime ± 22 min</div>
+            </div>
+          </div>
+
+          <!-- Sleep + recovery correlation -->
+          <div class="correlation-card" style="background:#EEF7F0">
+            <div class="cc-head">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Sleep &amp; recovery
+            </div>
+            <div class="cc-body">
+              Your HRV this morning is <span class="cc-stat">8% higher</span> than your 30-day average. This correlates with <span class="cc-stat">7h 12min</span> of sleep and <span class="cc-stat">1h 48min</span> of deep sleep — within the optimal window for recovery.
+            </div>
+          </div>
+
+          <div class="section-label">Sleep stages (last night)</div>
+          <div class="sleep-stages">
+            <div class="sleep-stage deep">
+              <div class="ss-value">1h 48m</div>
+              <div class="ss-label">Deep</div>
+            </div>
+            <div class="sleep-stage light">
+              <div class="ss-value">3h 52m</div>
+              <div class="ss-label">Light</div>
+            </div>
+            <div class="sleep-stage rem">
+              <div class="ss-value">1h 38m</div>
+              <div class="ss-label">REM</div>
+            </div>
+          </div>
+
+          <div class="section-label">Sleep duration trend</div>
+          <div class="evida-card-bordered chart-card">
+            <div class="chart-title"><span>Hours per night</span><span class="range">Last 7 days</span></div>
+            <div class="sleep-chart" style="height:90px" id="sleepTrendChart"></div>
+          </div>
+
+          <div class="evida-card" style="background:var(--evida-bg);padding:10px 14px;border-radius:var(--radius-sm);margin-top:12px">
+            <div style="font-size:11px;color:var(--evida-muted);line-height:1.5">
+              <strong>Evida recommendation:</strong> Aim for 7–9 hours with a consistent bedtime within ±30 minutes. Your current regularity is good. Maintaining a wind-down routine before 22:30 may help increase deep sleep proportion.
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Heart -->
+        <div class="insight-panel" id="tab-heart">
+          <div class="hr-breakdown">
+            <div class="evida-card hr-item"><div class="hr-value" id="hrResting">68</div><div class="hr-label">Resting HR</div></div>
+            <div class="evida-card hr-item"><div class="hr-value" id="hrAvg">72</div><div class="hr-label">Average HR</div></div>
+            <div class="evida-card hr-item"><div class="hr-value" id="hrHRV">42</div><div class="hr-label">HRV (ms)</div></div>
+          </div>
+
+          <div class="summary-row">
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="hrMin">54</div>
+              <div class="mc-label">Min HR (today)</div>
+              <div class="mc-trend flat">During sleep</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="hrMax">142</div>
+              <div class="mc-label">Max HR (today)</div>
+              <div class="mc-trend up">During walk</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="hrRecovery">22</div>
+              <div class="mc-label">1-min recovery</div>
+              <div class="mc-trend flat">Normal</div>
+            </div>
+            <div class="evida-card-bordered metric-card">
+              <div class="mc-value" id="hrZones">2.1h</div>
+              <div class="mc-label">Zone 2+ today</div>
+              <div class="mc-trend up">+18 min vs avg</div>
+            </div>
+          </div>
+
+          <!-- HRV deep dive -->
+          <div class="section-label">HRV trend <span class="recovery-badge good" id="hrvBadge">Good recovery</span></div>
+          <div class="evida-card-bordered" style="padding:14px;margin-bottom:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div style="text-align:center;padding:10px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">7-day avg</div>
+                <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums" id="hrv7d">44</div>
+                <div style="font-size:10px;color:var(--color-success)">ms ↑ 5%</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">30-day avg</div>
+                <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums" id="hrv30d">39</div>
+                <div style="font-size:10px;color:var(--evida-muted)">ms</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">Baseline</div>
+                <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums" id="hrvBaseline">38</div>
+                <div style="font-size:10px;color:var(--evida-muted)">ms</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--evida-bg);border-radius:var(--radius-sm)">
+                <div style="font-size:10px;color:var(--evida-muted)">Today</div>
+                <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--color-success)" id="hrvToday">46</div>
+                <div style="font-size:10px;color:var(--color-success)">ms ↑ 21%</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--evida-fg-secondary);line-height:1.5">
+              Your HRV is trending <strong>above baseline</strong>, indicating good autonomic nervous system recovery. This aligns with your consistent sleep schedule and reduced training load yesterday. HRV is highly individual — focus on your personal trend, not population norms.
+            </div>
+          </div>
+
+          <!-- Recovery analysis -->
+          <div class="section-label">Recovery analysis</div>
+          <div class="evida-card-bordered" style="padding:14px;margin-bottom:12px">
+            <div class="goal-track" id="recoveryGoalTrack"></div>
+          </div>
+
+          <div class="section-label">Heart rate trend <span class="trend-badge flat">Stable</span></div>
+          <div class="evida-card-bordered chart-card">
+            <div class="chart-title"><span>Resting HR by day</span><span class="range">Last 7 days</span></div>
+            <div class="bar-chart" style="height:100px" id="hrChart"></div>
+          </div>
+
+          <div class="evida-card-bordered" style="padding:14px;margin-top:12px">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px">Heart health insights</div>
+            <div style="font-size:12px;color:var(--evida-fg-secondary);line-height:1.6">
+              Your resting heart rate is in a healthy range (60–70 bpm). HRV is trending upward, which may indicate improving cardiovascular fitness. These trends are for your awareness only and are not a clinical assessment. Discuss any concerns with your Evida GP.
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Biomarkers -->
+        <div class="insight-panel" id="tab-biomarkers">
+          <div class="section-label">Latest results <span class="live-dot visible" id="bioLiveDot"></span></div>
+          <div class="evida-card-bordered" style="background:var(--evida-bg);padding:8px 12px;margin-bottom:14px;border-radius:var(--radius-sm)">
+            <div style="font-size:11px;color:var(--evida-muted);display:flex;justify-content:space-between;align-items:center">
+              <span>Source: Randox Laboratories · Last tested 3 Jun 2026</span>
+              <span style="font-size:10px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600">Tracked</span>
+            </div>
+          </div>
+
+          <div class="biomarker-grid" id="biomarkerGrid"></div>
+
+          <div class="section-label" style="margin-top:4px">Evida-recommended targets</div>
+          <div class="evida-card-bordered" style="padding:14px;margin-bottom:14px">
+            <div class="goal-track" id="bioGoalTrack"></div>
+          </div>
+
+          <div class="evida-card" style="background:var(--evida-bg);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:16px">
+            <div style="font-size:11px;color:var(--evida-muted);line-height:1.5">
+              <strong>Note:</strong> Biomarker reference ranges are population standards. Your targets are personalised by your Evida GP based on your age, sex, and medical history. Discuss any out-of-range results with your clinician.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wearable device management hub (merged into Data & Insights) -->
+      <div class="evida-card-bordered" style="padding:16px;margin-top:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:14px;font-weight:700">Wearable devices</span>
+          <button class="btn-ghost btn-sm" onclick="window.location.href='wearables.html'" style="font-size:11px">Manage devices</button>
+        </div>
+        <div id="wearableHubList">
+          <div class="text-body-small" style="color:var(--evida-muted);padding:4px 0">No devices connected</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="window.location.href='wearables.html'" style="margin-top:8px;width:100%">+ Connect a device</button>
+      </div>
+
+      <!-- Monthly reports -->
+      <div class="section-label" style="margin-top:20px">Reports</div>
+      <div class="report-card evida-card-bordered" id="reportCard">
+        <div class="rc-head">
+          <span class="rc-title">Monthly health summary</span>
+          <span class="rc-date">May 2026</span>
+        </div>
+        <div class="rc-stat-row">
+          <div class="rc-stat">
+            <div class="rcs-value" style="color:var(--evida-teal-dark)">82</div>
+            <div class="rcs-label">Avg readiness</div>
+          </div>
+          <div class="rc-stat">
+            <div class="rcs-value">7.1h</div>
+            <div class="rcs-label">Avg sleep</div>
+          </div>
+          <div class="rc-stat">
+            <div class="rcs-value">6,480</div>
+            <div class="rcs-label">Avg steps</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--evida-fg-secondary);line-height:1.5;margin-bottom:10px">
+          <strong>Key change:</strong> Your average sleep duration increased 18 minutes vs April. Resting HR decreased 2 bpm. No biomarker changes flagged. <a href="#" onclick="showToast('Full report would download in production');return false" style="color:var(--color-primary)">Read full report</a>
+        </div>
+        <div class="export-bar">
+          <button class="btn btn-secondary btn-sm" onclick="showToast('PDF download would start in production')">Download PDF</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Share link would be generated in production')">Share with GP</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportInsightsCSV()">Export data</button>
+        </div>
+      </div>
+
+      <!-- Medical history questionnaire -->
+      <div class="evida-card-bordered" style="padding:16px;margin-top:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:14px;font-weight:700">Medical history questionnaire</span>
+          <span style="font-size:11px;padding:2px 10px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600" id="mqStatus">Pre-consult</span>
+        </div>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:12px;line-height:1.5">Complete your medical history before your GP consultation. This helps your doctor prepare and ensures nothing is missed during your 45-minute session.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px" id="mqChecklist">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--evida-border)">
+            <span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--color-success);background:var(--color-success);color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0" class="mq-check">✓</span>
+            <span style="font-size:12px;flex:1">Personal details</span>
+            <span style="font-size:10px;color:var(--evida-muted)" class="mq-status">Completed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--evida-border)">
+            <span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--evida-border);flex-shrink:0" class="mq-check"></span>
+            <span style="font-size:12px;flex:1">Current medications &amp; supplements</span>
+            <span style="font-size:10px;color:var(--evida-muted)" class="mq-status">Pending</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--evida-border)">
+            <span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--evida-border);flex-shrink:0" class="mq-check"></span>
+            <span style="font-size:12px;flex:1">Family medical history</span>
+            <span style="font-size:10px;color:var(--evida-muted)" class="mq-status">Pending</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+            <span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--evida-border);flex-shrink:0" class="mq-check"></span>
+            <span style="font-size:12px;flex:1">Lifestyle &amp; wellness goals</span>
+            <span style="font-size:10px;color:var(--evida-muted)" class="mq-status">Pending</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openMQForm()" style="width:100%" id="mqBtn">Complete questionnaire</button>
+      </div>
+
+      <!-- Medical history form modal -->
+      <div class="modal-overlay" id="mqModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;align-items:flex-end;justify-content:center">
+        <div class="modal-sheet" style="width:100%;max-width:480px;background:var(--evida-surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:20px 16px;max-height:85vh;overflow-y:auto">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <span style="font-size:16px;font-weight:700">Medical history</span>
+            <button class="btn-ghost" onclick="closeMQForm()" style="font-size:20px;color:var(--evida-muted);border:none;background:none;cursor:pointer">✕</button>
+          </div>
+          <div class="form-group">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Current medications</label>
+            <textarea rows="2" id="mqMeds" placeholder="e.g. Lisinopril 10mg daily, Vitamin D 1000 IU" style="width:100%;padding:10px 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font-body);resize:vertical"></textarea>
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Supplements</label>
+            <textarea rows="2" id="mqSupps" placeholder="e.g. Omega-3 1000mg, Magnesium glycinate 200mg" style="width:100%;padding:10px 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font-body);resize:vertical"></textarea>
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Family medical history</label>
+            <textarea rows="2" id="mqFamily" placeholder="e.g. Father: type 2 diabetes, Mother: hypertension" style="width:100%;padding:10px 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font-body);resize:vertical"></textarea>
+          </div>
+          <div class="form-group" style="margin-top:12px">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">Lifestyle &amp; wellness goals</label>
+            <textarea rows="2" id="mqLifestyle" placeholder="e.g. Improve sleep quality, reduce stress, 5k steps daily" style="width:100%;padding:10px 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-size:13px;font-family:var(--font-body);resize:vertical"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="submitMQForm()" style="width:100%;margin-top:16px">Save questionnaire</button>
+          <button class="btn btn-ghost" onclick="closeMQForm()" style="width:100%;margin-top:8px;text-align:center">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.insight-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelectorAll('.insight-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+function renderBars(containerId, values, maxValue, unit) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = '';
+  const max = maxValue || Math.max(...values, 1);
+  values.forEach((v, i) => {
+    const pct = Math.max((v / max) * 100, 3);
+    const g = document.createElement('div');
+    g.className = 'bar-group';
+    g.innerHTML = '<div class="bar-value">' + v + (unit || '') + '</div><div class="bar" style="height:' + pct + '%"></div><div class="bar-label">' + days[i % 7] + '</div>';
+    c.appendChild(g);
+  });
+}
+
+function renderSleepBars(containerId, values) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = '';
+  const max = Math.max(...values, 1);
+  values.forEach((v, i) => {
+    const pct = Math.max((v / max) * 100, 3);
+    const g = document.createElement('div');
+    g.className = 'sleep-bar';
+    g.style.cssText = 'height:' + pct + '%;background:var(--evida-teal);flex:1;border-radius:3px 3px 0 0;min-height:4px;position:relative';
+    g.innerHTML = '<div class="sb-label">' + v + 'h</div>';
+    c.appendChild(g);
+  });
+}
+
+const DEVICE_META = {
+  'Apple Watch': { initial: 'AW', data: ['Steps', 'Heart Rate', 'Sleep', 'ECG', 'Workouts'] },
+  'Garmin':      { initial: 'GA', data: ['Steps', 'Heart Rate', 'Sleep', 'Stress', 'Body Battery'] },
+  'Oura Ring':   { initial: 'OR', data: ['Sleep', 'HRV', 'Readiness', 'Heart Rate', 'Activity'] },
+  'Whoop':       { initial: 'WH', data: ['Strain', 'Recovery', 'Sleep', 'Heart Rate', 'HRV'] },
+  'Fitbit':      { initial: 'FB', data: ['Steps', 'Heart Rate', 'Sleep', 'Zones', 'Active Minutes'] },
+};
+
+const stepData = [4200, 5800, 7200, 6500, 8100, 7400, 6842];
+const sleepData = [6.8, 7.1, 7.5, 6.9, 7.8, 7.3, 7.2];
+const hrData = [64, 66, 65, 68, 67, 66, 68];
+const activityData = [4200, 5800, 7200, 6500, 8100, 7400, 6842];
+
+/* Extended data for enriched insights */
+const stepData30 = [4200, 4800, 5100, 4700, 5300, 5600, 5800, 5500, 6100, 5900, 6300, 6500, 6000, 6800, 7200, 6900, 7400, 7100, 6800, 7500, 7800, 8100, 7700, 7400, 7900, 7600, 7300, 6842, 7200, 8100];
+const sleepData30 = [6.5, 6.8, 7.0, 6.7, 7.1, 6.9, 7.2, 6.6, 7.3, 7.0, 6.8, 7.4, 7.1, 6.9, 7.5, 7.2, 7.0, 7.6, 7.3, 7.1, 7.7, 7.4, 7.2, 7.8, 7.5, 7.3, 7.0, 7.2, 7.5, 7.8];
+
+const BIOMARKER_HISTORY = {
+  hba1c:  { values: [5.6, 5.5, 5.4, 5.3, 5.2], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: '%', refMin: 3.9, refMax: 5.6, flag: 'normal' },
+  cholesterol: { values: [5.2, 5.1, 5.0, 4.9, 4.8], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'mmol/L', refMin: 3.0, refMax: 5.0, flag: 'borderline' },
+  hdl:    { values: [1.2, 1.2, 1.3, 1.3, 1.4], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'mmol/L', refMin: 1.0, refMax: 1.6, flag: 'normal' },
+  ldl:    { values: [3.1, 3.0, 2.9, 2.8, 2.7], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'mmol/L', refMin: 0.0, refMax: 3.0, flag: 'normal' },
+  triglycerides: { values: [1.5, 1.4, 1.3, 1.3, 1.2], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'mmol/L', refMin: 0.0, refMax: 1.7, flag: 'normal' },
+  vitD:   { values: [52, 55, 58, 63, 68], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'nmol/L', refMin: 50, refMax: 150, flag: 'normal' },
+  crp:    { values: [2.1, 1.8, 1.6, 1.4, 1.2], dates: ['Feb', 'Mar', 'Apr', 'May', 'Jun'], unit: 'mg/L', refMin: 0.0, refMax: 5.0, flag: 'normal' }
+};
+
+const GOALS = [
+  { label: 'Daily steps', current: 6842, target: 7500, unit: 'steps', pct: 91, good: true },
+  { label: 'Sleep duration', current: 7.2, target: 7.5, unit: 'h', pct: 96, good: true },
+  { label: 'Active minutes', current: 28, target: 30, unit: 'min', pct: 93, good: true },
+  { label: 'Zone 2+ minutes', current: 38, target: 45, unit: 'min', pct: 84, good: true },
+  { label: 'Water intake', current: 4, target: 8, unit: 'glasses', pct: 50, good: false }
+];
+
+const RECOVERY_METRICS = [
+  { label: 'Sleep quality', current: 74, target: 80, unit: '/100', pct: 93, good: true },
+  { label: 'HRV (7d avg)', current: 44, target: 42, unit: 'ms', pct: 100, good: true },
+  { label: 'Readiness score', current: 78, target: 80, unit: '/100', pct: 98, good: true },
+  { label: 'Resting HR trend', current: 'Stable', target: 'Stable', unit: '', pct: 100, good: true }
+];
+
+let isConnected = false;
+let currentTrendDays = 7;
+
+function getDevices() {
+  return EvidaStore.wearables.list();
+}
+
+function renderDevicePills() {
+  const container = document.getElementById('connectedDevicesMini');
+  if (!container) return;
+  container.innerHTML = '';
+  const devices = getDevices();
+  devices.forEach(d => {
+    const meta = DEVICE_META[d.name] || { initial: d.name.slice(0, 2).toUpperCase(), data: [] };
+    const pill = document.createElement('span');
+    pill.style.cssText = 'font-size:11px;padding:3px 10px;border-radius:999px;background:var(--evida-surface);color:var(--evida-teal-dark);font-weight:600;border:1px solid var(--evida-teal)';
+    pill.textContent = meta.initial + ' - ' + d.name;
+    container.appendChild(pill);
+  });
+}
+
+function renderDemoPills(deviceNames) {
+  const container = document.getElementById('connectedDevicesMini');
+  if (!container) return;
+  container.innerHTML = '';
+  deviceNames.forEach(function(name) {
+    const meta = DEVICE_META[name] || { initial: name.slice(0, 2).toUpperCase(), data: [] };
+    const pill = document.createElement('span');
+    pill.style.cssText = 'font-size:11px;padding:3px 10px;border-radius:999px;background:var(--evida-surface);color:var(--evida-teal-dark);font-weight:600;border:1px solid var(--evida-teal)';
+    pill.textContent = meta.initial + ' - ' + name;
+    container.appendChild(pill);
+  });
+}
+
+/* --- Goal track rendering --- */
+function renderGoalTrack(containerId, goals) {
+  var c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = '';
+  goals.forEach(function(g) {
+    var row = document.createElement('div');
+    row.className = 'gt-row';
+    var fillColor = g.good ? 'var(--evida-teal)' : 'var(--evida-amber)';
+    row.innerHTML =
+      '<span class="gt-label">' + g.label + '</span>' +
+      '<div class="gt-bar-wrap"><div class="gt-bar-fill" style="width:' + Math.min(g.pct, 100) + '%;background:' + fillColor + '"></div></div>' +
+      '<span class="gt-value">' + g.current + '</span>' +
+      '<span class="gt-target">' + g.target + (g.unit ? ' ' + g.unit : '') + '</span>';
+    c.appendChild(row);
+  });
+}
+
+/* --- Biomarker grid rendering --- */
+function renderBiomarkers() {
+  var grid = document.getElementById('biomarkerGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  var keys = ['hba1c', 'cholesterol', 'hdl', 'ldl', 'triglycerides', 'vitD', 'crp'];
+  var labels = {
+    hba1c: 'HbA1c', cholesterol: 'Total cholesterol', hdl: 'HDL', ldl: 'LDL',
+    triglycerides: 'Triglycerides', vitD: 'Vitamin D', crp: 'CRP'
+  };
+  keys.forEach(function(key) {
+    var bio = BIOMARKER_HISTORY[key];
+    var val = bio.values[bio.values.length - 1];
+    var prev = bio.values.length > 1 ? bio.values[bio.values.length - 2] : val;
+    var inRange = val >= bio.refMin && val <= bio.refMax;
+    var flagClass = bio.flag === 'borderline' ? 'borderline' : (inRange ? 'normal' : 'attention');
+    var flagLabel = bio.flag === 'borderline' ? 'Borderline' : (inRange ? 'Normal' : 'Attention');
+    var trendDir = val > prev ? 'improving' : (val < prev ? 'declining' : 'stable');
+    var trendIcon = trendDir === 'improving' ? '↑' : (trendDir === 'declining' ? '↓' : '→');
+    var trendClass = trendDir === 'improving' ? 'bd-trend-improving' : (trendDir === 'declining' ? 'bd-trend-declining' : 'bd-trend-stable');
+    var trendLabel = trendDir === 'improving' ? 'Improving' : (trendDir === 'declining' ? 'Declining' : 'Stable');
+
+    // Sparkline bars
+    var maxVal = Math.max.apply(null, bio.values);
+    var minVal = Math.min.apply(null, bio.values);
+    var range = maxVal - minVal || 1;
+    var bars = '';
+    bio.values.forEach(function(v) {
+      var h = Math.max(4, ((v - minVal) / range) * 24);
+      var inR = v >= bio.refMin && v <= bio.refMax;
+      var barClass = inR ? 'within-range' : (bio.flag === 'borderline' ? 'borderline-range' : 'outside-range');
+      bars += '<div class="sp-bar ' + barClass + '" style="height:' + h + 'px"></div>';
+    });
+
+    var card = document.createElement('div');
+    card.className = 'evida-card-bordered biomarker-detail';
+    card.innerHTML =
+      '<div class="bd-header"><span class="bd-name">' + labels[key] + '</span><span class="bd-badge ' + flagClass + '">' + flagLabel + '</span></div>' +
+      '<div class="bd-main"><span class="bd-value">' + val + '</span><span class="bd-unit">' + bio.unit + '</span></div>' +
+      '<div class="bd-range">Ref: <span class="ref-highlight">' + bio.refMin + '–' + bio.refMax + '</span> ' + bio.unit + '</div>' +
+      '<div class="bd-trend"><span class="' + trendClass + '">' + trendIcon + ' ' + trendLabel + '</span><span style="color:var(--evida-muted);margin-left:6px">' + bio.dates[bio.dates.length - 2] + ' → ' + bio.dates[bio.dates.length - 1] + '</span></div>' +
+      '<div class="bd-spark">' + bars + '</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* --- Trend days switching --- */
+function switchTrendDays(days, btn) {
+  currentTrendDays = days;
+  document.querySelectorAll('#trendToggle button').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  var rangeText = days === 7 ? 'Last 7 days' : (days === 30 ? 'Last 30 days' : 'Last 12 weeks');
+  var stepsEl = document.getElementById('stepsRange');
+  var sleepEl = document.getElementById('sleepRange');
+  if (stepsEl) stepsEl.textContent = rangeText;
+  if (sleepEl) sleepEl.textContent = rangeText;
+
+  if (days === 7) {
+    renderBars('stepsChart', stepData);
+    renderSleepBars('sleepChart', sleepData);
+    renderBars('activityChart', activityData, 9000);
+    renderSleepBars('sleepTrendChart', sleepData);
+  } else if (days === 30) {
+    renderBars('stepsChart', stepData30);
+    renderSleepBars('sleepChart', sleepData30);
+    renderBars('activityChart', stepData30, 9000);
+    renderSleepBars('sleepTrendChart', sleepData30);
+  } else {
+    // 90-day: aggregate to weekly averages
+    var weeklySteps = [5100, 5400, 5800, 6200, 6600, 7000, 7300, 7700, 7200, 7500, 6800, 7400, 6842];
+    var weeklySleep = [6.7, 6.9, 7.1, 7.0, 7.3, 7.2, 7.5, 7.4, 7.1, 7.6, 7.3, 7.5, 7.2];
+    var weekLabels = ['W-12','W-11','W-10','W-9','W-8','W-7','W-6','W-5','W-4','W-3','W-2','W-1','This'];
+    renderBars('stepsChart', weeklySteps);
+    renderSleepBars('sleepChart', weeklySleep);
+    renderBars('activityChart', weeklySteps, 9000);
+    renderSleepBars('sleepTrendChart', weeklySleep);
+  }
+}
+
+function simulateConnect() {
+  isConnected = true;
+  EvidaStore.wearables.set([
+    { name: 'Apple Watch', connectedAt: new Date().toISOString() }
+  ]);
+  document.getElementById('noDeviceState').style.display = 'none';
+  document.getElementById('insightsContent').style.display = 'block';
+  document.getElementById('connectedBanner').style.display = 'block';
+  document.getElementById('liveStatus').textContent = 'Demo data active — showing simulated wearable data';
+  renderDevicePills();
+  initCharts();
+  showToast('Demo data loaded');
+  if (window.__uatSetLive) window.__uatSetLive();
+}
+
+function initCharts() {
+  renderBars('stepsChart', stepData);
+  renderSleepBars('sleepChart', sleepData);
+  renderBars('activityChart', activityData, stepData[6] * 1.3);
+  renderSleepBars('sleepTrendChart', sleepData);
+  renderBars('hrChart', hrData);
+  renderGoalTrack('goalTrack', GOALS);
+  renderGoalTrack('recoveryGoalTrack', RECOVERY_METRICS);
+  renderBiomarkers();
+}
+
+// Check if wearables are connected (multi-device)
+try {
+  const devices = getDevices();
+  if (devices.length > 0) {
+    isConnected = true;
+    document.getElementById('noDeviceState').style.display = 'none';
+    document.getElementById('insightsContent').style.display = 'block';
+    document.getElementById('connectedBanner').style.display = 'block';
+    const names = devices.map(d => d.name).join(', ');
+    document.getElementById('liveStatus').textContent = 'Data syncing from ' + devices.length + ' device' + (devices.length > 1 ? 's' : '') + ': ' + names;
+    renderDevicePills();
+    initCharts();
+  }
+} catch (_) {}
+
+// Populate wearable hub list
+(function() {
+  var container = document.getElementById('wearableHubList');
+  if (!container) return;
+  try {
+    var devices = EvidaStore.wearables.list();
+    if (devices.length > 0) {
+      container.innerHTML = '';
+      devices.forEach(function(d) {
+        var meta = DEVICE_META[d.name] || { initial: (d.name || '??').slice(0,2).toUpperCase(), data: [] };
+        var div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--evida-border)';
+        div.innerHTML =
+          '<span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);flex-shrink:0"></span>' +
+          '<span style="font-size:13px;font-weight:600;flex:1">' + d.name + '</span>' +
+          '<span style="font-size:11px;color:var(--evida-muted)">Synced</span>';
+        container.appendChild(div);
+      });
+    }
+  } catch(_) {}
+})();
+
+// Live data simulation
+setInterval(() => {
+  if (!isConnected) return;
+  const stepEl = document.getElementById('ovSteps');
+  if (stepEl) {
+    const current = parseInt(stepEl.textContent.replace(',', '')) || 6842;
+    stepEl.textContent = (current + Math.floor(Math.random() * 5)).toLocaleString();
+  }
+}, 8000);
+
+// UAT state definitions
+window.__UAT_STATES = [
+  { id: 'no-device', label: 'No device',
+    setup: function() {
+      // Do NOT remove evida:wearable:devices — that's a shared key that breaks
+      // cross-screen data. Just hide the UI and set the local flag.
+      var realDevices = getDevices();
+      isConnected = false;
+      document.getElementById('noDeviceState').style.display = 'block';
+      document.getElementById('insightsContent').style.display = 'none';
+      document.getElementById('connectedBanner').style.display = 'none';
+      // Don't block user data — show a notice if real devices are hidden
+      var emptyText = document.querySelector('#noDeviceState p');
+      if (emptyText && realDevices.length > 0) {
+        emptyText.textContent = 'Viewing empty state — ' + realDevices.length + ' device(s) connected in background. Click "Live" above to return to your data.';
+      }
+    }
+  },
+  { id: 'demo-data', label: 'Demo data',
+    setup: function() {
+      isConnected = true;
+      // Do NOT touch evida:wearable:devices — that's shared storage. Render demo pills in-memory.
+      document.getElementById('noDeviceState').style.display = 'none';
+      document.getElementById('insightsContent').style.display = 'block';
+      document.getElementById('connectedBanner').style.display = 'block';
+      document.getElementById('liveStatus').textContent = 'Demo data active — showing simulated wearable data';
+      renderDemoPills(['Apple Watch', 'Oura Ring']);
+      initCharts();
+    }
+  },
+  { id: 'connected', label: 'Connected',
+    setup: function() {
+      isConnected = true;
+      // Do NOT touch evida:wearable:devices — render from memory only
+      document.getElementById('noDeviceState').style.display = 'none';
+      document.getElementById('insightsContent').style.display = 'block';
+      document.getElementById('connectedBanner').style.display = 'block';
+      document.getElementById('liveStatus').textContent = 'Data syncing from 1 device: Apple Watch';
+      renderDemoPills(['Apple Watch']);
+      initCharts();
+    }
+  },
+];
+
+// Medical history questionnaire functions
+function openMQForm() {
+  document.getElementById('mqModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeMQForm() {
+  document.getElementById('mqModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function submitMQForm() {
+  var meds = document.getElementById('mqMeds').value.trim();
+  var supps = document.getElementById('mqSupps').value.trim();
+  var family = document.getElementById('mqFamily').value.trim();
+  var lifestyle = document.getElementById('mqLifestyle').value.trim();
+  var checks = document.querySelectorAll('#mqChecklist .mq-check');
+  var statuses = document.querySelectorAll('#mqChecklist .mq-status');
+  // Mark meds section done if either meds or supps filled
+  if (meds || supps) {
+    checks[1].style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--color-success);background:var(--color-success);color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0';
+    checks[1].textContent = '✓';
+    statuses[1].textContent = 'Completed';
+    statuses[1].style.color = 'var(--color-success)';
+  }
+  if (family) {
+    checks[2].style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--color-success);background:var(--color-success);color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0';
+    checks[2].textContent = '✓';
+    statuses[2].textContent = 'Completed';
+    statuses[2].style.color = 'var(--color-success)';
+  }
+  if (lifestyle) {
+    checks[3].style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--color-success);background:var(--color-success);color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0';
+    checks[3].textContent = '✓';
+    statuses[3].textContent = 'Completed';
+    statuses[3].style.color = 'var(--color-success)';
+  }
+  var doneCount = 0;
+  checks.forEach(function(c) { if (c.textContent === '✓') doneCount++; });
+  if (doneCount >= 4) {
+    document.getElementById('mqStatus').textContent = 'Completed';
+    document.getElementById('mqStatus').style.cssText = 'font-size:11px;padding:2px 10px;border-radius:999px;background:var(--color-success);color:white;font-weight:600';
+    document.getElementById('mqBtn').textContent = '✓ Questionnaire complete';
+    document.getElementById('mqBtn').disabled = true;
+    document.getElementById('mqBtn').style.opacity = '0.6';
+  }
+  EvidaStore.questionnaire.save({ meds: meds, supps: supps, family: family, lifestyle: lifestyle });
+  closeMQForm();
+  showToast('Questionnaire saved');
+}
+
+// CSV export: serialises visible data to CSV and triggers download
+function exportInsightsCSV() {
+  var rows = [];
+  rows.push('"Evida Data Export","' + new Date().toISOString().slice(0,10) + '"');
+  rows.push('');
+  rows.push('"Daily Steps (last ' + currentTrendDays + ' days)"');
+  var stepArr = currentTrendDays === 30 ? stepData30 : stepData;
+  stepArr.forEach(function(v, i) { rows.push('Day ' + (i+1) + ',' + v); });
+  rows.push('');
+  rows.push('"Sleep (hours, last ' + currentTrendDays + ' days)"');
+  var sleepArr = currentTrendDays === 30 ? sleepData30 : sleepData;
+  sleepArr.forEach(function(v, i) { rows.push('Day ' + (i+1) + ',' + v); });
+  rows.push('');
+  rows.push('"Biomarker trends"');
+  var bmKeys = Object.keys(BIOMARKER_HISTORY);
+  if (bmKeys.length > 0) {
+    var firstBm = BIOMARKER_HISTORY[bmKeys[0]];
+    rows.push('Date,' + bmKeys.join(','));
+    firstBm.dates.forEach(function(date, i) {
+      var vals = bmKeys.map(function(k) { return BIOMARKER_HISTORY[k].values[i]; });
+      rows.push(date + ',' + vals.join(','));
+    });
+  }
+  rows.push('');
+  rows.push('"Goals"');
+  rows.push('Goal,Current,Target,Unit');
+  GOALS.forEach(function(g) { rows.push('"' + g.label + '",' + g.current + ',' + g.target + ',"' + g.unit + '"'); });
+  var csv = rows.join('\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'evida-insights-export-' + new Date().toISOString().slice(0,10) + '.csv';
+  link.click();
+  URL.revokeObjectURL(link.href);
+  showToast('CSV exported');
+}
+
+// Restore questionnaire state on load
+(function restoreMQ() {
+  try {
+    var saved = EvidaStore.questionnaire.get();
+    if (saved && saved.completedAt) {
+      var checks = document.querySelectorAll('#mqChecklist .mq-check');
+      var statuses = document.querySelectorAll('#mqChecklist .mq-status');
+      [1, 2, 3].forEach(function(i) {
+        checks[i].style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--color-success);background:var(--color-success);color:white;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0';
+        checks[i].textContent = '✓';
+        statuses[i].textContent = 'Completed';
+        statuses[i].style.color = 'var(--color-success)';
+      });
+      document.getElementById('mqStatus').textContent = 'Completed';
+      document.getElementById('mqStatus').style.cssText = 'font-size:11px;padding:2px 10px;border-radius:999px;background:var(--color-success);color:white;font-weight:600';
+      document.getElementById('mqBtn').textContent = '✓ Questionnaire complete';
+      document.getElementById('mqBtn').disabled = true;
+      document.getElementById('mqBtn').style.opacity = '0.6';
+    }
+  } catch(_) {}
+})();
+</script>
+<script src="_uat.js"></script>
+</body>
+</html>
