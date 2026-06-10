@@ -124,7 +124,7 @@
             </div>
             <div class="feature-item">
               <span class="fi-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-              <div class="text"><div class="text-body-small" style="font-weight:600">GP consultation</div><div class="sub">45-min virtual session with a GP and health coach. Personalised plan.</div></div>
+              <div class="text"><div class="text-body-small" style="font-weight:600">GP consultation</div><div class="sub">45-min virtual session with a GP. You'll leave with a personalised prevention plan.</div></div>
             </div>
           </div>
           <div class="btn-row">
@@ -175,11 +175,11 @@
         <div class="tour-card-wrap">
           <div class="icon-area"><div class="big-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div></div>
           <h2 class="text-h2">Let's get you set up</h2>
-          <div class="desc text-body-small">Here's what we recommend doing before your first consultation. None of these are urgent — you can come back anytime.</div>
+          <div class="desc text-body-small">You have 45 minutes with your GP — make every one count. Completing these now means your consultation is spent on your health, not admin.</div>
 
           <div class="progress-summary">
             <div class="big-num" id="setupCount">0</div>
-            <div class="label">of 3 tasks completed</div>
+            <div class="label">of 5 tasks completed</div>
             <div class="progress-track"><div class="fill" id="setupProgress" style="width:0%"></div></div>
           </div>
 
@@ -388,42 +388,41 @@ let setupCount = 0;
 var onbPhotoUploaded = false;
 var onbIdUploaded = false;
 
-// Restore completed setup tasks from store.js
+// Restore completed setup tasks — merges onboarding-local toggles with real
+// product state, so actions taken anywhere in the app count here too
 (function restoreSetupTasks() {
   try {
-    var tasks = EvidaStore.onboarding.setupTasks();
-    if (tasks.length > 0) {
-      tasks.forEach(function(taskId) {
-        if (taskId === 'records' || taskId === 'questionnaire') {
-          var cards = document.querySelectorAll('.setup-card');
-          for (var i = 0; i < cards.length; i++) {
-            var oc = cards[i].getAttribute('onclick') || '';
-            if (oc.indexOf("'" + taskId + "'") !== -1 || oc.indexOf('"' + taskId + '"') !== -1) {
-              var icon = cards[i].querySelector('.status-icon');
-              if (icon && !icon.classList.contains('done')) {
-                icon.className = 'status-icon done';
-                icon.textContent = 'OK';
-                cards[i].querySelector('.setup-action').textContent = 'Done';
-                // Store the original action label
-                if (!cards[i].getAttribute('data-action-label')) {
-                  cards[i].setAttribute('data-action-label', cards[i].querySelector('.setup-action').textContent);
-                }
-              }
-            }
-          }
-        }
-      });
-      if (tasks.indexOf('verify') !== -1) {
+    var tasks = EvidaStore.onboarding.setupTasks().slice();
+    function ensure(t) { if (tasks.indexOf(t) === -1) tasks.push(t); }
+    if (EvidaStore.booking.isConfirmed())          ensure('booking');
+    if (EvidaStore.wearables.list().length > 0)    ensure('wearables');
+    if (EvidaStore.questionnaire.isCompleted())    ensure('questionnaire');
+    if (EvidaStore.idVerification.isVerified())    ensure('verify');
+
+    function markCard(taskId) {
+      if (taskId === 'verify') {
         document.getElementById('verifyIcon').className = 'status-icon done';
         document.getElementById('verifyIcon').textContent = 'OK';
         document.getElementById('verifyAction').textContent = 'Done';
+        return;
       }
-      // The booking and wearables tasks are navigation-only, not toggleable
-      var storedCount = tasks.filter(function(t) { return t !== 'booking' && t !== 'wearables'; }).length;
-      setupCount = storedCount;
-      document.getElementById('setupCount').textContent = storedCount;
-      document.getElementById('setupProgress').style.width = (storedCount / 5 * 100) + '%';
+      var cards = document.querySelectorAll('.setup-card');
+      for (var i = 0; i < cards.length; i++) {
+        var oc = cards[i].getAttribute('onclick') || '';
+        if (oc.indexOf("'" + taskId + "'") !== -1) {
+          var icon = cards[i].querySelector('.status-icon');
+          if (icon && !icon.classList.contains('done')) {
+            icon.className = 'status-icon done';
+            icon.textContent = 'OK';
+            cards[i].querySelector('.setup-action').textContent = 'Done';
+          }
+        }
+      }
     }
+    tasks.forEach(markCard);
+    setupCount = tasks.length;
+    document.getElementById('setupCount').textContent = setupCount;
+    document.getElementById('setupProgress').style.width = (setupCount / 5 * 100) + '%';
   } catch(_) {}
 })();
 
@@ -485,7 +484,7 @@ function completeVerification() {
   EvidaStore.onboarding.completeTask('verify');
   setupCount = EvidaStore.onboarding.setupTasks().length;
   document.getElementById('setupCount').textContent = setupCount;
-  document.getElementById('setupProgress').style.width = (setupCount / 3 * 100) + '%';
+  document.getElementById('setupProgress').style.width = (setupCount / 5 * 100) + '%';
   document.getElementById('verifyAction').textContent = 'Done';
   closeVerification();
   showToast('Verification submitted');
@@ -493,7 +492,7 @@ function completeVerification() {
 }
 
 function checkAllDone() {
-  if (setupCount >= 3) {
+  if (setupCount >= 5) {
     EvidaStore.onboarding.markCompleted();
     setTimeout(function() {
       showToast('All tasks complete! Taking you to your dashboard');
@@ -524,7 +523,7 @@ function toggleSetup(el, type) {
   EvidaStore.onboarding.completeTask(type);
   setupCount = EvidaStore.onboarding.setupTasks().length;
   document.getElementById('setupCount').textContent = setupCount;
-  document.getElementById('setupProgress').style.width = (setupCount / 3 * 100) + '%';
+  document.getElementById('setupProgress').style.width = (setupCount / 5 * 100) + '%';
   el.querySelector('.setup-action').textContent = 'Done';
   showToast('Task completed');
   checkAllDone();

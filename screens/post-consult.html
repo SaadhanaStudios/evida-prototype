@@ -122,40 +122,40 @@
       <div class="tab-panel active" id="tab-reports">
         <div class="evida-card card" style="background:var(--evida-teal-light)">
           <div class="text-body-small" style="color:var(--evida-teal-dark);font-weight:600;margin-bottom:4px">Consult completed</div>
-          <div class="text-tiny" style="color:var(--evida-teal-dark);line-height:1.4">Your GP consultation with Dr. Sarah Chen was completed on 12 June 2026. Your reports are ready below.</div>
+          <div class="text-tiny" style="color:var(--evida-teal-dark);line-height:1.4">Your GP consultation with Dr. Sarah Chen was completed on <span id="pcConsultDate">12 June 2026</span>. Your reports are ready below.</div>
         </div>
 
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
           <div style="flex:1">
             <div style="font-size:13px;font-weight:700;color:var(--evida-teal-dark);margin-bottom:2px">Book your 3-month check-in</div>
-            <div style="font-size:12px;color:var(--evida-teal-dark);line-height:1.4">Review your progress with your GP and health coach. Recommended by September 2026.</div>
+            <div style="font-size:12px;color:var(--evida-teal-dark);line-height:1.4">Review your progress with your GP and health coach. Recommended by <span id="pcCheckinDue">September 2026</span>.</div>
           </div>
           <button class="btn btn-primary btn-sm" onclick="window.location.href='booking.html'">Book now</button>
         </div>
 
         <p class="text-body-small" style="font-weight:600;margin-bottom:12px">Available reports</p>
 
-        <div class="report-item" onclick="showToast('Opening health check report…')">
+        <div class="report-item" onclick="window.location.href='doc-physical-health.html'">
           <span class="ri-letter">P</span>
           <div class="info">
             <div class="name text-body-small" style="font-weight:600">Physical Health Check Report</div>
-            <div class="meta text-tiny">PDF · 12 pages · 12 Jun 2026</div>
+            <div class="meta text-tiny">PDF · 12 pages · <span id="pcPhysDate">12 Jun 2026</span></div>
           </div>
           <span class="action text-caption">View →</span>
         </div>
-        <div class="report-item" onclick="showToast('Opening lifestyle medicine report…')">
+        <div class="report-item" onclick="window.location.href='doc-lifestyle.html'">
           <span class="ri-letter">L</span>
           <div class="info">
             <div class="name text-body-small" style="font-weight:600">Lifestyle Medicine Report</div>
-            <div class="meta text-tiny">PDF · 8 pages · 12 Jun 2026</div>
+            <div class="meta text-tiny">PDF · 8 pages · <span id="pcLifeDate">12 Jun 2026</span></div>
           </div>
           <span class="action text-caption">View →</span>
         </div>
-        <div class="report-item" onclick="showToast('Opening blood results…')">
+        <div class="report-item" onclick="window.location.href='doc-blood-test.html'">
           <span class="ri-letter">B</span>
           <div class="info">
             <div class="name text-body-small" style="font-weight:600">Blood Test Results (Randox)</div>
-            <div class="meta text-tiny">42 biomarkers · 10 Jun 2026</div>
+            <div class="meta text-tiny">42 biomarkers · <span id="pcBloodDate">10 Jun 2026</span></div>
           </div>
           <span class="action text-caption">View →</span>
         </div>
@@ -196,7 +196,7 @@
             <div class="check done" onclick="this.classList.toggle('done')">OK</div>
             <div class="content">
               <div class="task done">Attend GP consultation</div>
-              <div class="note">Dr. Sarah Chen — 12 Jun 2026</div>
+              <div class="note">Dr. Sarah Chen — <span id="pcPlanConsultDate">12 Jun 2026</span></div>
             </div>
             <span class="tag" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);font-size:10px;padding:2px 8px;border-radius:var(--radius-full);font-weight:600">Done</span>
           </div>
@@ -285,21 +285,21 @@
           <div class="toggle" onclick="event.stopPropagation();this.classList.toggle('on')"><div class="knob"></div></div>
           <div class="info">
             <div class="title text-body-small" style="font-weight:600">LDL re-check (3 months)</div>
-            <div class="sub text-tiny">Due 12 Sep 2026 · One-off</div>
+            <div class="sub text-tiny">Due <span id="pcLdlDue">12 Sep 2026</span> · One-off</div>
           </div>
         </div>
         <div class="reminder-item" onclick="toggleReminder(this)">
           <div class="toggle" onclick="event.stopPropagation();this.classList.toggle('on')"><div class="knob"></div></div>
           <div class="info">
             <div class="title text-body-small" style="font-weight:600">Health coach check-in</div>
-            <div class="sub text-tiny">Due 12 Jul 2026 · 30-day follow-up</div>
+            <div class="sub text-tiny">Due <span id="pcCoachDue">12 Jul 2026</span> · 30-day follow-up</div>
           </div>
         </div>
         <div class="reminder-item" onclick="toggleReminder(this)">
           <div class="toggle" onclick="event.stopPropagation();this.classList.toggle('on')"><div class="knob"></div></div>
           <div class="info">
             <div class="title text-body-small" style="font-weight:600">6-month follow-up GP consult</div>
-            <div class="sub text-tiny">Booked for 12 Dec 2026</div>
+            <div class="sub text-tiny">Booked for <span id="pcSixMoDue">12 Dec 2026</span></div>
           </div>
         </div>
 
@@ -359,6 +359,32 @@ function toggleReminder(el) {
     document.getElementById('emptyState').style.display = 'block';
     document.getElementById('consultContent').style.display = 'none';
   }
+})();
+
+// Derive every date on this page from the actual booking, so the timeline
+// always reads correctly relative to today
+(function syncDates() {
+  try {
+    var details = EvidaStore.booking.details();
+    if (!details || !details.gpDate) return;
+    function parse(s) { var b = s.split('-'); return new Date(+b[0], +b[1] - 1, +b[2]); }
+    function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+    function addMonths(d, n) { var x = new Date(d); x.setMonth(x.getMonth() + n); return x; }
+    function long(d)  { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); }
+    function short(d) { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function set(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
+
+    var gp = parse(details.gpDate);
+    set('pcConsultDate', long(gp));
+    set('pcPhysDate',  short(gp));
+    set('pcLifeDate',  short(gp));
+    set('pcPlanConsultDate', short(gp));
+    if (details.bloodDate) set('pcBloodDate', short(parse(details.bloodDate)));
+    set('pcCheckinDue', addMonths(gp, 3).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }));
+    set('pcLdlDue',   short(addMonths(gp, 3)));
+    set('pcCoachDue', short(addDays(gp, 30)));
+    set('pcSixMoDue', short(addMonths(gp, 6)));
+  } catch (_) {}
 })();
 
 </script>

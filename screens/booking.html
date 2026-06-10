@@ -163,7 +163,8 @@
               <div class="title">Evida Membership</div>
               <div class="desc">Full diagnostic blood panel (42 biomarkers), 45-min GP consultation, health coach session, personalised prevention plan, and 12 months of data insights.</div>
               <div class="meta">
-                <span class="pill pill-price" style="background:var(--evida-navy);color:white">£320 / year</span>
+                <span class="pill pill-price" style="background:var(--evida-navy);color:white"><s style="opacity:0.6;font-weight:400">£320</s> £160 / year</span>
+                <span class="pill pill-free">Founding member — 50% off</span>
               </div>
             </div>
           </div>
@@ -267,12 +268,13 @@
       <!-- STEP 5: Review + cart -->
       <div class="step" id="step5" data-step="5">
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review your booking</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan at £320</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan, founding member price</p>
         <div class="hold-banner visible" id="holdBanner">
           <span>Slots held for <span class="timer" id="holdTimer">14:58</span></span>
         </div>
         <div class="evida-card cart-card">
           <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px"><span class="label" style="font-weight:700">Evida Membership (12 months)</span><span class="value" style="font-size:18px;font-weight:700">£320</span></div>
+          <div class="cart-item"><span class="label" style="color:var(--evida-teal-dark);font-weight:600">Founding member discount (50%)</span><span class="value" style="color:var(--evida-teal-dark);font-weight:600">−£160</span></div>
           <div class="cart-item"><span class="label">Blood test — Randox clinic</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
           <div class="cart-item"><span class="label">GP consultation (45 min virtual)</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
           <div class="cart-item"><span class="label">Blood test slot</span><span class="value" style="font-size:13px" id="cartBloodSlot">7 Jun 2026, 10:30</span></div>
@@ -282,10 +284,10 @@
           </div>
           <div class="cart-total" style="border-top:2px solid var(--evida-fg)">
             <span>Total</span>
-            <span id="cartTotalValue">£320</span>
+            <span id="cartTotalValue">£160</span>
           </div>
         </div>
-        <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged £320.</p>
+        <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged the total shown above.</p>
         <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
         <div style="text-align:center;margin-top:8px">
           <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">Take me to the dashboard</button>
@@ -336,7 +338,7 @@
         </div>
 
         <button class="btn btn-primary btn-form" id="payBtn" onclick="handlePayment()">
-          <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
+          <span class="btn-text" id="payBtnText">Pay £160 — Activate membership</span>
           <span class="btn-spinner"></span>
         </button>
         <button class="btn btn-ghost" onclick="goStep(5)" style="width:auto;margin-top:8px">← Back to review</button>
@@ -361,7 +363,7 @@
             <div class="row"><span class="l">GP consultation</span><span class="r" id="confGpDateTime">12 Jun 2026, 14:00</span></div>
             <div class="row"><span class="l">Duration</span><span class="r">45 min (virtual)</span></div>
             <div class="divider"></div>
-            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
+            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£160</span></div>
             <div class="row" style="margin-top:4px"><span class="l" style="color:var(--evida-muted)">Reference</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;color:var(--evida-muted)">EV-XXXXXX</span></div>
           </div>
 
@@ -447,6 +449,8 @@ const state = {
   holdInterval: null, holdSeconds: 900,
 };
 
+// £320 list price with the 50% founding-member discount applied throughout
+const MEMBERSHIP_PRICE = 160;
 const addonPrices = { none: 0, nurse: 70, hormone: 85, both: 140 };
 const addonLabels = { none: null, nurse: 'Home nurse blood draw', hormone: 'Hormone panel upgrade', both: 'Nurse visit + Hormone panel' };
 
@@ -687,7 +691,7 @@ function goStep(n) {
     document.getElementById('gpInfoMinDate').textContent = longDate(minGp);
   }
   if (n === 6) {
-    var total = 320 + addonPrices[state.addon];
+    var total = MEMBERSHIP_PRICE + addonPrices[state.addon];
     document.getElementById('payBtnText').textContent = 'Pay £' + total + ' — Activate membership';
   }
   if (n === 5) {
@@ -704,17 +708,17 @@ function goStep(n) {
       document.getElementById('cartAddons').style.display = 'block';
       document.getElementById('cartAddonLabel').textContent = addonLabels[state.addon];
       document.getElementById('cartAddonPrice').textContent = '£' + addonPrices[state.addon];
-      document.getElementById('cartTotalValue').textContent = '£' + (320 + addonPrices[state.addon]);
+      document.getElementById('cartTotalValue').textContent = '£' + (MEMBERSHIP_PRICE + addonPrices[state.addon]);
     } else {
       document.getElementById('cartAddons').style.display = 'none';
-      document.getElementById('cartTotalValue').textContent = '£320';
+      document.getElementById('cartTotalValue').textContent = '£' + MEMBERSHIP_PRICE;
     }
   }
   if (n === 7) {
     document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
     document.getElementById('confLocation').textContent = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
     document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
-    var totalPaid = 320 + addonPrices[state.addon];
+    var totalPaid = MEMBERSHIP_PRICE + addonPrices[state.addon];
     document.getElementById('confTotalPaid').textContent = '£' + totalPaid;
     var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('confReceiptRef').textContent = receiptRef;

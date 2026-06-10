@@ -159,9 +159,9 @@
           <img class="lh-logo" src="../build/logo.svg" alt="Evida">
           <div style="font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">More than a health check</div>
           <h1>Preventive health,<br>powered by data</h1>
-          <!-- COPY TBC: subtitle needs rework -->
           <div class="lh-sub">Clinician-led membership. Comprehensive blood panel, GP consultation, personalised prevention plan, and 12 months of insights.</div>
-          <div class="lh-price">£320<span class="lh-period">/year</span></div>
+          <div class="lh-price"><span style="font-size:20px;font-weight:500;color:var(--evida-muted);text-decoration:line-through;margin-right:8px">£320</span>£160<span class="lh-period">/year</span></div>
+          <div style="display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark);margin-bottom:12px">Founding member price — first 500 members</div>
           <div class="lh-inclusions">
             <div>✓ 42-marker blood panel at a Randox clinic</div>
             <div>✓ 45-min virtual GP consultation</div>
@@ -190,7 +190,7 @@
         </div>
 
         <div class="cta-wrap">
-          <button class="btn btn-primary btn-join" onclick="startMembership()">Join Evida — £320/year</button>
+          <button class="btn btn-primary btn-join" onclick="startMembership()">Join Evida — £160/year</button>
           <button class="btn btn-secondary btn-join" style="margin-top:10px;height:44px;font-size:14px" onclick="window.location.href='booking.html?entry=bookfirst'">Book first, pay after →</button>
         </div>
         <div class="form-footer" style="margin-top:16px">
@@ -309,7 +309,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="suPhone">Phone number <span class="required">*</span></label>
+            <label for="suPhone">Phone number <span style="font-weight:400;color:var(--evida-muted)">(optional — for appointment reminders)</span></label>
             <div class="input-wrap">
               <input type="tel" id="suPhone" placeholder="07700 900000" autocomplete="tel" inputmode="numeric">
             </div>
@@ -369,7 +369,7 @@
           </div>
           <h2 class="text-h2">Welcome to Evida</h2>
           <p class="text-body-small">Your membership is active. We'll guide you through your first steps.</p>
-          <button class="btn btn-primary" onclick="window.location.href='onboarding.html'" style="width:100%;max-width:280px">Set up your account</button>
+          <button class="btn btn-primary" onclick="window.location.href='onboarding.html'" style="width:100%;max-width:280px">Take the quick tour</button>
           <button class="btn btn-ghost" onclick="window.location.href='dashboard.html'" style="margin-top:8px;width:auto">Go to dashboard</button>
         </div>
       </div>
@@ -502,7 +502,6 @@
 // State
 let currentScreen = 'screen-landing';
 let signupStep = 1;
-let discountApplied = false;
 // Membership-first entry
 function startMembership() {
   showScreen('screen-signup');
@@ -672,81 +671,6 @@ function prevSignupStep() {
   if (signupStep > 1) { nextSignupStep(signupStep - 1); }
 }
 
-// Discount code
-function applyDiscount() {
-  var code = document.getElementById('discountCode').value.trim().toUpperCase();
-  var feedback = document.getElementById('discountFeedback');
-  var payBtn = document.getElementById('paymentBtn').querySelector('.btn-text');
-  if (code === 'EARLY100') {
-    discountApplied = true;
-    feedback.style.display = 'block';
-    feedback.textContent = '✓ £100 discount applied — pay £220';
-    feedback.style.color = 'var(--color-success)';
-    if (payBtn) payBtn.textContent = 'Pay £220 — Activate membership';
-  } else if (code === 'NHS50') {
-    discountApplied = true;
-    feedback.style.display = 'block';
-    feedback.textContent = '✓ NHS discount applied — pay £160';
-    feedback.style.color = 'var(--color-success)';
-    if (payBtn) payBtn.textContent = 'Pay £160 — Activate membership';
-  } else if (code) {
-    discountApplied = false;
-    feedback.style.display = 'block';
-    feedback.textContent = '✗ Invalid code. Please check and try again.';
-    feedback.style.color = 'var(--evida-coral)';
-    if (payBtn) payBtn.textContent = 'Pay £320 — Activate membership';
-  } else {
-    discountApplied = false;
-    feedback.style.display = 'none';
-    if (payBtn) payBtn.textContent = 'Pay £320 — Activate membership';
-  }
-}
-
-// Payment
-function handlePayment() {
-  const btn = document.getElementById('paymentBtn');
-  btn.classList.add('btn-loading');
-  btn.disabled = true;
-  document.getElementById('paymentError').classList.remove('visible');
-
-  // Save account in backend simulation
-  EvidaStore.account.save({
-    name: document.getElementById('suName').value,
-    email: document.getElementById('suEmail').value,
-    discountUsed: discountApplied ? document.getElementById('discountCode').value.trim().toUpperCase() : null,
-    savedAt: new Date().toISOString()
-  });
-
-  setTimeout(function() {
-    btn.classList.remove('btn-loading');
-    btn.disabled = false;
-    if (Math.random() > 0.2) {
-      showScreen('screen-success');
-    } else {
-      document.getElementById('paymentError').classList.add('visible');
-    }
-  }, 1500);
-}
-
-// Do this later — create account without payment
-function handleDoLater() {
-  const btn = document.getElementById('doLaterBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  EvidaStore.account.save({
-    name: document.getElementById('suName').value,
-    email: document.getElementById('suEmail').value,
-    discountUsed: discountApplied ? document.getElementById('discountCode').value.trim().toUpperCase() : null,
-    savedAt: new Date().toISOString(),
-    paymentPending: true
-  });
-
-  setTimeout(function() {
-    window.location.href = 'onboarding.html?pending=1';
-  }, 600);
-}
-
 // Email verification
 function handleVerify() {
   var code = document.getElementById('verifyCode').value.trim().toUpperCase();
@@ -839,6 +763,8 @@ document.getElementById('legalModal').addEventListener('click', function(e) {
   try {
     document.getElementById('suName').value    = 'James Chen';
     document.getElementById('suEmail').value   = 'james.chen@gmail.com';
+    document.getElementById('suPass').value    = 'MyHealth2026!';
+    checkPasswordStrength('MyHealth2026!');
     document.getElementById('suPhone').value   = '07700 900123';
     document.getElementById('suDob').value     = '14/03/1988';
     document.getElementById('suAddress').value = '12 Harley Street, London W1G 9PQ';

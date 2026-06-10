@@ -115,9 +115,9 @@
 
       <!-- Profile header -->
       <div class="profile-header">
-        <div class="big-avatar">JC</div>
-        <div class="name">James Chen</div>
-        <div class="email">james.chen@example.com</div>
+        <div class="big-avatar" id="profileAvatar">JC</div>
+        <div class="name" id="profileName">James Chen</div>
+        <div class="email" id="profileEmail">james.chen@gmail.com</div>
       </div>
 
       <!-- Personal info -->
@@ -129,12 +129,12 @@
         </div>
         <div class="form-group">
           <label>Email address</label>
-          <input class="input" value="james.chen@example.com" id="emailInput" type="email">
+          <input class="input" value="james.chen@gmail.com" id="emailInput" type="email">
         </div>
         <div class="row">
           <div class="form-group">
             <label>Phone</label>
-            <input class="input" value="+44 7900 123456" id="phoneInput" type="tel">
+            <input class="input" value="07700 900123" id="phoneInput" type="tel">
           </div>
           <div class="form-group">
             <label>Date of birth</label>
@@ -143,7 +143,7 @@
         </div>
         <div class="form-group">
           <label>Address</label>
-          <input class="input" value="42 Maltby Street, London SE1 3PA" id="addressInput">
+          <input class="input" value="12 Harley Street, London W1G 9PQ" id="addressInput">
         </div>
         <button class="btn-primary" onclick="saveProfile()" style="margin-top:8px;width:100%">Save changes</button>
       </div>
@@ -334,18 +334,31 @@ function saveProfile() {
     address: document.getElementById('addressInput').value.trim()
   };
   EvidaStore.profile.save(data);
+  loadProfile(); // refresh header card with the new name/email
   showToast('Profile updated');
 }
 
 function loadProfile() {
-  var data = EvidaStore.profile.get();
-  if (data) {
-    if (data.name) document.getElementById('nameInput').value = data.name;
-    if (data.email) document.getElementById('emailInput').value = data.email;
-    if (data.phone) document.getElementById('phoneInput').value = data.phone;
-    if (data.dob) document.getElementById('dobInput').value = data.dob;
-    if (data.address) document.getElementById('addressInput').value = data.address;
+  // Saved profile edits win; otherwise fall back to the account created at signup
+  var acct = null;
+  try { acct = EvidaStore.account.saved(); } catch(_) {}
+  var data = EvidaStore.profile.get() || {};
+  var name  = data.name  || (acct && acct.name)  || null;
+  var email = data.email || (acct && acct.email) || null;
+  if (name) {
+    document.getElementById('nameInput').value = name;
+    document.getElementById('profileName').textContent = name;
+    var parts = name.trim().split(/\s+/);
+    document.getElementById('profileAvatar').textContent =
+      parts.map(function(w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
   }
+  if (email) {
+    document.getElementById('emailInput').value = email;
+    document.getElementById('profileEmail').textContent = email;
+  }
+  if (data.phone) document.getElementById('phoneInput').value = data.phone;
+  if (data.dob) document.getElementById('dobInput').value = data.dob;
+  if (data.address) document.getElementById('addressInput').value = data.address;
 }
 
 function toggleNotif(el) {

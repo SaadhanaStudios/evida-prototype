@@ -91,7 +91,7 @@
       <div class="info-strip">
         <div class="info-strip-row">
           <span class="is-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>
-          <span>Prefer to talk? <a onclick="showToast('Calendar booking coming soon')">Book a 15-min support call →</a></span>
+          <span>Prefer to talk? <a onclick="showToast('Booking link sent to your email — next slot today 16:30')">Book a 15-min support call →</a></span>
         </div>
         <div class="info-strip-row">
           <span class="is-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
@@ -147,6 +147,8 @@ function sendContactMessage() {
   }
   document.getElementById('contactMessage').value = '';
   showToast('Message sent — we\'ll reply within 24 hours');
+  // The ongoing conversation lives in Messages — take them there
+  setTimeout(function() { window.location.href = 'messages.html'; }, 1200);
 }
 
 </script>

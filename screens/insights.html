@@ -682,11 +682,11 @@
           </div>
         </div>
         <div style="font-size:11px;color:var(--evida-fg-secondary);line-height:1.5;margin-bottom:10px">
-          <strong>Key change:</strong> Your average sleep duration increased 18 minutes vs April. Resting HR decreased 2 bpm. No biomarker changes flagged. <a href="#" onclick="showToast('Full report would download in production');return false" style="color:var(--color-primary)">Read full report</a>
+          <strong>Key change:</strong> Your average sleep duration increased 18 minutes vs April. Resting HR decreased 2 bpm. No biomarker changes flagged. <a href="#" onclick="showToast('Monthly report downloaded');return false" style="color:var(--color-primary)">Read full report</a>
         </div>
         <div class="export-bar">
-          <button class="btn btn-secondary btn-sm" onclick="showToast('PDF download would start in production')">Download PDF</button>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Share link would be generated in production')">Share with GP</button>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('PDF downloaded')">Download PDF</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Secure share link copied — valid for 7 days')">Share with GP</button>
           <button class="btn btn-ghost btn-sm" onclick="exportInsightsCSV()">Export data</button>
         </div>
       </div>
@@ -997,7 +997,9 @@ function switchTrendDays(days, btn) {
 function handleInsightsSearch() {
   var val = document.getElementById('insightsSearch').value.trim();
   if (val.length > 0) {
-    showToast('Search coming soon — Ask Evi for now');
+    // Results page is a later build — hand the query to Ask Evi meanwhile
+    showToast('Searching "' + val + '"…');
+    setTimeout(function() { window.location.href = 'ask-evi.html'; }, 700);
   }
 }
 

@@ -231,7 +231,7 @@
             <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>12 months of biomarker tracking</div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between">
-            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);font-variant-numeric:tabular-nums">£320<span style="font-size:13px;font-weight:400;color:var(--evida-muted)">/year</span></div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);font-variant-numeric:tabular-nums"><s style="font-size:14px;font-weight:400;color:var(--evida-muted)">£320</s> £160<span style="font-size:13px;font-weight:400;color:var(--evida-muted)">/year</span></div>
             <button class="btn btn-primary btn-sm" style="pointer-events:none">Book now →</button>
           </div>
         </div>
@@ -310,21 +310,22 @@
       <!-- PANEL: Appointments -->
       <div class="panel" id="panel-appointments">
         <h2 class="content-page-title">Appointments</h2>
-        <div class="appt-card" onclick="showToast('View details')">
-          <div class="date-badge"><span class="day">7</span><span class="month">Jun</span></div>
+        <div id="panelApptEmpty" style="display:none;text-align:center;padding:32px 16px;color:var(--evida-muted);font-size:13px">No appointments yet — book your Baseline to get started</div>
+        <div class="appt-card" id="paBloodCard" onclick="showToast('Blood test details — see your confirmation email')">
+          <div class="date-badge"><span class="day" id="paBloodDay">7</span><span class="month" id="paBloodMonth">Jun</span></div>
           <div class="info">
             <div class="title">Baseline blood test</div>
-            <div class="meta">Randox — Oxford Circus · 10:30 · 30 min</div>
-            <span class="badge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600">Confirmed</span>
+            <div class="meta" id="paBloodMeta">Randox — Oxford Circus · 10:30 · 30 min</div>
+            <span class="badge" id="paBloodBadge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600">Confirmed</span>
           </div>
           <div class="action"><button class="btn-sm" onclick="event.stopPropagation();showToast('Rescheduling coming soon')">Reschedule</button></div>
         </div>
-        <div class="appt-card" onclick="showToast('View details')">
-          <div class="date-badge"><span class="day">12</span><span class="month">Jun</span></div>
+        <div class="appt-card" id="paGpCard" onclick="showToast('GP consultation details — joining link arrives the day before')">
+          <div class="date-badge"><span class="day" id="paGpDay">12</span><span class="month" id="paGpMonth">Jun</span></div>
           <div class="info">
             <div class="title">GP consultation (Baseline)</div>
-            <div class="meta">Virtual · Dr. Sarah Chen · 14:00 · 45 min</div>
-            <span class="badge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-amber-light);color:#8A5A2A;font-weight:600">Awaiting results</span>
+            <div class="meta" id="paGpMeta">Virtual · Dr. Sarah Chen · 14:00 · 45 min</div>
+            <span class="badge" id="paGpBadge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-amber-light);color:#8A5A2A;font-weight:600">Awaiting results</span>
           </div>
           <div class="action"><button class="btn-sm" onclick="event.stopPropagation();showToast('Added to calendar')">Calendar</button></div>
         </div>
@@ -335,32 +336,32 @@
       <div class="panel" id="panel-documents">
         <h2 class="content-page-title">Documents</h2>
         <div style="margin-bottom:12px">
-          <div class="doc-item" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="showToast('Opening health check report…')">
+          <div class="doc-item" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="window.location.href='doc-physical-health.html'">
             <span style="width:36px;height:36px;border-radius:var(--radius-sm);background:var(--evida-teal-light);display:flex;align-items:center;justify-content:center;color:var(--evida-teal-dark);flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600">Physical Health Check Report</div>
-              <div style="font-size:11px;color:var(--evida-muted)">12 Jun 2026</div>
+              <div style="font-size:11px;color:var(--evida-muted)" id="pdPhysDate">12 Jun 2026</div>
             </div>
             <span style="font-size:12px;color:var(--color-primary);font-weight:600">View</span>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="showToast('Opening lifestyle report…')">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="window.location.href='doc-lifestyle.html'">
             <span style="width:36px;height:36px;border-radius:var(--radius-sm);background:var(--evida-teal-light);display:flex;align-items:center;justify-content:center;color:var(--evida-teal-dark);flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2.5-6 4 13L16 8l2 4h3"/></svg></span>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600">Lifestyle Medicine Report</div>
-              <div style="font-size:11px;color:var(--evida-muted)">12 Jun 2026</div>
+              <div style="font-size:11px;color:var(--evida-muted)" id="pdLifeDate">12 Jun 2026</div>
             </div>
             <span style="font-size:12px;color:var(--color-primary);font-weight:600">View</span>
           </div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="window.location.href='documents.html'" style="width:100%;margin-top:4px">Open all documents</button>
-        <button class="btn btn-secondary btn-sm" onclick="showToast('Upload coming soon')" style="width:100%;margin-top:8px">Upload records</button>
+        <button class="btn btn-secondary btn-sm" onclick="window.location.href='documents.html'" style="width:100%;margin-top:8px">Upload records</button>
       </div>
 
       <!-- PANEL: Ask Evi -->
       <div class="panel" id="panel-ask-evi">
         <h2 class="content-page-title">Ask Evi</h2>
         <div class="evida-card" style="margin-bottom:16px;font-size:12px;color:var(--evida-fg-secondary);line-height:1.4">
-          Ask Evi provides general health information only, not medical advice. Responses are non-diagnostic and reviewed by our clinical team. If you're worried about a symptom, <a class="btn-ghost" style="font-size:12px;font-weight:600" onclick="showToast('Book a consult')">book a consultation</a> with a GP.
+          Ask Evi provides general health information only, not medical advice. Responses are non-diagnostic and reviewed by our clinical team. If you're worried about a symptom, <a class="btn-ghost" style="font-size:12px;font-weight:600" onclick="window.location.href='booking.html'">book a consultation</a> with a GP.
         </div>
         <div class="empty-state" style="padding:24px 0">
           <span class="es-letter"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></svg></span>
@@ -377,7 +378,7 @@
       <div class="panel" id="panel-messages">
         <h2 class="content-page-title">Messages</h2>
         <div style="margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="showToast('Opening conversation with Dr. Chen…')">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="window.location.href='messages.html'">
             <span style="width:36px;height:36px;border-radius:50%;background:var(--evida-teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0">SC</span>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600">Dr. Sarah Chen</div>
@@ -388,7 +389,7 @@
               <span style="display:inline-block;font-size:10px;padding:1px 7px;border-radius:var(--radius-full);background:var(--color-primary);color:white;font-weight:700;margin-top:4px">2</span>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);cursor:pointer" onclick="showToast('Opening conversation with health coach…')">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);cursor:pointer" onclick="window.location.href='messages.html'">
             <span style="width:36px;height:36px;border-radius:50%;background:var(--evida-amber);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0">HC</span>
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600">Health Coach — Emma</div>
@@ -565,6 +566,10 @@ function updateChecklist() {
   if (!booked && !postConsult) {
     document.getElementById('apptList').innerHTML =
       '<div style="padding:18px 14px;text-align:center;font-size:12px;color:var(--evida-muted)">No appointments yet — book your Baseline to get started</div>';
+    // Mirror in the Appointments panel
+    document.getElementById('panelApptEmpty').style.display = '';
+    document.getElementById('paBloodCard').style.display = 'none';
+    document.getElementById('paGpCard').style.display = 'none';
   } else {
     var details = EvidaStore.booking.details() || {};
     var fb1 = new Date(); fb1.setDate(fb1.getDate() + 1);
@@ -585,6 +590,33 @@ function updateChecklist() {
       document.getElementById('apptBloodMeta').textContent = clinic + ' · ' + (details.bloodTime || '10:30');
       document.getElementById('apptGpMeta').innerHTML = 'Dr. Sarah Chen · ' + (details.gpTime || '14:00') + ' · <span style="color:var(--evida-amber);font-weight:600">Results pending</span>';
     }
+
+    // Keep the Appointments panel cards in step with the same booking
+    var splitD = function(iso, fallback) {
+      var d = iso ? (function(b){ return new Date(+b[0], +b[1]-1, +b[2]); })(iso.split('-')) : fallback;
+      return { day: d.getDate(), month: d.toLocaleDateString('en-GB', { month: 'short' }) };
+    };
+    var bd = splitD(details.bloodDate, fb1), gd = splitD(details.gpDate, fb2);
+    document.getElementById('paBloodDay').textContent = bd.day;
+    document.getElementById('paBloodMonth').textContent = bd.month;
+    document.getElementById('paGpDay').textContent = gd.day;
+    document.getElementById('paGpMonth').textContent = gd.month;
+    document.getElementById('paBloodMeta').textContent = clinic + ' · ' + (details.bloodTime || '10:30') + ' · 30 min';
+    document.getElementById('paGpMeta').textContent = 'Virtual · Dr. Sarah Chen · ' + (details.gpTime || '14:00') + ' · 45 min';
+    if (postConsult) {
+      var pbb = document.getElementById('paBloodBadge');
+      pbb.textContent = 'Completed';
+      var pgb = document.getElementById('paGpBadge');
+      pgb.textContent = 'Results ready';
+      pgb.style.background = 'var(--evida-teal-light)';
+      pgb.style.color = 'var(--evida-teal-dark)';
+      // Report dates in the Documents panel match the consultation date
+      if (details.gpDate) {
+        var gpLong = shortISO(details.gpDate) + ' ' + details.gpDate.slice(0, 4);
+        document.getElementById('pdPhysDate').textContent = gpLong;
+        document.getElementById('pdLifeDate').textContent = gpLong;
+      }
+    }
   }
 
   // Always show realistic stat card data
@@ -596,6 +628,10 @@ function updateChecklist() {
     statCards[1].querySelector('.value').textContent = '7.2h';
     statCards[1].querySelector('.trend').textContent = '→ Stable';
     statCards[1].querySelector('.trend').className = 'trend neutral';
+  }
+  // Booked but not yet tested — the blood-test card acknowledges the booking
+  if (booked && !postConsult && statCards.length >= 3) {
+    statCards[2].querySelector('.value').textContent = '— Booked';
   }
   // Post-consult the locked cards unlock
   if (postConsult && statCards.length >= 4) {
