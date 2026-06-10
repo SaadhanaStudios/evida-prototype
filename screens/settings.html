@@ -166,26 +166,27 @@
         </div>
       </div>
 
-      <!-- Notification channels -->
+      <!-- Notifications -->
       <div class="evida-card-bordered section-card">
-        <h2>Notification channels</h2>
+        <h2>Notifications</h2>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--evida-muted);margin-bottom:8px">Channels</div>
         <div class="settings-row">
           <div class="settings-info">
-            <div class="settings-label">Email notifications</div>
+            <div class="settings-label">Email</div>
             <div class="settings-desc">james.chen@example.com</div>
           </div>
           <div class="toggle on" onclick="toggleNotifChannel(this,'email')"><div class="knob"></div></div>
         </div>
         <div class="settings-row">
           <div class="settings-info">
-            <div class="settings-label">Push notifications</div>
+            <div class="settings-label">Push</div>
             <div class="settings-desc">Browser and mobile notifications</div>
           </div>
           <div class="toggle on" onclick="toggleNotifChannel(this,'push')"><div class="knob"></div></div>
         </div>
         <div class="settings-row">
           <div class="settings-info">
-            <div class="settings-label">SMS notifications</div>
+            <div class="settings-label">SMS</div>
             <div class="settings-desc">+44 7900 123456</div>
           </div>
           <div class="toggle" onclick="toggleNotifChannel(this,'sms')"><div class="knob"></div></div>
@@ -196,6 +197,42 @@
             <div class="settings-desc">Auto-add appointments to your calendar</div>
           </div>
           <div class="toggle on" onclick="toggleNotifChannel(this,'calendar')"><div class="knob"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--evida-muted);margin:16px 0 8px;border-top:1px solid var(--evida-border);padding-top:16px">Reminders &amp; updates</div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Appointment reminders (SMS, 1 hr before)</div>
+            <div class="settings-desc">Text reminder before blood test and GP consult</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'appt-sms')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Appointment reminders (email)</div>
+            <div class="settings-desc">24 hr reminder before each appointment</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'appt-email')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Pre-consult checklist reminders</div>
+            <div class="settings-desc">Weekly nudges to complete ID verification, questionnaire, and wearables</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'checklist-email')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Newsletter &amp; health tips</div>
+            <div class="settings-desc">Monthly insights, prevention research, and member updates</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'newsletter')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Promotional offers</div>
+            <div class="settings-desc">Partner discounts and Evida product news</div>
+          </div>
+          <div class="toggle" onclick="toggleNotifChannel(this,'promo')"><div class="knob"></div></div>
         </div>
       </div>
 
@@ -211,13 +248,13 @@
         <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Terms of service opened')">Terms of service</a></div>
         <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')">Privacy policy</a></div>
         <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Cookie preferences opened')">Cookie preferences</a></div>
-        <div class="settings-row" style="border-top:1px solid var(--evida-border);margin-top:12px;padding-top:16px">
-          <div class="settings-info">
-            <div class="settings-label" style="color:var(--evida-coral)">Delete account</div>
-            <div class="settings-desc">Permanently delete your account and all associated data</div>
-          </div>
-          <button class="btn-ghost btn-sm" style="color:var(--evida-coral);border-color:var(--evida-coral)" onclick="if(confirm('Are you sure? This cannot be undone. All your data including health records, reports, and plan will be permanently deleted.')){showToast('Account deletion request submitted. We will send a confirmation email.')}">Delete</button>
-        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="evida-card-bordered section-card" style="border-color:var(--evida-coral)">
+        <h2 style="color:var(--evida-coral)">Delete account</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:12px;line-height:1.5">Permanently removes your profile and login access. Per CQC regulations, your clinical records are retained for 8 years after account deletion. <a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')" style="color:var(--color-primary)">View our data privacy policy →</a></p>
+        <button class="btn-ghost btn-sm" style="color:var(--evida-coral);border-color:var(--evida-coral);width:100%;height:40px;font-size:13px" onclick="confirmDeleteAccount()">Delete my account</button>
       </div>
 
     </div>
@@ -270,8 +307,18 @@ function togglePasskey(el) {
 function toggleNotifChannel(el, channel) {
   var on = el.classList.toggle('on');
   EvidaStore.prefs.setNotifChannel(channel, on);
-  var names = { email: 'Email notifications', push: 'Push notifications', sms: 'SMS notifications', calendar: 'Calendar invites' };
-  showToast(names[channel] + (on ? ' enabled' : ' disabled'));
+  var names = {
+    email: 'Email', push: 'Push notifications', sms: 'SMS', calendar: 'Calendar invites',
+    'appt-sms': 'Appointment SMS reminders', 'appt-email': 'Appointment email reminders',
+    'checklist-email': 'Checklist reminders', newsletter: 'Newsletter', promo: 'Promotional offers'
+  };
+  showToast((names[channel] || channel) + (on ? ' enabled' : ' disabled'));
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Delete your Evida account?\n\nThis will remove your profile and login access immediately. Your clinical records will be retained for 8 years per CQC regulations.\n\nThis cannot be undone.')) {
+    showToast('Account deletion request submitted — you will receive a confirmation email within 24 hours');
+  }
 }
 
 // Restore notification channel states from store on load

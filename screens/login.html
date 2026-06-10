@@ -94,9 +94,12 @@
   .landing-hero .lh-sub { font-size: 14px; color: var(--evida-muted); line-height: 1.5; margin-bottom: 20px; }
   .landing-hero .lh-price { font-size: 40px; font-weight: 700; color: var(--evida-navy); margin-bottom: 4px; letter-spacing: -0.02em; }
   .landing-hero .lh-price .lh-period { font-size: 16px; font-weight: 400; color: var(--evida-muted); letter-spacing: 0; }
+  .landing-hero .lh-inclusions { font-size: 13px; color: var(--evida-fg-secondary); line-height: 1.8; margin-bottom: 20px; text-align: left; }
+  .landing-hero .lh-inclusions div { display: flex; align-items: center; gap: 6px; }
+  .landing-hero .lh-inclusions div::before { content: ''; }
   .landing-hero .lh-annual { font-size: 12px; color: var(--evida-muted); margin-bottom: 28px; }
   .cta-wrap { text-align: center; }
-  .btn-join { width: 100%; max-width: 340px; height: 52px; font-size: 16px; }
+  .btn-join { width: 100%; max-width: 340px; height: 52px; font-size: 17px; font-weight: 700; }
   .lh-cancel { text-align: center; font-size: 12px; color: var(--evida-muted); margin-top: 12px; }
   .landing-benefits { margin-bottom: 24px; }
   .landing-benefits .lb-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--evida-border); align-items: flex-start; }
@@ -154,11 +157,17 @@
       <div class="screen active" id="screen-landing">
         <div class="landing-hero">
           <img class="lh-logo" src="../build/logo.svg" alt="Evida">
-          <div style="font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">More than just a health check</div>
+          <div style="font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">More than a health check</div>
           <h1>Preventive health,<br>powered by data</h1>
+          <!-- COPY TBC: subtitle needs rework -->
           <div class="lh-sub">Clinician-led membership. Comprehensive blood panel, GP consultation, personalised prevention plan, and 12 months of insights.</div>
           <div class="lh-price">£320<span class="lh-period">/year</span></div>
-          <div class="lh-annual">Everything included. No hidden fees. Cancel anytime.</div>
+          <div class="lh-inclusions">
+            <div>✓ 42-marker blood panel at a Randox clinic</div>
+            <div>✓ 45-min virtual GP consultation</div>
+            <div>✓ Personalised prevention plan</div>
+            <div>✓ 12 months of biomarker tracking &amp; insights</div>
+          </div>
         </div>
 
         <div class="landing-benefits">
@@ -168,7 +177,7 @@
           </div>
           <div class="lb-item">
             <span class="lb-letter">G</span>
-            <div class="text"><div class="title">GP consultation</div><div class="sub">45-min virtual session with a GP and health coach</div></div>
+            <div class="text"><div class="title">GP consultation</div><div class="sub">45-min virtual session with a GP</div></div>
           </div>
           <div class="lb-item">
             <span class="lb-letter">P</span>
@@ -182,6 +191,7 @@
 
         <div class="cta-wrap">
           <button class="btn btn-primary btn-join" onclick="startMembership()">Join Evida — £320/year</button>
+          <button class="btn btn-secondary btn-join" style="margin-top:10px;height:44px;font-size:14px" onclick="window.location.href='booking.html?entry=bookfirst'">Book first, pay after →</button>
         </div>
         <div class="form-footer" style="margin-top:16px">
           Already a member? <a onclick="showScreen('screen-signin')">Sign in</a>
@@ -240,22 +250,16 @@
         </div>
       </div>
 
-      <!-- SCREEN 2: SIGN UP — details collected during payment flow -->
+      <!-- SCREEN 2: SIGN UP -->
       <div class="screen" id="screen-signup">
         <div class="brand-block">
           <img class="brand-logo" src="../build/logo.svg" alt="Evida">
-          <h1 class="text-h2">Complete your details</h1>
-          <p class="text-body-small">This creates your Evida account alongside your membership</p>
+          <h1 class="text-h2">Create your account</h1>
+          <p class="text-body-small">Takes 2 minutes — you'll book your baseline immediately after</p>
         </div>
 
         <div class="backup-notice">
-          Your progress is saved automatically. If you leave before completing payment, you can sign back in and finish where you left off.
-        </div>
-
-        <div class="steps" id="signupSteps">
-          <span class="step-dot active" data-step="1"></span>
-          <span class="step-dot" data-step="2"></span>
-          <span class="step-dot" data-step="3"></span>
+          Your progress is saved automatically. You can come back and pick up where you left off.
         </div>
 
         <div class="error-banner" id="signupError">
@@ -304,12 +308,6 @@
               <span class="req" id="reqLength"><span class="dot"></span>8+ characters</span>
             </div>
           </div>
-          <button class="btn btn-primary btn-form" id="suContinueBtn" onclick="nextSignupStep(2)">Continue</button>
-          <button class="btn btn-ghost" onclick="showScreen('screen-landing')" style="margin-top:8px;width:auto">← Back to membership</button>
-        </div>
-
-        <!-- Step 2: Personal details -->
-        <div class="signup-step" id="signupStep2" style="display:none">
           <div class="form-group">
             <label for="suPhone">Phone number <span class="required">*</span></label>
             <div class="input-wrap">
@@ -319,7 +317,7 @@
           <div class="form-group">
             <label for="suDob">Date of birth <span class="required">*</span></label>
             <div class="input-wrap">
-              <input type="date" id="suDob">
+              <input type="text" id="suDob" placeholder="DD/MM/YYYY" maxlength="10" inputmode="numeric">
             </div>
           </div>
           <div class="form-group">
@@ -332,72 +330,8 @@
             <input type="checkbox" id="suTerms">
               <label for="suTerms">I agree to the <a class="text-link" onclick="openTosModal()">Terms of Service</a> and <a class="text-link" onclick="openPrivacyModal()">Privacy Policy</a></label>
           </div>
-          <button class="btn btn-primary btn-form" onclick="nextSignupStep(3)">Continue</button>
-          <button class="btn btn-ghost" onclick="prevSignupStep()" style="margin-top:8px;width:auto">← Back</button>
-        </div>
-
-        <!-- Step 3: Payment -->
-        <div class="signup-step" id="signupStep3" style="display:none">
-          <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Complete your membership</p>
-          <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Your account has been saved. Complete payment to activate your plan.</p>
-
-          <div class="evida-card" style="padding:14px;margin-bottom:16px">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <span style="font-weight:600">Evida Membership — Year 1</span>
-              <span style="font-size:20px;font-weight:700">£320</span>
-            </div>
-            <p class="text-tiny" style="color:var(--evida-muted);margin-top:4px">Annual. Includes blood panel, GP consult, prevention plan, 12mo insights.</p>
-          </div>
-
-          <div class="evida-card" style="padding:16px;margin-bottom:16px">
-            <div class="form-group" style="margin-bottom:12px">
-              <label>Card number</label>
-              <div class="input-wrap">
-                <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" inputmode="numeric" style="width:100%;height:44px;font-size:16px;padding:0 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-family:var(--font-mono);letter-spacing:1px">
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-              <div class="form-group">
-                <label>Expiry</label>
-                <div class="input-wrap">
-                  <input type="text" id="cardExpiry" placeholder="MM/YY" inputmode="numeric" style="width:100%;height:44px;font-size:16px;padding:0 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm)">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>CVC</label>
-                <div class="input-wrap">
-                  <input type="text" id="cardCvc" placeholder="123" inputmode="numeric" style="width:100%;height:44px;font-size:16px;padding:0 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm)">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Name on card</label>
-              <div class="input-wrap">
-                <input type="text" id="cardName" placeholder="James Chen" style="width:100%;height:44px;font-size:16px;padding:0 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm)">
-              </div>
-            </div>
-            <div class="form-group" style="margin-bottom:0">
-              <label>Discount code</label>
-              <div class="input-wrap" style="display:flex;gap:8px">
-                <input type="text" id="discountCode" placeholder="Enter code" style="flex:1;height:44px;font-size:15px;padding:0 12px;border:1px solid var(--evida-border);border-radius:var(--radius-sm);font-family:var(--font-body)">
-                <button class="btn btn-secondary" onclick="applyDiscount()" style="width:auto;padding:0 16px;height:44px;font-size:12px;font-weight:600;flex-shrink:0">Apply</button>
-              </div>
-              <div id="discountFeedback" style="font-size:12px;color:var(--color-success);margin-top:4px;display:none">✓ Discount applied</div>
-            </div>
-          </div>
-
-          <button class="btn btn-primary btn-form" id="paymentBtn" onclick="handlePayment()">
-            <span class="btn-text">Pay £320 — Activate membership</span>
-            <span class="btn-spinner"></span>
-          </button>
-          <div style="text-align:center;margin-top:12px">
-            <button class="btn btn-ghost" id="doLaterBtn" onclick="handleDoLater()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — create my account</button>
-          </div>
-          <div class="error-banner" id="paymentError" style="margin-top:12px">
-            <svg class="warning-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
-            <span>Payment declined. Your details are saved — you can retry from your dashboard.</span>
-          </div>
-          <button class="btn btn-ghost" onclick="prevSignupStep()" style="margin-top:8px;width:auto">← Back</button>
+          <button class="btn btn-primary btn-form" id="suContinueBtn" onclick="handleCreateAccount()">Create account →</button>
+          <button class="btn btn-ghost" onclick="showScreen('screen-landing')" style="margin-top:8px;width:auto">← Back to membership</button>
         </div>
       </div>
 
@@ -449,7 +383,7 @@
           <h2 class="text-h2">Account created</h2>
           <p class="text-body-small">Your Evida account is ready. Activate your membership with payment to unlock your prevention plan, biomarker tracking, and GP consultations.</p>
           <button class="btn btn-primary" onclick="window.location.href='onboarding.html?pending=1'" style="width:100%;max-width:280px">Continue to onboarding</button>
-          <button class="btn btn-ghost" onclick="showScreen('screen-signup');nextSignupStep(3)" style="margin-top:8px;width:auto">Complete payment</button>
+          <button class="btn btn-ghost" onclick="window.location.href='booking.html?flow=signup&resume=payment'" style="margin-top:8px;width:auto">Complete booking →</button>
         </div>
       </div>
 
@@ -665,19 +599,11 @@ document.addEventListener('keydown', function(e) {
   } catch(_) {}
 })();
 
-// Resume payment — jump directly to signup step 3
+// Resume payment — payment now happens in booking.html, redirect there
 (function() {
   var m = location.search.match(/[?&]resume=([^&]*)/);
   if (m && m[1] === 'payment') {
-    try {
-      var saved = EvidaStore.account.saved();
-      if (saved && saved.email) {
-        document.getElementById('suEmail').value = saved.email || '';
-        document.getElementById('suName').value = saved.name || '';
-      }
-    } catch(_) {}
-    showScreen('screen-signup');
-    nextSignupStep(3);
+    window.location.href = 'booking.html?flow=signup&resume=payment';
   }
 })();
 
@@ -692,6 +618,17 @@ function resumeSignup() {
   } catch(_) {}
   showScreen('screen-signup');
   nextSignupStep(1);
+}
+
+function handleCreateAccount() {
+  try {
+    EvidaStore.account.partial({
+      name: document.getElementById('suName').value,
+      email: document.getElementById('suEmail').value,
+      savedAt: new Date().toISOString()
+    });
+  } catch(_) {}
+  window.location.href = 'booking.html?flow=signup';
 }
 
 // Password strength
@@ -712,15 +649,12 @@ function checkPasswordStrength(pass) {
   // (password requirements still shown visually for guidance)
 }
 
-// Sign-up steps
+// Sign-up steps (single step now — step param kept for UAT state compatibility)
 function nextSignupStep(step) {
   signupStep = step;
   document.querySelectorAll('.signup-step').forEach(s => s.style.display = 'none');
-  document.getElementById('signupStep' + step).style.display = 'block';
-  document.querySelectorAll('.step-dot').forEach(d => {
-    const n = parseInt(d.dataset.step);
-    d.className = 'step-dot' + (n <= step ? (n < step ? ' done' : ' active') : '');
-  });
+  var stepEl = document.getElementById('signupStep' + step);
+  if (stepEl) stepEl.style.display = 'block';
   dismissError('signupError');
 }
 
@@ -911,30 +845,15 @@ window.__UAT_STATES = [
       showFormError('signinError', 'This account has been temporarily locked due to too many failed attempts. Please reset your password or try again in 30 minutes.');
     }
   },
-  { id: 'signup-step1', label: 'Sign-up step 1',
+  { id: 'signup', label: 'Create account',
     setup: function() {
       showScreen('screen-signup');
       nextSignupStep(1);
-    }
-  },
-  { id: 'signup-step2', label: 'Sign-up step 2',
-    setup: function() {
-      showScreen('screen-signup');
-      nextSignupStep(2);
-      document.getElementById('suName').value = 'James Chen';
-      document.getElementById('suEmail').value = 'james@example.com';
-      document.getElementById('suPass').value = 'MyHealth2026!';
-    }
-  },
-  { id: 'signup-step3', label: 'Payment',
-    setup: function() {
-      showScreen('screen-signup');
-      nextSignupStep(3);
       document.getElementById('suName').value = 'James Chen';
       document.getElementById('suEmail').value = 'james@example.com';
       document.getElementById('suPass').value = 'MyHealth2026!';
       document.getElementById('suPhone').value = '07700 900000';
-      document.getElementById('suDob').value = '1988-03-14';
+      document.getElementById('suDob').value = '14/03/1988';
       document.getElementById('suAddress').value = '42 Maltby Street, London SE1 3PA';
     }
   },

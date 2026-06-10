@@ -376,3 +376,39 @@ The palette, typography, spacing, components, motion, and voice rules below were
 - ❌ Accessibility failures: missing labels, insufficient contrast, no focus indicators.
 - ❌ Using `px` for typography in responsive contexts — use `rem` or `clamp()`.
 - ❌ Hard-coded brand colours outside of token system.
+
+---
+
+## v2 Prototype Notes (updated 10 June 2026)
+
+### Sign-up flow (v2)
+
+The signup flow is now a unified two-step journey:
+
+1. **Landing (`login.html`):** Shows inclusions list, primary "Join Evida" CTA, and a secondary "Book first, pay after →" CTA.
+2. **Create account (`login.html #screen-signup`):** Single combined screen — name, email (with inline code verification), password, phone, date of birth (typed DD/MM/YYYY), home address, and T&Cs. The "Create account →" button saves partial state and redirects to `booking.html?flow=signup`.
+3. **Booking (`booking.html?flow=signup`):** Detects `flow=signup` param and skips step 1 (plan selection — already decided). User proceeds from clinic selection (step 3) through GP consult (step 4) to review and payment. Membership is included as a line item in the cart.
+4. **Confirmation (`booking.html` step 7):** Shows receipt reference `EV-XXXXXX`, both appointment summaries, and a fasting reminder. "Go to dashboard" navigates to the full app.
+
+**"Book first" path:** `booking.html?entry=bookfirst` — full booking flow; at step 7 confirmation the CTA changes to "Create your Evida account →" and redirects to `login.html?after=booking`.
+
+**Payment is in one place only:** The payment step was removed from `login.html` entirely. All payment happens at the end of `booking.html`.
+
+### Health questionnaire (Profile)
+
+The health questionnaire lives in `profile.html` in a dedicated section (`id="health-questionnaire"`), after the ID verification section. Fields: pre-existing conditions, current medications, family history, allergies, and three lifestyle selects (smoking, alcohol, exercise). Pre-populated with James Chen demo data. Accessible via `profile.html#health-questionnaire`.
+
+### Pre-consult checklist (Dashboard)
+
+The pre-consult checklist is the **primary dashboard element** for new and post-booking members. It appears above the booking hero CTA and contains four items:
+
+1. Blood test booked (required)
+2. ID verification complete (required)
+3. Health questionnaire submitted (required)
+4. Wearables connected (optional — not counted in progress denominator)
+
+Progress is expressed as "You're X% ready for your consultation" using formula `(completedItems / 3) * 100`. The sbBadge in the status bar mirrors this percentage. In the post-consult state, the badge shows "Your results are ready" instead.
+
+### Contact Us
+
+A new `contact.html` page (accessible from the Messages thread list) provides a topic selector (General · Booking · Billing · Medical · Technical · Other), a message textarea, and a "Send message" CTA. A link to Ask Evi is surfaced as a faster alternative. `contact` is included in `SHEET_PAGES` so the More nav button highlights correctly.

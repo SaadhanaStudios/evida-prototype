@@ -222,6 +222,14 @@
 
       <!-- STEP 3: Clinic location + date/time -->
       <div class="step" id="step3" data-step="3">
+        <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
+          <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li>Allow 30 minutes — please arrive 5 minutes early</li>
+            <li>We test: full blood panel, height, weight, blood pressure</li>
+            <li>Results are sent to Evida — your GP reviews them with you in your consultation</li>
+          </ul>
+        </div>
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Choose a clinic</p>
         <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Select your nearest Randox clinic and preferred time.</p>
         <div id="clinicList"></div>
@@ -239,8 +247,16 @@
         <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
           <span class="text-body-small">Your blood test is <strong>7 June 2026</strong>. Your GP consultation can be booked from <strong>12 June 2026</strong> onwards (allows 4–5 working days for results).</span>
         </div>
+        <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin:12px 0;font-size:13px;color:var(--evida-teal-dark)">
+          <div style="font-weight:700;margin-bottom:6px">Your virtual GP consultation</div>
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li>Up to 45 minutes · Virtual · With a GP (not a health coach)</li>
+            <li>July availability: Tuesdays and Fridays only</li>
+            <li>You will not receive your blood results beforehand — your GP reviews them with you during this session</li>
+          </ul>
+        </div>
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Book your GP consultation</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">45-min virtual consultation with a GP and health coach.</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">45-min virtual consultation with a GP.</p>
         <div class="section-label">Available dates</div>
         <div class="date-grid" id="gpDateGrid"></div>
         <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
@@ -271,6 +287,9 @@
         </div>
         <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged £320.</p>
         <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
+        <div style="text-align:center;margin-top:8px">
+          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">Take me to the dashboard</button>
+        </div>
       </div>
 
       <!-- STEP 6: Payment — Stripe-style UI -->
@@ -343,6 +362,7 @@
             <div class="row"><span class="l">Duration</span><span class="r">45 min (virtual)</span></div>
             <div class="divider"></div>
             <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
+            <div class="row" style="margin-top:4px"><span class="l" style="color:var(--evida-muted)">Reference</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;color:var(--evida-muted)">EV-XXXXXX</span></div>
           </div>
 
           <!-- Fasting/preparation reminder -->
@@ -353,7 +373,7 @@
           </div>
 
           <button class="btn btn-secondary btn-form" id="addToCalendarBtn" onclick="addToCalendar()">Add both to calendar</button>
-          <button class="btn btn-primary btn-form" onclick="window.location.href='dashboard.html'" style="margin-top:8px">Go to dashboard</button>
+          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='dashboard.html'" style="margin-top:8px">Go to dashboard</button>
           <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered email address.</p>
         </div>
       </div>
@@ -616,6 +636,16 @@ function goStep(n) {
     document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
     var totalPaid = 320 + addonPrices[state.addon];
     document.getElementById('confTotalPaid').textContent = '£' + totalPaid;
+    var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('confReceiptRef').textContent = receiptRef;
+    if (new URLSearchParams(location.search).get('entry') === 'bookfirst') {
+      var dashBtn = document.getElementById('confDashboardBtn');
+      dashBtn.textContent = 'Create your Evida account →';
+      dashBtn.onclick = function() {
+        showToast('Redirecting to account creation…');
+        setTimeout(function() { window.location.href = 'login.html?after=booking'; }, 800);
+      };
+    }
   }
   state.step = n;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -672,6 +702,11 @@ function releaseSlots() {
 function selectPayment(el) {
   document.querySelectorAll('.card-row').forEach(r => r.classList.remove('selected'));
   el.classList.add('selected');
+}
+
+function handleSkipPayment() {
+  clearInterval(state.holdInterval);
+  window.location.href = 'dashboard.html?pending=payment';
 }
 
 function handlePayment() {
@@ -799,6 +834,19 @@ window.__UAT_STATES = [
 ];
 
 init();
+
+// Handle flow params
+(function() {
+  var params = new URLSearchParams(location.search);
+  var flow = params.get('flow');
+  var entry = params.get('entry');
+  if (flow === 'signup') {
+    goStep(3); // plan already decided via signup — skip to clinic selection
+  }
+  if (entry === 'bookfirst') {
+    // No skip — user goes through full booking; step 7 handles CTA swap
+  }
+})();
 </script>
 </body>
 </html>

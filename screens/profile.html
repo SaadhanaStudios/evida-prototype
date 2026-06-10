@@ -73,6 +73,12 @@
   .toggle .knob { width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
   .toggle.on .knob { transform: translateX(20px); }
 
+  .form-group textarea { width: 100%; min-height: 72px; padding: 10px 14px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px; color: var(--evida-fg); background: var(--evida-surface); outline: none; resize: vertical; transition: border-color 150ms; line-height: 1.5; }
+  .form-group textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--evida-teal-light); }
+  .form-group select { width: 100%; height: 40px; padding: 0 14px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px; color: var(--evida-fg); background: var(--evida-surface); outline: none; transition: border-color 150ms; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+  .form-group select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--evida-teal-light); }
+  .hq-timestamp { font-size: 11px; color: var(--evida-muted); margin-top: 4px; }
+
   @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
   @media (min-width: 1024px) {
     .app-body { padding: 32px; }
@@ -143,7 +149,7 @@
       </div>
 
       <!-- Combined photo + ID verification (—3.2.3) -->
-      <div class="evida-card-bordered section-card">
+      <div class="evida-card-bordered section-card" id="id-verification">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <h2 style="margin-bottom:0">Photo &amp; ID verification</h2>
           <span class="id-status pending" id="idStatusBadge">Pending</span>
@@ -167,6 +173,62 @@
           <button class="btn-ghost btn-sm" id="retakeBtn" style="display:none" onclick="retakeID()">Upload new files</button>
           <span class="text-tiny" style="color:var(--evida-muted)">Accepted: JPG, PNG, PDF. Max 10MB each.</span>
         </div>
+      </div>
+
+      <!-- Health questionnaire -->
+      <div class="evida-card-bordered section-card" id="health-questionnaire">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <h2 style="margin-bottom:0">Health questionnaire</h2>
+          <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark)">Saved</span>
+        </div>
+        <p style="font-size:12px;color:var(--evida-muted);margin-bottom:16px">Shared with your GP before your consultation. Editable at any time.</p>
+        <div class="form-group">
+          <label>Pre-existing conditions</label>
+          <textarea id="hqConditions" placeholder="e.g. hypertension, asthma, type 2 diabetes…">Hypertension (diagnosed 2019, managed with lisinopril). Mild exercise-induced asthma.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Current medications</label>
+          <textarea id="hqMedications" placeholder="Name, dose, and frequency">Lisinopril 10mg daily (blood pressure). Salbutamol inhaler (as needed).</textarea>
+        </div>
+        <div class="form-group">
+          <label>Family medical history</label>
+          <textarea id="hqFamilyHistory" placeholder="e.g. heart disease, cancer, diabetes in first-degree relatives">Father: type 2 diabetes (dx age 55), coronary artery disease (dx age 62). Mother: osteoporosis.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Allergies</label>
+          <textarea id="hqAllergies" placeholder="Medications, foods, environmental" style="min-height:52px">Penicillin (rash). No known food allergies.</textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+          <div class="form-group" style="margin-bottom:0">
+            <label>Smoking</label>
+            <select id="hqSmoking">
+              <option value="never" selected>Never smoked</option>
+              <option value="ex">Ex-smoker</option>
+              <option value="occasional">Occasional</option>
+              <option value="regular">Regular</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Alcohol</label>
+            <select id="hqAlcohol">
+              <option value="none">None</option>
+              <option value="light" selected>Light (1–7/wk)</option>
+              <option value="moderate">Moderate (8–14/wk)</option>
+              <option value="heavy">Heavy (15+/wk)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Exercise</label>
+            <select id="hqExercise">
+              <option value="none">None</option>
+              <option value="light">Light</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="active">Active</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveQuestionnaire()" style="width:100%">Save questionnaire</button>
+        <div class="hq-timestamp" id="hqTimestamp">Last updated: 8 Jun 2026</div>
       </div>
 
       <!-- Connected devices -->
@@ -311,6 +373,22 @@ function retakeID() {
 }
 
 loadProfile();
+
+function saveQuestionnaire() {
+  var now = new Date();
+  var formatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  var ts = document.getElementById('hqTimestamp');
+  if (ts) ts.textContent = 'Last updated: ' + formatted;
+  showToast('Health questionnaire saved — your GP can now see your history');
+}
+
+// Handle #health-questionnaire and #id-verification anchor scroll
+(function() {
+  if (location.hash === '#health-questionnaire' || location.hash === '#id-verification') {
+    var el = document.getElementById(location.hash.slice(1));
+    if (el) setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+  }
+})();
 
 // Populate devices from localStorage
 (function() {

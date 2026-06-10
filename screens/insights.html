@@ -154,6 +154,8 @@
   .export-bar button { font-size: 11px; padding: 8px 16px; border-radius: var(--radius-sm); }
 
   .biomarker-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .metric-help { background: none; border: 1px solid var(--evida-border); border-radius: 50%; width: 14px; height: 14px; font-size: 9px; cursor: pointer; color: var(--evida-muted); display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; margin-left: 3px; font-family: var(--font-body); padding: 0; transition: border-color 150ms, color 150ms; flex-shrink: 0; line-height: 1; }
+  .metric-help:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
   .recovery-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 10px; border-radius: var(--radius-full); font-weight: 600; }
   .recovery-badge.good { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
@@ -202,6 +204,12 @@
     <div class="app-body-inner">
       <h1 class="content-page-title">Data &amp; Insights</h1>
 
+      <!-- Universal search stub -->
+      <div style="position:relative;margin-bottom:16px">
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="insightsSearch" placeholder="Search your health data…" style="width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--evida-border);border-radius:var(--radius-md);font-family:var(--font-body);font-size:13px;color:var(--evida-fg);background:var(--evida-surface);outline:none;box-sizing:border-box" oninput="handleInsightsSearch()">
+      </div>
+
       <!-- Connected devices banner -->
       <div id="connectedBanner" style="display:none">
         <div class="evida-card" style="background:var(--evida-teal-light);padding:12px 14px;margin-bottom:16px">
@@ -242,22 +250,22 @@
           <div class="summary-row">
             <div class="evida-card-bordered metric-card">
               <div class="mc-value" id="ovSteps">6,842</div>
-              <div class="mc-label">Steps today <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-label">Steps today <button class="metric-help" onclick="showToast('Daily steps measure physical activity. NHS recommends 10,000 steps/day for general health.');event.stopPropagation()">?</button> <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
               <div class="mc-trend up">12% vs last week</div>
             </div>
             <div class="evida-card-bordered metric-card">
               <div class="mc-value" id="ovSleep">7.2</div>
-              <div class="mc-label">Sleep (hours) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-label">Sleep (hours) <button class="metric-help" onclick="showToast('7–9 hours is optimal for adults. Chronic short sleep is linked to increased cardiovascular and metabolic risk.');event.stopPropagation()">?</button> <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
               <div class="mc-trend flat">Stable</div>
             </div>
             <div class="evida-card-bordered metric-card">
               <div class="mc-value" id="ovHR">72</div>
-              <div class="mc-label">Heart rate (avg) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-label">Heart rate (avg) <button class="metric-help" onclick="showToast('Resting heart rate of 60–100 bpm is normal. Athletes may see lower values (40–60 bpm). Elevated HR at rest can indicate stress or dehydration.');event.stopPropagation()">?</button> <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
               <div class="mc-trend flat">Normal range</div>
             </div>
             <div class="evida-card-bordered metric-card">
               <div class="mc-value" id="ovHRV">42</div>
-              <div class="mc-label">HRV (ms) <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
+              <div class="mc-label">HRV (ms) <button class="metric-help" onclick="showToast('Heart Rate Variability reflects nervous system balance. Higher HRV generally indicates better cardiovascular fitness and recovery capacity.');event.stopPropagation()">?</button> <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:999px;background:var(--evida-teal-light);color:var(--evida-teal-dark);font-weight:600;margin-left:4px">wearable</span></div>
               <div class="mc-trend up">5% vs last week</div>
             </div>
           </div>
@@ -267,7 +275,7 @@
           <div class="evida-card-bordered" style="padding:12px;margin-bottom:12px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
-                <div style="font-size:10px;color:var(--evida-muted)">HbA1c</div>
+                <div style="font-size:10px;color:var(--evida-muted)">HbA1c <button class="metric-help" onclick="showToast('HbA1c measures average blood glucose over 2–3 months. UK normal: 3.9–5.6% (below 42 mmol/mol). Above 48 mmol/mol indicates diabetes.');event.stopPropagation()">?</button></div>
                 <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">5.2%</div>
                 <div style="font-size:10px;color:var(--color-success)">3.9–5.6% · Normal</div>
               </div>
@@ -277,7 +285,7 @@
                 <div style="font-size:10px;color:var(--evida-amber)">3.0–5.0 · Borderline</div>
               </div>
               <div style="padding:8px;background:var(--evida-bg);border-radius:var(--radius-sm)">
-                <div style="font-size:10px;color:var(--evida-muted)">Vitamin D</div>
+                <div style="font-size:10px;color:var(--evida-muted)">Vitamin D <button class="metric-help" onclick="showToast('Vitamin D supports bone density, immune function, and mood regulation. UK normal range: 50–175 nmol/L.');event.stopPropagation()">?</button></div>
                 <div style="font-family:var(--font-mono);font-size:16px;font-weight:600">68 nmol/L</div>
                 <div style="font-size:10px;color:var(--color-success)">50–150 · Normal</div>
               </div>
@@ -983,6 +991,13 @@ function switchTrendDays(days, btn) {
     renderSleepBars('sleepChart', weeklySleep);
     renderBars('activityChart', weeklySteps, 9000);
     renderSleepBars('sleepTrendChart', weeklySleep);
+  }
+}
+
+function handleInsightsSearch() {
+  var val = document.getElementById('insightsSearch').value.trim();
+  if (val.length > 0) {
+    showToast('Search coming soon — Ask Evi for now');
   }
 }
 

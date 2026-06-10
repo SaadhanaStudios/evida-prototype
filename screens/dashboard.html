@@ -191,9 +191,38 @@
           <span class="ia-action" style="color:white" onclick="document.getElementById('celebrationBanner').style.display='none'">Dismiss</span>
         </div>
         
+        <!-- Pre-consult checklist — front and centre -->
+        <div class="evida-card-bordered checklist-card" id="checklistCard">
+          <div class="checklist-header" onclick="toggleChecklist()">
+            <div class="ch-progress" id="chProgress">0% ready</div>
+            <div class="ch-text">Pre-consult checklist</div>
+            <span class="ch-chevron open" id="chChevron">▾</span>
+          </div>
+          <div class="checklist-body open" id="chBody">
+            <div class="checklist-body-inner">
+              <div class="task-item">
+                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+                <div class="content"><span class="title">Blood test booked</span><div class="sub">Book your Randox clinic appointment</div></div>
+              </div>
+              <div class="task-item">
+                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+                <div class="content"><span class="title">ID verification complete</span><div class="sub">Upload photo ID — 2 min</div></div>
+              </div>
+              <div class="task-item">
+                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+                <div class="content"><span class="title">Health questionnaire submitted</span><div class="sub">~10 min · helps your GP prepare</div></div>
+              </div>
+              <div class="task-item">
+                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+                <div class="content"><span class="title">Wearables connected <span style="font-size:10px;font-weight:400;color:var(--evida-muted)">optional</span></span><div class="sub">Apple Watch, Garmin, Whoop, or Oura</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Booking hero CTA -->
         <div class="evida-card-bordered" id="bookingHero" onclick="window.location.href='booking.html'" style="cursor:pointer;padding:20px;margin-bottom:12px;border-color:var(--color-primary);border-width:1.5px;transition:box-shadow 150ms" onmouseenter="this.style.boxShadow='var(--shadow-sm)'" onmouseleave="this.style.boxShadow=''">
-          <div style="font-size:10px;font-weight:700;color:var(--color-primary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">More than just a health check</div>
+          <div style="font-size:10px;font-weight:700;color:var(--color-primary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">More than a health check</div>
           <div style="font-size:17px;font-weight:700;margin-bottom:10px;color:var(--evida-fg)">Book your Membership Baseline</div>
           <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
             <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>42-marker blood panel at a Randox clinic</div>
@@ -262,42 +291,6 @@
           </div>
         </div>
 
-        <!-- Expandable pre-consult checklist -->
-        <div class="evida-card-bordered checklist-card" id="checklistCard">
-          <div class="checklist-header" onclick="toggleChecklist()">
-            <div class="ch-progress" id="chProgress">1/6</div>
-            <div class="ch-text">Pre-consult checklist</div>
-            <span class="ch-chevron open" id="chChevron">▾</span>
-          </div>
-          <div class="checklist-body open" id="chBody">
-            <div class="checklist-body-inner">
-              <div class="task-item">
-                <div class="check done" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title done">Create account</span><div class="sub">Completed 2 Jun 2026</div></div>
-              </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title">Book Baseline</span><div class="sub">Blood test + GP consult</div></div>
-              </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title">Verify your identity</span><div class="sub">Upload photo ID — 2 min</div></div>
-              </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title">Connect wearable</span><div class="sub">Apple Watch, Garmin, Whoop, or Oura</div></div>
-              </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title">Upload medical records</span><div class="sub">Recent blood work or GP letters</div></div>
-              </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
-                <div class="content"><span class="title">Complete health questionnaire</span><div class="sub">~10 min · pre-visit</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- PANEL: Data & Insights -->
@@ -471,8 +464,14 @@ function toggleChecklist() {
 }
 function updateChecklist() {
   const allChecks = document.querySelectorAll('#chBody .check');
-  const done = Array.from(allChecks).filter(c => c.classList.contains('done')).length;
-  document.getElementById('chProgress').textContent = done + '/' + allChecks.length;
+  // Wearables (4th item) is optional — denominator is 3
+  const required = Array.from(allChecks).slice(0, 3);
+  const done = required.filter(c => c.classList.contains('done')).length;
+  const pct = Math.round((done / 3) * 100);
+  const prog = document.getElementById('chProgress');
+  if (prog) prog.textContent = pct + '% ready';
+  const badge = document.getElementById('sbBadge');
+  if (badge) badge.textContent = "You’re " + pct + "% ready for your consultation";
 }
 
 // Render connected devices in the insights panel
@@ -532,8 +531,8 @@ function updateChecklist() {
 
   if (EvidaStore.booking.isConfirmed()) {
     sub.textContent = 'Your Baseline is booked. Complete your pre-consult tasks below.';
-    badge.textContent = 'Post-booking';
   }
+  updateChecklist();
 })();
 
 // UAT state definitions
@@ -542,53 +541,50 @@ window.__UAT_STATES = [
     setup: function() {
       var sb = document.getElementById('sbGreeting');
       var sub = document.getElementById('sbSub');
-      var badge = document.getElementById('sbBadge');
       sb.textContent = 'Welcome back, James';
       sub.textContent = 'Ready to take your next step with Evida';
-      badge.textContent = 'Getting started';
-      document.getElementById('onboardingBanner').style.display = 'none';
+      document.getElementById('bookingHero').style.display = '';
       document.getElementById('onboardingBanner').style.display = 'none';
       document.getElementById('idReminder').style.display = 'none';
-      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.remove('done'); c.textContent = ''; });
+      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.remove('done'); });
       updateChecklist();
       EvidaStore.booking.clear();
     }
   },
-  { id: 'post-booking', label: 'Your Baseline is booked',
+  { id: 'post-booking', label: 'Baseline booked',
     setup: function() {
       var sb = document.getElementById('sbGreeting');
       var sub = document.getElementById('sbSub');
-      var badge = document.getElementById('sbBadge');
       sb.textContent = 'Welcome back, James';
       sub.textContent = 'Your Baseline is booked. Complete your pre-consult tasks below.';
-      badge.textContent = 'Your Baseline is booked';
-      document.getElementById('onboardingBanner').style.display = 'none';
+      document.getElementById('bookingHero').style.display = 'none';
       document.getElementById('onboardingBanner').style.display = '';
       document.getElementById('idReminder').style.display = '';
+      var checks = document.querySelectorAll('#chBody .check');
+      checks.forEach(function(c) { c.classList.remove('done'); });
+      if (checks[0]) checks[0].classList.add('done');
+      updateChecklist();
       EvidaStore.booking.confirm();
     }
   },
-  { id: 'post-consult', label: 'Your results are ready',
+  { id: 'post-consult', label: 'Results ready',
     setup: function() {
       var sb = document.getElementById('sbGreeting');
       var sub = document.getElementById('sbSub');
-      var badge = document.getElementById('sbBadge');
       sb.textContent = 'Welcome back, James';
       sub.textContent = 'Your results have been reviewed. View your prevention plan.';
-      badge.textContent = 'Your results are ready';
+      document.getElementById('bookingHero').style.display = 'none';
       document.getElementById('onboardingBanner').style.display = 'none';
       document.getElementById('idReminder').style.display = 'none';
-      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.add('done'); c.textContent = 'OK'; });
+      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.add('done'); });
       updateChecklist();
+      var badge = document.getElementById('sbBadge');
+      if (badge) badge.textContent = 'Your results are ready';
       EvidaStore.booking.confirm();
-      // Update appointment badge to "Results ready" and add View Results link
       var apptMeta = document.querySelector('.appt-row .ar-info .ar-meta');
       if (apptMeta) apptMeta.innerHTML = 'Dr. Sarah Chen · Virtual · <a onclick="event.stopPropagation();window.location.href=\'post-consult.html\'" style="color:var(--color-success);font-weight:600;cursor:pointer">Results ready — view report →</a>';
       var apptAction = document.querySelector('.appt-row:last-child .ar-action');
       if (apptAction) { apptAction.textContent = 'View'; apptAction.setAttribute('onclick', "event.stopPropagation();window.location.href='post-consult.html'"); }
-      // Hide booking hero once post-consult
-      var hero = document.getElementById('bookingHero');
-      if (hero) hero.style.display = 'none';
     }
   },
 ];
