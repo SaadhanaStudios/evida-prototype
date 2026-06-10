@@ -179,7 +179,7 @@
 
           <div class="progress-summary">
             <div class="big-num" id="setupCount">0</div>
-            <div class="label">of 5 tasks completed</div>
+            <div class="label">of 3 tasks completed</div>
             <div class="progress-track"><div class="fill" id="setupProgress" style="width:0%"></div></div>
           </div>
 
@@ -259,7 +259,7 @@
             <span class="btn-spacer"></span>
             <div class="btn-right">
               <button class="btn btn-primary" onclick="window.location.href='booking.html'">Book Baseline</button>
-              <button class="btn btn-ghost muted" onclick="window.location.href='dashboard.html'" style="font-size:12px">Dashboard →</button>
+              <button class="btn btn-ghost muted" onclick="window.location.href='dashboard.html'" style="font-size:13px;font-weight:600">Skip setup for now →</button>
             </div>
           </div>
         </div>
@@ -485,7 +485,7 @@ function completeVerification() {
   EvidaStore.onboarding.completeTask('verify');
   setupCount = EvidaStore.onboarding.setupTasks().length;
   document.getElementById('setupCount').textContent = setupCount;
-  document.getElementById('setupProgress').style.width = (setupCount / 5 * 100) + '%';
+  document.getElementById('setupProgress').style.width = (setupCount / 3 * 100) + '%';
   document.getElementById('verifyAction').textContent = 'Done';
   closeVerification();
   showToast('Verification submitted');
@@ -493,7 +493,7 @@ function completeVerification() {
 }
 
 function checkAllDone() {
-  if (setupCount >= 5) {
+  if (setupCount >= 3) {
     EvidaStore.onboarding.markCompleted();
     setTimeout(function() {
       showToast('All tasks complete! Taking you to your dashboard');
@@ -524,7 +524,7 @@ function toggleSetup(el, type) {
   EvidaStore.onboarding.completeTask(type);
   setupCount = EvidaStore.onboarding.setupTasks().length;
   document.getElementById('setupCount').textContent = setupCount;
-  document.getElementById('setupProgress').style.width = (setupCount / 5 * 100) + '%';
+  document.getElementById('setupProgress').style.width = (setupCount / 3 * 100) + '%';
   el.querySelector('.setup-action').textContent = 'Done';
   showToast('Task completed');
   checkAllDone();

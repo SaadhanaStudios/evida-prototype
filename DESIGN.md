@@ -168,7 +168,7 @@ The palette, typography, spacing, components, motion, and voice rules below were
 ### Page Structure
 
 - **Header:** Product header with logo, navigation (or hamburger on mobile), user menu. Height `64px` on desktop, `56px` on mobile.
-- **Sidebar (Dashboard):** Dark navy (`--evida-navy`) background, white icon/text, active state uses `--evida-teal`. Width `280px` expanded, `64px` collapsed.
+- **Sidebar (Dashboard):** `--evida-teal` background, white icon/text. Active state: `rgba(255,255,255,0.12)` background with `3px solid white` left border. Width `240px` on desktop (prototype implementation). Note: product decision to use teal (not navy) for brand warmth — this overrides the original navy spec.
 - **Content area:** White/light background, card-based layout for dashboard widgets.
 - **Footer (Marketing):** 3-column grid, navy background, white text, `--evida-teal` accent links.
 
@@ -235,7 +235,7 @@ The palette, typography, spacing, components, motion, and voice rules below were
 
 - **Primary (desktop):** Horizontal bar, `40px` item height, active state has `2px` teal bottom border.
 - **Sidebar (dashboard):** Vertical nav, `44px` item height, icon + label, `8px` radius on hover, teal left border on active.
-- **Mobile bottom nav:** Fixed `64px` bar, 4–5 icons with labels, active state teal.
+- **Mobile bottom nav:** Fixed `64px` bar, 5 slots: **Dashboard · Data & Insights · Ask Evi · Appointments · More**. Wearables accessible via the More overflow sheet. Active state teal.
 - **Tabs:** Horizontal, `36px` height, active tab has bottom indicator in `--evida-teal`.
 
 ### Modals
@@ -350,7 +350,8 @@ The palette, typography, spacing, components, motion, and voice rules below were
 - ❌ Aggressive shadows on dashboard cards — subtle separation only.
 - ❌ Warm beige/cream/peach page backgrounds — Evida uses cool neutrals (`#F7F8FA`).
 - ❌ Emoji as feature icons — use the Evida icon or labelled stubs.
-- ❌ Fake metrics or data in dashboards — use labelled placeholders ("—") when real data isn't available.
+- ❌ Fake metrics or data in dashboards — use labelled placeholders ("—") when real data isn't available. Exception: prototype/UAT mode may show realistic demo values so stakeholders can evaluate the full product experience.
+- ❌ Using `--evida-navy` for the sidebar — the sidebar uses `--evida-teal` (product decision for brand warmth; the original navy spec was superseded).
 
 ### Interaction
 

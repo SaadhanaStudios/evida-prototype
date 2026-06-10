@@ -78,7 +78,7 @@ function showToast(msg) {
 }
 
 /* ---- Bottom Nav Active Highlighter ---- */
-var SHEET_PAGES = ['messages', 'ask-evi', 'profile', 'settings', 'faq', 'documents', 'post-consult'];
+var SHEET_PAGES = ['messages', 'ask-evi', 'profile', 'settings', 'faq', 'documents', 'post-consult', 'wearables'];
 function initBottomNav() {
   var items = document.querySelectorAll('.bottom-nav .nav-item');
   var page = window.location.pathname.split('/').pop().replace(/\.html$/, '') || 'dashboard';

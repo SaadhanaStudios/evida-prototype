@@ -111,25 +111,6 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
-  .protocol-bar {
-    display: flex; gap: 0; margin-bottom: 16px;
-    background: var(--evida-surface); border-radius: var(--radius-md);
-    border: 1px solid var(--evida-border); overflow: hidden;
-  }
-  .protocol-bar .pb-step {
-    flex: 1; padding: 10px 6px; text-align: center; font-size: 11px; font-weight: 600;
-    position: relative; color: var(--evida-muted);
-    transition: color 150ms;
-  }
-  .protocol-bar .pb-step + .pb-step { border-left: 1px solid var(--evida-border); }
-  .protocol-bar .pb-step .pb-letter {
-    display: block; font-size: 15px; margin-bottom: 1px; font-weight: 700;
-    font-family: var(--font-display);
-  }
-  .protocol-bar .pb-step.pb-track { color: var(--evida-teal); }
-  .protocol-bar .pb-step.pb-tailor { color: var(--evida-amber); }
-  .protocol-bar .pb-step.pb-act { color: var(--color-success); }
-
   @media (min-width: 1024px) {
     :root { --header-h: 64px; }
     .app-body { flex: 1; padding: 24px 32px; }
@@ -210,22 +191,28 @@
           <span class="ia-action" style="color:white" onclick="document.getElementById('celebrationBanner').style.display='none'">Dismiss</span>
         </div>
         
-        <!-- Track → Tailor → Act protocol bar -->
-        <div class="protocol-bar">
-          <div class="pb-step pb-active pb-track"><span class="pb-letter">T</span>Track</div>
-          <div class="pb-step pb-tailor"><span class="pb-letter">→</span>Tailor</div>
-          <div class="pb-step pb-act"><span class="pb-letter">✓</span>Act</div>
+        <!-- Booking hero CTA -->
+        <div class="evida-card-bordered" id="bookingHero" onclick="window.location.href='booking.html'" style="cursor:pointer;padding:20px;margin-bottom:12px;border-color:var(--color-primary);border-width:1.5px;transition:box-shadow 150ms" onmouseenter="this.style.boxShadow='var(--shadow-sm)'" onmouseleave="this.style.boxShadow=''">
+          <div style="font-size:10px;font-weight:700;color:var(--color-primary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">More than just a health check</div>
+          <div style="font-size:17px;font-weight:700;margin-bottom:10px;color:var(--evida-fg)">Book your Membership Baseline</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
+            <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>42-marker blood panel at a Randox clinic</div>
+            <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>45-min virtual GP consultation</div>
+            <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Personalised prevention plan</div>
+            <div style="font-size:12px;color:var(--evida-fg-secondary);display:flex;gap:7px;align-items:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>12 months of biomarker tracking</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);font-variant-numeric:tabular-nums">£320<span style="font-size:13px;font-weight:400;color:var(--evida-muted)">/year</span></div>
+            <button class="btn btn-primary btn-sm" style="pointer-events:none">Book now →</button>
+          </div>
         </div>
 
-        <!-- Pathway choice — the visual hero -->
-        <div class="section-title"><span>Choose your next step</span></div>
-        <div class="evida-card-bordered pathway-card" onclick="window.location.href='booking.html'">
-          <span class="pw-letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg></span>
-          <div class="pw-info">
-            <div class="pw-title">Membership Baseline</div>
-            <div class="pw-desc">Full blood panel + GP consult + personalised prevention plan — £320 / year</div>
-          </div>
-          <span class="pw-action">Book →</span>
+        <!-- Trust signals -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">CQC registered</span>
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GMC licensed GPs</span>
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GDPR compliant</span>
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-teal-light);color:var(--evida-teal-dark)">500+ UK members</span>
         </div>
 
         <!-- At a glance: 2 live metrics + inline appts -->
@@ -246,7 +233,8 @@
           </div>
           <div class="evida-card-bordered stat-card stat-empty">
             <div class="label">Health score</div>
-            <div class="value">— After first consult</div>
+            <div class="value" style="font-size:13px;line-height:1.4;color:var(--evida-fg-secondary)">Unlocks after<br>your first consult</div>
+            <div class="trend neutral" style="margin-top:4px">~3 weeks after baseline</div>
           </div>
         </div>
 
@@ -270,7 +258,7 @@
               <div class="ar-title">GP consultation (virtual)</div>
               <div class="ar-meta">Dr. Sarah Chen · 14:00 · <span style="color:var(--evida-amber);font-weight:600">Results pending</span></div>
             </div>
-            <span class="ar-action" onclick="event.stopPropagation();showToast('Joined waiting room')">Join</span>
+            <span class="ar-action" onclick="event.stopPropagation();showToast('Preparation checklist — see your pre-consult tasks below')">Prepare</span>
           </div>
         </div>
 
@@ -279,9 +267,9 @@
           <div class="checklist-header" onclick="toggleChecklist()">
             <div class="ch-progress" id="chProgress">1/6</div>
             <div class="ch-text">Pre-consult checklist</div>
-            <span class="ch-chevron" id="chChevron">▾</span>
+            <span class="ch-chevron open" id="chChevron">▾</span>
           </div>
-          <div class="checklist-body" id="chBody">
+          <div class="checklist-body open" id="chBody">
             <div class="checklist-body-inner">
               <div class="task-item">
                 <div class="check done" onclick="this.classList.toggle('done');updateChecklist()"></div>
@@ -328,7 +316,7 @@
 
       <!-- PANEL: Appointments -->
       <div class="panel" id="panel-appointments">
-        <h3 class="text-h3" style="margin-bottom:16px">Your appointments</h3>
+        <h2 class="content-page-title">Appointments</h2>
         <div class="appt-card" onclick="showToast('View details')">
           <div class="date-badge"><span class="day">7</span><span class="month">Jun</span></div>
           <div class="info">
@@ -352,6 +340,7 @@
 
       <!-- PANEL: Documents -->
       <div class="panel" id="panel-documents">
+        <h2 class="content-page-title">Documents</h2>
         <div style="margin-bottom:12px">
           <div class="doc-item" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="showToast('Opening health check report…')">
             <span style="width:36px;height:36px;border-radius:var(--radius-sm);background:var(--evida-teal-light);display:flex;align-items:center;justify-content:center;color:var(--evida-teal-dark);flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
@@ -376,6 +365,7 @@
 
       <!-- PANEL: Ask Evi -->
       <div class="panel" id="panel-ask-evi">
+        <h2 class="content-page-title">Ask Evi</h2>
         <div class="evida-card" style="margin-bottom:16px;font-size:12px;color:var(--evida-fg-secondary);line-height:1.4">
           Ask Evi provides general health information only, not medical advice. Responses are non-diagnostic and reviewed by our clinical team. If you're worried about a symptom, <a class="btn-ghost" style="font-size:12px;font-weight:600" onclick="showToast('Book a consult')">book a consultation</a> with a GP.
         </div>
@@ -392,6 +382,7 @@
 
       <!-- PANEL: Messages -->
       <div class="panel" id="panel-messages">
+        <h2 class="content-page-title">Messages</h2>
         <div style="margin-bottom:12px">
           <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius-sm);background:var(--evida-surface);border:1px solid var(--evida-border);margin-bottom:8px;cursor:pointer" onclick="showToast('Opening conversation with Dr. Chen…')">
             <span style="width:36px;height:36px;border-radius:50%;background:var(--evida-teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0">SC</span>
@@ -425,7 +416,7 @@
   <nav class="bottom-nav" id="bottomNav">
     <button class="nav-item active" data-panel="dashboard"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
     <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
-    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="ask-evi" onclick="window.location.href='ask-evi.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="label">Ask Evi</span></button>
     <button class="nav-item" data-panel="appointments"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
     <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
   </nav>
@@ -436,12 +427,12 @@
     <div class="sheet-handle"></div>
     <div class="sheet-label">More</div>
     <div class="sheet-list">
-      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
-      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
-      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
-      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
-      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
-      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      <div class="sheet-item" onclick="navTo('wearables.html')"><span class="sll">Wearables</span></div>
+      <div class="sheet-item" onclick="navTo('documents.html')"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="navTo('messages.html')"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="navTo('faq.html')"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="navTo('profile.html')"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="navTo('settings.html')"><span class="sll">Settings</span></div>
       
     </div>
     <button class="sheet-close" onclick="closeNavSheet()">Close</button>
@@ -528,24 +519,15 @@ function updateChecklist() {
     hasDevice = devices.length > 0;
   } catch(_) {}
 
-  // Toggle stat cards based on device presence
+  // Always show realistic demo data so prototype gives a true product feel
   var statCards = document.querySelectorAll('.stat-card');
   if (statCards.length >= 2) {
-    if (hasDevice) {
-      statCards[0].querySelector('.value').textContent = '6,842';
-      statCards[0].querySelector('.trend').textContent = '↑ 12% vs last week';
-      statCards[0].querySelector('.trend').className = 'trend up';
-      statCards[1].querySelector('.value').textContent = '7.2h';
-      statCards[1].querySelector('.trend').textContent = '→ Stable';
-      statCards[1].querySelector('.trend').className = 'trend neutral';
-    } else {
-      statCards[0].querySelector('.value').textContent = '—';
-      statCards[0].querySelector('.trend').textContent = 'Connect a wearable to see steps';
-      statCards[0].querySelector('.trend').className = 'trend neutral';
-      statCards[1].querySelector('.value').textContent = '—';
-      statCards[1].querySelector('.trend').textContent = 'Connect a wearable to see sleep';
-      statCards[1].querySelector('.trend').className = 'trend neutral';
-    }
+    statCards[0].querySelector('.value').textContent = '6,842';
+    statCards[0].querySelector('.trend').textContent = '↑ 12% vs last week';
+    statCards[0].querySelector('.trend').className = 'trend up';
+    statCards[1].querySelector('.value').textContent = '7.2h';
+    statCards[1].querySelector('.trend').textContent = '→ Stable';
+    statCards[1].querySelector('.trend').className = 'trend neutral';
   }
 
   if (EvidaStore.booking.isConfirmed()) {
@@ -595,11 +577,18 @@ window.__UAT_STATES = [
       sub.textContent = 'Your results have been reviewed. View your prevention plan.';
       badge.textContent = 'Your results are ready';
       document.getElementById('onboardingBanner').style.display = 'none';
-      document.getElementById('onboardingBanner').style.display = 'none';
       document.getElementById('idReminder').style.display = 'none';
       document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.add('done'); c.textContent = 'OK'; });
       updateChecklist();
       EvidaStore.booking.confirm();
+      // Update appointment badge to "Results ready" and add View Results link
+      var apptMeta = document.querySelector('.appt-row .ar-info .ar-meta');
+      if (apptMeta) apptMeta.innerHTML = 'Dr. Sarah Chen · Virtual · <a onclick="event.stopPropagation();window.location.href=\'post-consult.html\'" style="color:var(--color-success);font-weight:600;cursor:pointer">Results ready — view report →</a>';
+      var apptAction = document.querySelector('.appt-row:last-child .ar-action');
+      if (apptAction) { apptAction.textContent = 'View'; apptAction.setAttribute('onclick', "event.stopPropagation();window.location.href='post-consult.html'"); }
+      // Hide booking hero once post-consult
+      var hero = document.getElementById('bookingHero');
+      if (hero) hero.style.display = 'none';
     }
   },
 ];

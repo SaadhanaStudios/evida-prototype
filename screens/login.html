@@ -154,6 +154,7 @@
       <div class="screen active" id="screen-landing">
         <div class="landing-hero">
           <img class="lh-logo" src="../build/logo.svg" alt="Evida">
+          <div style="font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">More than just a health check</div>
           <h1>Preventive health,<br>powered by data</h1>
           <div class="lh-sub">Clinician-led membership. Comprehensive blood panel, GP consultation, personalised prevention plan, and 12 months of insights.</div>
           <div class="lh-price">£320<span class="lh-period">/year</span></div>
@@ -186,6 +187,11 @@
           Already a member? <a onclick="showScreen('screen-signin')">Sign in</a>
         </div>
         <p class="lh-cancel">Cancel within 14 days for a full refund</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px">
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">CQC registered</span>
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GMC licensed GPs</span>
+          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GDPR compliant</span>
+        </div>
       </div>
 
       <!-- SCREEN 1: SIGN IN -->
@@ -385,7 +391,7 @@
             <span class="btn-spinner"></span>
           </button>
           <div style="text-align:center;margin-top:12px">
-            <button class="btn btn-ghost" id="doLaterBtn" onclick="handleDoLater()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">Do this later — create account without payment</button>
+            <button class="btn btn-ghost" id="doLaterBtn" onclick="handleDoLater()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — create my account</button>
           </div>
           <div class="error-banner" id="paymentError" style="margin-top:12px">
             <svg class="warning-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>

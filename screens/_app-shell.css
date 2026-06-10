@@ -288,6 +288,15 @@ button.send svg { width: 18px; height: 18px; }
 /* Section divider */
 .section-divider { height: 1px; background: var(--evida-border); margin: 16px 0; }
 
+/* ---- Content Page Title (shown in content area for desktop where header is hidden) ---- */
+.content-page-title {
+  font-size: 20px; font-weight: 700; color: var(--evida-fg);
+  margin-bottom: 16px; line-height: 1.2; letter-spacing: -0.01em;
+}
+@media (min-width: 1024px) {
+  .content-page-title { font-size: 24px; margin-bottom: 24px; }
+}
+
 /* ---- Dark Mode (manual toggle only — default is light) ---- */
 html.dark-mode {
   --evida-bg: #121317;
