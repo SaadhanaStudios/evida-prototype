@@ -771,7 +771,7 @@ function handlePayment() {
     btn.classList.remove('btn-loading');
     btn.disabled = false;
     if (Math.random() > 0.2) {
-      showScreen('screen-verify-email');
+      showScreen('screen-success');
     } else {
       document.getElementById('paymentError').classList.add('visible');
     }
