@@ -58,6 +58,7 @@
     onboardingCompleted:   'evida:onboarding:completed',
     onboardingSetupTasks:  'evida:onboarding:setup:tasks',
     onboardingTour:        'evida:onboarding:tour',
+    idVerified:            'evida:profile:id-verified',
     partialAccount:        'evida:partial:account',
     profileSaved:          'evida:profile:saved',
     wearableDevices:       'evida:wearable:devices'
@@ -193,9 +194,11 @@
     setNotifCount: function (n) { return writeRaw(KEYS.notifCount, String(n)); },
     darkMode: function () { return readRaw(KEYS.darkMode, null) === '1'; },
     setDarkMode: function (on) { return writeRaw(KEYS.darkMode, on ? '1' : '0'); },
-    /** @param {string} channel - 'email', 'push', 'sms', 'calendar' @returns {boolean} */
+    /** @param {string} channel @returns {boolean} */
     notifChannel: function (channel) {
-      var defaults = { email: true, push: true, sms: false, calendar: true };
+      var defaults = { email: true, push: true, sms: false, calendar: true,
+                       'appt-sms': true, 'appt-email': true, 'checklist-email': true,
+                       newsletter: true, promo: false };
       var all = readJSON(KEYS.notifChannels, null);
       return all && typeof all[channel] === 'boolean' ? all[channel] : defaults[channel] !== undefined ? defaults[channel] : true;
     },
@@ -243,6 +246,15 @@
     clear: function () { return removeRaw(KEYS.profileSaved); }
   };
 
+  /* ---------------------------------------------------------------------------
+     idVerification — has the member uploaded their photo ID?
+     ------------------------------------------------------------------------ */
+  var idVerification = {
+    isVerified: function () { return readRaw(KEYS.idVerified, null) === 'true'; },
+    setVerified: function () { return writeRaw(KEYS.idVerified, 'true'); },
+    clear: function () { return removeRaw(KEYS.idVerified); }
+  };
+
   global.EvidaStore = {
     KEYS: KEYS,
     wearables: wearables,
@@ -253,6 +265,18 @@
     account: account,
     profile: profile,
     prefs: prefs,
+    idVerification: idVerification,
+    /** Clear all product state and legacy UAT state keys. */
+    clearAll: function () {
+      booking.clear(); questionnaire.clear(); wearables.clear();
+      consultations.reset(); idVerification.clear();
+      try {
+        ['login.html','booking.html','dashboard.html','post-consult.html',
+         'wearables.html','insights.html','faq.html'].forEach(function (p) {
+          localStorage.removeItem('evida:uat:state:' + p);
+        });
+      } catch (_) {}
+    },
     /* escape hatches for one-off / UAT use — prefer a namespace method */
     _readJSON: readJSON,
     _writeJSON: writeJSON,

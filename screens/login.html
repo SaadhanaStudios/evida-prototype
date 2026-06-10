@@ -600,10 +600,14 @@ document.addEventListener('keydown', function(e) {
 })();
 
 // Resume payment — payment now happens in booking.html, redirect there
+// Also handle ?after=booking (book-first return path)
 (function() {
-  var m = location.search.match(/[?&]resume=([^&]*)/);
-  if (m && m[1] === 'payment') {
+  var params = new URLSearchParams(location.search);
+  if (params.get('resume') === 'payment') {
     window.location.href = 'booking.html?flow=signup&resume=payment';
+  }
+  if (params.get('after') === 'booking') {
+    showScreen('screen-signup');
   }
 })();
 
@@ -621,13 +625,11 @@ function resumeSignup() {
 }
 
 function handleCreateAccount() {
-  try {
-    EvidaStore.account.partial({
-      name: document.getElementById('suName').value,
-      email: document.getElementById('suEmail').value,
-      savedAt: new Date().toISOString()
-    });
-  } catch(_) {}
+  var name  = document.getElementById('suName').value  || 'James Chen';
+  var email = document.getElementById('suEmail').value || 'james.chen@gmail.com';
+  var data  = { name: name, email: email, savedAt: new Date().toISOString() };
+  try { EvidaStore.account.setPartial(data); } catch(_) {}
+  try { EvidaStore.account.save(data); } catch(_) {}
   window.location.href = 'booking.html?flow=signup';
 }
 
@@ -824,55 +826,17 @@ document.getElementById('legalModal').addEventListener('click', function(e) {
   if (e.target === this) closeLegalModal();
 });
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'landing', label: 'Membership landing',
-    setup: function() { showScreen('screen-landing'); }
-  },
-  { id: 'signin', label: 'Sign in',
-    setup: function() {
-      showScreen('screen-signin');
-      dismissError('signinError');
-      document.getElementById('signinEmail').value = '';
-      document.getElementById('signinPass').value = '';
-    }
-  },
-  { id: 'signin-locked', label: 'Locked account',
-    setup: function() {
-      showScreen('screen-signin');
-      document.getElementById('signinEmail').value = 'locked@evida.co.uk';
-      document.getElementById('signinPass').value = '';
-      showFormError('signinError', 'This account has been temporarily locked due to too many failed attempts. Please reset your password or try again in 30 minutes.');
-    }
-  },
-  { id: 'signup', label: 'Create account',
-    setup: function() {
-      showScreen('screen-signup');
-      nextSignupStep(1);
-      document.getElementById('suName').value = 'James Chen';
-      document.getElementById('suEmail').value = 'james@example.com';
-      document.getElementById('suPass').value = 'MyHealth2026!';
-      document.getElementById('suPhone').value = '07700 900000';
-      document.getElementById('suDob').value = '14/03/1988';
-      document.getElementById('suAddress').value = '42 Maltby Street, London SE1 3PA';
-    }
-  },
-  { id: 'verify-email', label: 'Email verify',
-    setup: function() {
-      showScreen('screen-verify-email');
-    }
-  },
-  { id: 'success', label: 'Welcome',
-    setup: function() {
-      showScreen('screen-success');
-    }
-  },
-  { id: 'account-pending', label: 'Account pending payment',
-    setup: function() {
-      showScreen('screen-account-pending');
-    }
-  },
-];
+// Pre-fill signup form with demo data so testers can click through without typing
+(function() {
+  try {
+    document.getElementById('suName').value    = 'James Chen';
+    document.getElementById('suEmail').value   = 'james.chen@gmail.com';
+    document.getElementById('suPhone').value   = '07700 900123';
+    document.getElementById('suDob').value     = '14/03/1988';
+    document.getElementById('suAddress').value = '12 Harley Street, London W1G 9PQ';
+    document.getElementById('suTerms').checked = true;
+  } catch(_) {}
+})();
 
 </script>
 <script src="_uat.js"></script>

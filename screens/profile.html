@@ -365,6 +365,7 @@ function handleIDUpload(e) {
   document.getElementById('idUploadArea').style.borderColor = 'var(--evida-teal)';
   document.getElementById('idStatusBadge').className = 'id-status uploaded';
   document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+  EvidaStore.idVerification.setVerified();
   showToast('ID uploaded for review');
 }
 
@@ -374,7 +375,44 @@ function retakeID() {
 
 loadProfile();
 
+// Restore questionnaire from store on load
+(function() {
+  var q = EvidaStore.questionnaire.get();
+  if (!q) return;
+  if (q.conditions)    document.getElementById('hqConditions').value    = q.conditions;
+  if (q.medications)   document.getElementById('hqMedications').value   = q.medications;
+  if (q.familyHistory) document.getElementById('hqFamilyHistory').value = q.familyHistory;
+  if (q.allergies)     document.getElementById('hqAllergies').value     = q.allergies;
+  if (q.smoking)       document.getElementById('hqSmoking').value       = q.smoking;
+  if (q.alcohol)       document.getElementById('hqAlcohol').value       = q.alcohol;
+  if (q.exercise)      document.getElementById('hqExercise').value      = q.exercise;
+  if (q.completedAt) {
+    var ts = document.getElementById('hqTimestamp');
+    if (ts) ts.textContent = 'Last updated: ' +
+      new Date(q.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+})();
+
+// Restore ID verification status on load
+(function() {
+  if (!EvidaStore.idVerification.isVerified()) return;
+  document.getElementById('idUploadContent').style.display   = 'none';
+  document.getElementById('idUploadedContent').style.display = 'block';
+  document.getElementById('idUploadArea').style.borderColor  = 'var(--evida-teal)';
+  document.getElementById('idStatusBadge').className   = 'id-status uploaded';
+  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+})();
+
 function saveQuestionnaire() {
+  EvidaStore.questionnaire.save({
+    conditions:    document.getElementById('hqConditions').value,
+    medications:   document.getElementById('hqMedications').value,
+    familyHistory: document.getElementById('hqFamilyHistory').value,
+    allergies:     document.getElementById('hqAllergies').value,
+    smoking:       document.getElementById('hqSmoking').value,
+    alcohol:       document.getElementById('hqAlcohol').value,
+    exercise:      document.getElementById('hqExercise').value,
+  });
   var now = new Date();
   var formatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   var ts = document.getElementById('hqTimestamp');

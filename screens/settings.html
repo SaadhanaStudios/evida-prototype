@@ -323,7 +323,7 @@ function confirmDeleteAccount() {
 
 // Restore notification channel states from store on load
 (function restoreNotifChannels() {
-  ['email', 'push', 'sms', 'calendar'].forEach(function(ch) {
+  ['email', 'push', 'sms', 'calendar', 'appt-sms', 'appt-email', 'checklist-email', 'newsletter', 'promo'].forEach(function(ch) {
     var on = EvidaStore.prefs.notifChannel(ch);
     var toggles = document.querySelectorAll('.settings-row .toggle');
     for (var i = 0; i < toggles.length; i++) {

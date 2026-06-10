@@ -613,6 +613,14 @@ function selectGpTime(time) {
 }
 
 function goStep(n) {
+  if (n === 4) {
+    // Auto-select first available GP slot so tester can click through
+    var firstGp = gpSlots.find(function(s) { return s.date >= '2026-06-12'; });
+    if (firstGp && !state.gpDate) {
+      selectGpDate(firstGp.date);
+      if (firstGp.times.length > 0) selectGpTime(firstGp.times[0]);
+    }
+  }
   if (n === 6) {
     var total = 320 + addonPrices[state.addon];
     document.getElementById('payBtnText').textContent = 'Pay £' + total + ' — Activate membership';
@@ -772,9 +780,8 @@ function addToCalendar() {
 }
 
 // UAT state definitions
-window.__UAT_STATES = [
-  { id: 'step1', label: 'Plan', setup: function() { goStep(1); } },
-  { id: 'step2', label: 'Add-ons', setup: function() { goStep(2); } },
+// Legacy __UAT_STATES removed — use the gear-icon Demo controls panel instead
+var __LEGACY_UAT = [
   { id: 'step3', label: 'Clinic',
     setup: function() {
       goStep(3);
@@ -831,20 +838,25 @@ window.__UAT_STATES = [
       document.getElementById('progressFill').style.width = '83%';
     }
   },
-];
+]; // end legacy
 
 init();
 
 // Handle flow params
 (function() {
   var params = new URLSearchParams(location.search);
-  var flow = params.get('flow');
-  var entry = params.get('entry');
-  if (flow === 'signup') {
-    goStep(3); // plan already decided via signup — skip to clinic selection
-  }
-  if (entry === 'bookfirst') {
-    // No skip — user goes through full booking; step 7 handles CTA swap
+  var flow   = params.get('flow');
+  var resume = params.get('resume');
+  if (flow === 'signup' && resume === 'payment') {
+    goStep(6); // returning to pay — skip directly to payment
+  } else if (flow === 'signup') {
+    goStep(3); // plan decided via signup — skip to clinic selection
+    // Auto-select first clinic and blood slot so tester can click through
+    selectClinic(clinics[0].id);
+    if (bloodSlots.length > 0) {
+      selectBloodDate(bloodSlots[0].date);
+      if (bloodSlots[0].times.length > 0) selectBloodTime(bloodSlots[0].times[0]);
+    }
   }
 })();
 </script>

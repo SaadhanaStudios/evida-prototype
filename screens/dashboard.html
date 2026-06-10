@@ -505,20 +505,37 @@ function updateChecklist() {
   } catch(_) {}
 })();
 
-// Adaptive status bar + stat cards
+// Adaptive status bar — reads real store state on every load
 (function initStatusBar() {
-  var sb = document.getElementById('sbGreeting');
-  var sub = document.getElementById('sbSub');
+  var sub   = document.getElementById('sbSub');
   var badge = document.getElementById('sbBadge');
 
-  // Check for connected devices
-  var hasDevice = false;
-  try {
-    var devices = EvidaStore.wearables.list();
-    hasDevice = devices.length > 0;
-  } catch(_) {}
+  var booked      = EvidaStore.booking.isConfirmed();
+  var idDone      = EvidaStore.idVerification.isVerified();
+  var qDone       = EvidaStore.questionnaire.isCompleted();
+  var wDone       = EvidaStore.wearables.list().length > 0;
+  var postConsult = EvidaStore.consultations.hadConsultation();
 
-  // Always show realistic demo data so prototype gives a true product feel
+  // Auto-check checklist items based on real state
+  var checks = document.querySelectorAll('#chBody .check');
+  if (booked      && checks[0]) checks[0].classList.add('done');
+  if (idDone      && checks[1]) checks[1].classList.add('done');
+  if (qDone       && checks[2]) checks[2].classList.add('done');
+  if (wDone       && checks[3]) checks[3].classList.add('done');
+  updateChecklist();
+
+  // Hide booking hero once booking exists
+  if (booked || postConsult) document.getElementById('bookingHero').style.display = 'none';
+
+  // Status bar badge + subtitle
+  if (postConsult) {
+    badge.textContent = 'Your results are ready';
+    sub.textContent   = 'Your results have been reviewed. View your prevention plan.';
+  } else if (booked) {
+    sub.textContent   = 'Your Baseline is booked. Complete your pre-consult tasks below.';
+  }
+
+  // Always show realistic stat card data
   var statCards = document.querySelectorAll('.stat-card');
   if (statCards.length >= 2) {
     statCards[0].querySelector('.value').textContent = '6,842';
@@ -528,66 +545,8 @@ function updateChecklist() {
     statCards[1].querySelector('.trend').textContent = '→ Stable';
     statCards[1].querySelector('.trend').className = 'trend neutral';
   }
-
-  if (EvidaStore.booking.isConfirmed()) {
-    sub.textContent = 'Your Baseline is booked. Complete your pre-consult tasks below.';
-  }
-  updateChecklist();
 })();
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'pre-booking', label: 'Getting started',
-    setup: function() {
-      var sb = document.getElementById('sbGreeting');
-      var sub = document.getElementById('sbSub');
-      sb.textContent = 'Welcome back, James';
-      sub.textContent = 'Ready to take your next step with Evida';
-      document.getElementById('bookingHero').style.display = '';
-      document.getElementById('onboardingBanner').style.display = 'none';
-      document.getElementById('idReminder').style.display = 'none';
-      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.remove('done'); });
-      updateChecklist();
-      EvidaStore.booking.clear();
-    }
-  },
-  { id: 'post-booking', label: 'Baseline booked',
-    setup: function() {
-      var sb = document.getElementById('sbGreeting');
-      var sub = document.getElementById('sbSub');
-      sb.textContent = 'Welcome back, James';
-      sub.textContent = 'Your Baseline is booked. Complete your pre-consult tasks below.';
-      document.getElementById('bookingHero').style.display = 'none';
-      document.getElementById('onboardingBanner').style.display = '';
-      document.getElementById('idReminder').style.display = '';
-      var checks = document.querySelectorAll('#chBody .check');
-      checks.forEach(function(c) { c.classList.remove('done'); });
-      if (checks[0]) checks[0].classList.add('done');
-      updateChecklist();
-      EvidaStore.booking.confirm();
-    }
-  },
-  { id: 'post-consult', label: 'Results ready',
-    setup: function() {
-      var sb = document.getElementById('sbGreeting');
-      var sub = document.getElementById('sbSub');
-      sb.textContent = 'Welcome back, James';
-      sub.textContent = 'Your results have been reviewed. View your prevention plan.';
-      document.getElementById('bookingHero').style.display = 'none';
-      document.getElementById('onboardingBanner').style.display = 'none';
-      document.getElementById('idReminder').style.display = 'none';
-      document.querySelectorAll('#chBody .check').forEach(function(c) { c.classList.add('done'); });
-      updateChecklist();
-      var badge = document.getElementById('sbBadge');
-      if (badge) badge.textContent = 'Your results are ready';
-      EvidaStore.booking.confirm();
-      var apptMeta = document.querySelector('.appt-row .ar-info .ar-meta');
-      if (apptMeta) apptMeta.innerHTML = 'Dr. Sarah Chen · Virtual · <a onclick="event.stopPropagation();window.location.href=\'post-consult.html\'" style="color:var(--color-success);font-weight:600;cursor:pointer">Results ready — view report →</a>';
-      var apptAction = document.querySelector('.appt-row:last-child .ar-action');
-      if (apptAction) { apptAction.textContent = 'View'; apptAction.setAttribute('onclick', "event.stopPropagation();window.location.href='post-consult.html'"); }
-    }
-  },
-];
 
 // Show payment pending banner if navigated from onboarding without payment
 (function() {
