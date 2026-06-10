@@ -335,37 +335,6 @@ function updateAvailableDevices() {
   });
 }
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'no-devices', label: 'No devices',
-    setup: function() {
-      // Hide UI only — do NOT clear the shared localStorage key so cross-screen data survives
-      document.getElementById('connectedDevicesSection').style.display = 'none';
-      document.getElementById('noDeviceState').style.display = 'block';
-      document.getElementById('dataPreview').style.display = 'none';
-      document.getElementById('connectedDevicesList').innerHTML = '';
-      document.querySelectorAll('.device-card .action').forEach(function(a) { a.textContent = 'Connect'; });
-    }
-  },
-  { id: 'one-device', label: '1 device',
-    setup: function() {
-      setDevices([{ name: 'Apple Watch', connectedAt: new Date().toISOString() }]);
-      renderConnectedDevices();
-      updateAvailableDevices();
-    }
-  },
-  { id: 'multi-device', label: '2 devices',
-    setup: function() {
-      setDevices([
-        { name: 'Apple Watch', connectedAt: new Date().toISOString() },
-        { name: 'Oura Ring', connectedAt: new Date().toISOString() }
-      ]);
-      renderConnectedDevices();
-      updateAvailableDevices();
-    }
-  },
-];
-
 renderConnectedDevices();
 updateAvailableDevices();
 </script>

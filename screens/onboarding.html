@@ -537,54 +537,6 @@ if (tourStep > 1) {
   document.getElementById('tour' + tourStep).classList.add('active');
 }
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'step1', label: 'Welcome',
-    setup: function() {
-      tourStep = 1;
-      document.querySelectorAll('.tour-card').forEach(function(c) { c.classList.remove('active'); });
-      document.getElementById('tour1').classList.add('active');
-      renderDots();
-    }
-  },
-  { id: 'step2', label: 'Protocol',
-    setup: function() {
-      tourStep = 2;
-      document.querySelectorAll('.tour-card').forEach(function(c) { c.classList.remove('active'); });
-      document.getElementById('tour2').classList.add('active');
-      renderDots();
-    }
-  },
-  { id: 'step3-empty', label: 'Setup (empty)',
-    setup: function() {
-      tourStep = 3;
-      setupCount = 0;
-      document.querySelectorAll('.tour-card').forEach(function(c) { c.classList.remove('active'); });
-      document.getElementById('tour3').classList.add('active');
-      renderDots();
-      document.getElementById('setupCount').textContent = '0';
-      document.getElementById('setupProgress').style.width = '0%';
-    }
-  },
-  { id: 'step3-done', label: 'Setup (done)',
-    setup: function() {
-      tourStep = 3;
-      document.querySelectorAll('.tour-card').forEach(function(c) { c.classList.remove('active'); });
-      document.getElementById('tour3').classList.add('active');
-      renderDots();
-      setupCount = 5;
-      document.getElementById('setupCount').textContent = '5';
-      document.getElementById('setupProgress').style.width = '100%';
-      document.querySelectorAll('.setup-card').forEach(function(c) {
-        var icon = c.querySelector('.status-icon');
-        icon.className = 'status-icon done';
-        icon.textContent = 'OK';
-        c.querySelector('.setup-action').textContent = 'Done';
-      });
-    }
-  },
-];
-
 </script>
 <script src="_uat.js"></script>
 </body>

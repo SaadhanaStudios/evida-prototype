@@ -400,37 +400,6 @@ function applyFilter(searchTerm) {
   document.getElementById('noResults').style.display = visible === 0 && currentCat === 'all' ? 'block' : 'none';
 }
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'all', label: 'All items',
-    setup: function() {
-      switchCat('all', document.querySelectorAll('.cat-tab')[0]);
-      document.getElementById('searchInput').value = '';
-      applyFilter('');
-    }
-  },
-  { id: 'cat-membership', label: 'Membership',
-    setup: function() {
-      switchCat('membership', document.querySelectorAll('.cat-tab')[2]);
-      document.getElementById('searchInput').value = '';
-      applyFilter('');
-    }
-  },
-  { id: 'cat-wearables', label: 'Wearables FAQ',
-    setup: function() {
-      switchCat('wearables', document.querySelectorAll('.cat-tab')[4]);
-      document.getElementById('searchInput').value = '';
-      applyFilter('');
-    }
-  },
-  { id: 'search-results', label: 'Search results',
-    setup: function() {
-      switchCat('all', document.querySelectorAll('.cat-tab')[0]);
-      document.getElementById('searchInput').value = 'blood test';
-      applyFilter('blood test');
-    }
-  },
-];
 </script>
 <script src="_uat.js"></script>
 </body>

@@ -442,34 +442,6 @@ function saveQuestionnaire() {
   }
 })();
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'live', label: 'Live',
-    setup: function() { window.location.reload(); }
-  },
-  { id: 'no-devices', label: 'No devices',
-    setup: function() {
-      document.getElementById('deviceSummaryList').innerHTML = '<div class="text-body-small" style="color:var(--evida-muted);padding:8px 0">No devices connected. <a href="wearables.html" style="color:var(--color-link);text-decoration:none">Connect a wearable</a> to see your data here.</div>';
-    }
-  },
-  { id: 'id-verified', label: 'ID verified',
-    setup: function() {
-      document.getElementById('idStatusBadge').className = 'id-status verified';
-      document.getElementById('idStatusBadge').textContent = 'Verified';
-      document.getElementById('idUploadArea').querySelector('.file-label').textContent = 'ID verified — re-upload if needed';
-      document.getElementById('idUploadArea').querySelector('.file-desc').textContent = 'Your identity was verified on 1 Jun 2026';
-    }
-  },
-  { id: 'id-pending', label: 'ID pending',
-    setup: function() {
-      document.getElementById('idStatusBadge').className = 'id-status pending';
-      document.getElementById('idStatusBadge').textContent = 'Pending';
-      document.getElementById('idUploadContent').style.display = '';
-      document.getElementById('idUploadedContent').style.display = 'none';
-      document.getElementById('retakeBtn').style.display = 'none';
-    }
-  },
-];
 </script>
 </body>
 </html>

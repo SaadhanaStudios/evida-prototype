@@ -8,6 +8,33 @@
     smoking: 'never', alcohol: 'light', exercise: 'moderate'
   };
   var DEMO_WEARABLE = { id: 'apple-watch', name: 'Apple Watch Series 9', brand: 'Apple' };
+  var DEMO_ACCOUNT  = { name: 'James Chen', email: 'james.chen@gmail.com' };
+  var FAIL_PAY_KEY  = 'evida:demo:fail-payment';
+
+  function isoLocal(d) {
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  /* Booking dates are relative to today; past=true puts both behind us (post-consult). */
+  function demoBookingDetails(past) {
+    var blood = new Date(), gp;
+    if (past) {
+      blood.setDate(blood.getDate() - 12);
+      gp = new Date(); gp.setDate(gp.getDate() - 3);
+    } else {
+      blood.setDate(blood.getDate() + 1);
+      if (blood.getDay() === 0) blood.setDate(blood.getDate() + 1); // clinics closed Sundays
+      gp = new Date(blood);
+      var added = 0;
+      while (added < 5) { gp.setDate(gp.getDate() + 1); var dow = gp.getDay(); if (dow !== 0 && dow !== 6) added++; }
+    }
+    return { clinic: 'Randox — Oxford Circus', bloodDate: isoLocal(blood), bloodTime: '10:30', gpDate: isoLocal(gp), gpTime: '14:00' };
+  }
+  function seedBooked(past) {
+    EvidaStore.clearAll();
+    EvidaStore.account.save(Object.assign({}, DEMO_ACCOUNT, { savedAt: new Date().toISOString() }));
+    EvidaStore.booking.confirm(demoBookingDetails(past));
+  }
 
   var JOURNEYS = [
     {
@@ -22,8 +49,7 @@
       label: 'Baseline booked',
       desc: 'Booking confirmed, 33% ready',
       action: function () {
-        EvidaStore.clearAll();
-        EvidaStore.booking.confirm();
+        seedBooked();
         window.location.href = 'dashboard.html';
       }
     },
@@ -31,8 +57,7 @@
       label: 'Pre-consult complete',
       desc: 'All tasks done, 100% ready',
       action: function () {
-        EvidaStore.clearAll();
-        EvidaStore.booking.confirm();
+        seedBooked();
         EvidaStore.questionnaire.save(DEMO_QUESTIONNAIRE);
         EvidaStore.idVerification.setVerified();
         EvidaStore.wearables.connect(Object.assign({}, DEMO_WEARABLE, { connectedAt: new Date().toISOString() }));
@@ -43,8 +68,7 @@
       label: 'Post-consult',
       desc: 'Results ready, prevention plan',
       action: function () {
-        EvidaStore.clearAll();
-        EvidaStore.booking.confirm();
+        seedBooked(true);
         EvidaStore.questionnaire.save(DEMO_QUESTIONNAIRE);
         EvidaStore.idVerification.setVerified();
         EvidaStore.wearables.connect(Object.assign({}, DEMO_WEARABLE, { connectedAt: new Date().toISOString() }));
@@ -83,6 +107,8 @@
     '#demoPanel .dp-btn .dp-btn-label{font-size:12px;font-weight:600;display:block}' +
     '#demoPanel .dp-btn .dp-btn-desc{font-size:10px;color:rgba(255,255,255,0.45);margin-top:1px;display:block}' +
     '#demoPanel .dp-divider{height:1px;background:rgba(255,255,255,0.08);margin:8px 0}' +
+    '#demoPanel .dp-btn.armed{border-color:rgba(255,120,80,0.6);background:rgba(255,120,80,0.08)}' +
+    '#demoPanel .dp-btn.armed .dp-btn-label{color:#ff9d7a}' +
     '#demoPanel .dp-reset{display:block;width:100%;text-align:left;padding:7px 10px;border-radius:8px;' +
       'border:none;background:transparent;cursor:pointer;font-family:inherit;' +
       'font-size:12px;font-weight:600;color:rgba(255,100,100,0.8);transition:background 120ms}' +
@@ -101,6 +127,11 @@
         '<span class="dp-btn-desc">' + j.desc + '</span>' +
         '</button>';
     }).join('') +
+    '<div class="dp-divider"></div>' +
+    '<button class="dp-btn" id="dpFailPay">' +
+      '<span class="dp-btn-label">Fail next payment</span>' +
+      '<span class="dp-btn-desc">Shows the declined-card state once</span>' +
+    '</button>' +
     '<div class="dp-divider"></div>' +
     '<button class="dp-reset">↩ Reset to zero</button>';
   document.body.appendChild(panel);
@@ -152,6 +183,25 @@
       if (journey) { closePanel(); journey.action(); }
     });
   });
+
+  /* Fail-next-payment toggle (one-shot; consumed by booking.html handlePayment) */
+  var failBtn = panel.querySelector('#dpFailPay');
+  function renderFailState() {
+    var armed = false;
+    try { armed = localStorage.getItem(FAIL_PAY_KEY) === '1'; } catch (_) {}
+    failBtn.classList.toggle('armed', armed);
+    failBtn.querySelector('.dp-btn-desc').textContent = armed
+      ? 'Armed — the next payment will decline'
+      : 'Shows the declined-card state once';
+  }
+  failBtn.addEventListener('click', function () {
+    try {
+      if (localStorage.getItem(FAIL_PAY_KEY) === '1') localStorage.removeItem(FAIL_PAY_KEY);
+      else localStorage.setItem(FAIL_PAY_KEY, '1');
+    } catch (_) {}
+    renderFailState(); // stays open so the armed state is visible
+  });
+  renderFailState();
 
   /* Reset button */
   panel.querySelector('.dp-reset').addEventListener('click', function () {

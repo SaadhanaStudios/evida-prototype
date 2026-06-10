@@ -240,30 +240,6 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-window.__UAT_STATES = [
-  { id: 'empty', label: 'Empty state',
-    setup: function() {
-      document.getElementById('emptyChat').style.display = '';
-      document.getElementById('messagesContainer').style.display = 'none';
-      document.getElementById('suggestions').style.display = '';
-      document.getElementById('chatInput').value = '';
-      messageCount = 0;
-    }
-  },
-  { id: 'has-messages', label: 'With messages',
-    setup: function() {
-      document.getElementById('emptyChat').style.display = 'none';
-      document.getElementById('suggestions').style.display = 'none';
-      var container = document.getElementById('messagesContainer');
-      container.style.display = 'block';
-      container.innerHTML =
-        '<div class="msg assistant"><div class="av">E</div><div class="bubble">Hi James! I can help you understand your health data. What would you like to know?<span class="ts">Today, 14:32</span></div></div>' +
-        '<div class="msg user"><div class="av">JC</div><div class="bubble">What do my LDL results mean?<span class="ts">Today, 14:33</span></div></div>' +
-        '<div class="msg assistant"><div class="av">E</div><div class="bubble">Your LDL cholesterol is 3.8 mmol/L, which is in the borderline range. Your GP recommended reducing saturated fat intake and increasing fibre. Your 3-month re-check will show if the trend is improving.<span class="ts">Today, 14:33</span></div></div>';
-      messageCount = 2;
-    }
-  },
-];
 </script>
 <script src="_uat.js"></script>
 </body>

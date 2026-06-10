@@ -114,11 +114,26 @@
 
   /* ---------------------------------------------------------------------------
      booking — has the member confirmed an upcoming consult?
-     Stored as the string 'true' when confirmed; absent otherwise.
+     Stored as JSON { confirmed: true, clinic, bloodDate, bloodTime, gpDate,
+     gpTime } when details are known; the bare string 'true' (legacy) also
+     counts as confirmed. Absent otherwise.
      ------------------------------------------------------------------------ */
   var booking = {
-    isConfirmed: function () { return readRaw(KEYS.bookingConfirmed, null) === 'true'; },
-    confirm: function () { return writeRaw(KEYS.bookingConfirmed, 'true'); },
+    isConfirmed: function () {
+      var v = readRaw(KEYS.bookingConfirmed, null);
+      if (v === 'true') return true;
+      try { var o = JSON.parse(v); return !!(o && o.confirmed); } catch (_) { return false; }
+    },
+    /** @param {object} [details] - clinic/bloodDate/bloodTime/gpDate/gpTime */
+    confirm: function (details) {
+      var payload = { confirmed: true };
+      if (details) { for (var k in details) { if (Object.prototype.hasOwnProperty.call(details, k)) payload[k] = details[k]; } }
+      return writeRaw(KEYS.bookingConfirmed, JSON.stringify(payload));
+    },
+    /** @returns {object|null} the confirmed booking's details, if stored */
+    details: function () {
+      try { var o = JSON.parse(readRaw(KEYS.bookingConfirmed, null)); return o && o.confirmed ? o : null; } catch (_) { return null; }
+    },
     clear: function () { return removeRaw(KEYS.bookingConfirmed); }
   };
 
@@ -266,15 +281,17 @@
     profile: profile,
     prefs: prefs,
     idVerification: idVerification,
-    /** Clear all product state and legacy UAT state keys. */
+    /** Reset to a truly fresh user: remove every Evida key, including the
+        legacy underscore keys (evida_notif_count, evida_dark_mode) and any
+        leftover UAT/demo tooling keys. */
     clearAll: function () {
-      booking.clear(); questionnaire.clear(); wearables.clear();
-      consultations.reset(); idVerification.clear();
       try {
-        ['login.html','booking.html','dashboard.html','post-consult.html',
-         'wearables.html','insights.html','faq.html'].forEach(function (p) {
-          localStorage.removeItem('evida:uat:state:' + p);
-        });
+        var doomed = [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (k && (k.indexOf('evida:') === 0 || k.indexOf('evida_') === 0)) doomed.push(k);
+        }
+        doomed.forEach(function (k) { localStorage.removeItem(k); });
       } catch (_) {}
     },
     /* escape hatches for one-off / UAT use — prefer a namespace method */

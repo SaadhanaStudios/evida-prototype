@@ -245,13 +245,13 @@
       <!-- STEP 4: GP consult (gated) -->
       <div class="step" id="step4" data-step="4">
         <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
-          <span class="text-body-small">Your blood test is <strong>7 June 2026</strong>. Your GP consultation can be booked from <strong>12 June 2026</strong> onwards (allows 4–5 working days for results).</span>
+          <span class="text-body-small">Your blood test is <strong id="gpInfoBloodDate">—</strong>. Your GP consultation can be booked from <strong id="gpInfoMinDate">—</strong> onwards (allows 4–5 working days for results).</span>
         </div>
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin:12px 0;font-size:13px;color:var(--evida-teal-dark)">
           <div style="font-weight:700;margin-bottom:6px">Your virtual GP consultation</div>
           <ul style="margin:0;padding-left:18px;line-height:1.7">
             <li>Up to 45 minutes · Virtual · With a GP (not a health coach)</li>
-            <li>July availability: Tuesdays and Fridays only</li>
+            <li>Availability is limited — new dates are released every Monday</li>
             <li>You will not receive your blood results beforehand — your GP reviews them with you during this session</li>
           </ul>
         </div>
@@ -456,21 +456,72 @@ const clinics = [
   { id: 'liverpool', name: 'Randox — Liverpool St', addr: '15 Bishopsgate, London EC2N 3AR', dist: '1.8 mi', avail: 'Limited' },
 ];
 
-const bloodSlots = [
-  { day: 'Sat', num: '7', month: 'Jun', date: '2026-06-07', times: ['09:00','09:30','10:30','11:00','11:30','13:00','14:00','15:00'] },
-  { day: 'Mon', num: '9', month: 'Jun', date: '2026-06-09', times: ['09:00','10:00','11:00','14:00','15:00','16:00'] },
-  { day: 'Tue', num: '10', month: 'Jun', date: '2026-06-10', times: ['09:30','10:30','11:30','13:00','14:30','15:30','16:30'] },
-  { day: 'Wed', num: '11', month: 'Jun', date: '2026-06-11', times: ['10:00','11:00','14:00','15:00'] },
-  { day: 'Thu', num: '12', month: 'Jun', date: '2026-06-12', times: ['09:00','10:00','11:00','14:00'] },
+// Slot dates are generated relative to today so the prototype never goes stale.
+function isoLocal(d) {
+  var p = function(n) { return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function parseISO(s) { var b = s.split('-'); return new Date(+b[0], +b[1] - 1, +b[2]); }
+function addWorkingDays(d, n) {
+  var x = new Date(d), added = 0;
+  while (added < n) { x.setDate(x.getDate() + 1); var dow = x.getDay(); if (dow !== 0 && dow !== 6) added++; }
+  return x;
+}
+function slotEntry(d, times) {
+  return {
+    day: d.toLocaleDateString('en-GB', { weekday: 'short' }),
+    num: String(d.getDate()),
+    month: d.toLocaleDateString('en-GB', { month: 'short' }),
+    date: isoLocal(d), times: times
+  };
+}
+
+const bloodTimePatterns = [
+  ['09:00','09:30','10:30','11:00','11:30','13:00','14:00','15:00'],
+  ['09:00','10:00','11:00','14:00','15:00','16:00'],
+  ['09:30','10:30','11:30','13:00','14:30','15:30','16:30'],
+  ['10:00','11:00','14:00','15:00'],
+  ['09:00','10:00','11:00','14:00'],
+];
+const gpTimePatterns = [
+  ['09:00','10:00','11:00','13:00','14:00','15:00','16:00'],
+  ['09:00','10:30','11:00','13:30','14:00','15:30'],
+  ['10:00','11:00','13:00','14:00','15:00','16:00'],
+  ['09:00','09:30','10:30','11:30','13:00','14:30'],
+  ['10:00','11:00','14:00','15:00','16:00'],
+  ['09:30','10:30','13:00','14:00','15:00'],
+  ['09:00','11:00','13:30','15:00'],
+  ['10:00','11:30','14:00','16:00'],
 ];
 
-const gpSlots = [
-  { day: 'Fri', num: '12', month: 'Jun', date: '2026-06-12', times: ['09:00','10:00','11:00','13:00','14:00','15:00','16:00'] },
-  { day: 'Mon', num: '15', month: 'Jun', date: '2026-06-15', times: ['09:00','10:30','11:00','13:30','14:00','15:30'] },
-  { day: 'Tue', num: '16', month: 'Jun', date: '2026-06-16', times: ['10:00','11:00','13:00','14:00','15:00','16:00'] },
-  { day: 'Wed', num: '17', month: 'Jun', date: '2026-06-17', times: ['09:00','09:30','10:30','11:30','13:00','14:30'] },
-  { day: 'Thu', num: '18', month: 'Jun', date: '2026-06-18', times: ['10:00','11:00','14:00','15:00','16:00'] },
-];
+// Blood draws: next 5 clinic days starting tomorrow (clinics closed Sundays)
+const bloodSlots = (function() {
+  var out = [], d = new Date();
+  while (out.length < 5) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0) out.push(slotEntry(new Date(d), bloodTimePatterns[out.length]));
+  }
+  return out;
+})();
+
+// GP consults: 8 weekdays starting 5 working days after the earliest blood slot,
+// wide enough to offer choices whichever blood date is picked
+const gpSlots = (function() {
+  var out = [], d = addWorkingDays(parseISO(bloodSlots[0].date), 5);
+  d.setDate(d.getDate() - 1); // loop pre-increments
+  while (out.length < 8) {
+    d.setDate(d.getDate() + 1);
+    var dow = d.getDay();
+    if (dow !== 0 && dow !== 6) out.push(slotEntry(new Date(d), gpTimePatterns[out.length]));
+  }
+  return out;
+})();
+
+// Earliest bookable GP date: 5 working days after the chosen blood test (lab turnaround)
+function gpMinDate() {
+  var base = state.bloodDate || bloodSlots[0].date;
+  return isoLocal(addWorkingDays(parseISO(base), 5));
+}
 
 const stepLabels = ['Plan', 'Add-ons', 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
 
@@ -564,14 +615,24 @@ function selectBloodDate(date) {
     document.getElementById('timeLabel').style.display = 'block';
   }
   state.bloodTime = null;
+  // Lab turnaround shifted — refresh which GP dates are bookable
+  if (state.gpDate && state.gpDate < gpMinDate()) {
+    state.gpDate = null;
+    state.gpTime = null;
+    document.getElementById('gpTimeGrid').innerHTML = '';
+    document.getElementById('gpTimeLabel').style.display = 'none';
+  }
+  renderGpDates();
   checkStep3Ready();
 }
 
 function renderGpDates() {
   const grid = document.getElementById('gpDateGrid');
+  const minGp = gpMinDate();
+  const minLabel = parseISO(minGp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
   grid.innerHTML = gpSlots.map(d => {
-    const disabled = d.date < '2026-06-12';
-    return `<div class="date-cell${disabled ? ' disabled' : ''}" data-date="${d.date}" onclick="if(!this.classList.contains('disabled')) selectGpDate('${d.date}')" ${disabled ? 'title="Your results need 4–5 working days. Please select from 12 June onwards."' : ''}>
+    const disabled = d.date < minGp;
+    return `<div class="date-cell${disabled ? ' disabled' : ''}${d.date === state.gpDate ? ' selected' : ''}" data-date="${d.date}" onclick="if(!this.classList.contains('disabled')) selectGpDate('${d.date}')" ${disabled ? `title="Your results need 4–5 working days after your blood test. Please select from ${minLabel} onwards."` : ''}>
       <div class="day">${d.day}</div>
       <div class="num">${d.num}</div>
       <div class="month">${d.month}</div>
@@ -614,12 +675,16 @@ function selectGpTime(time) {
 
 function goStep(n) {
   if (n === 4) {
-    // Auto-select first available GP slot so tester can click through
-    var firstGp = gpSlots.find(function(s) { return s.date >= '2026-06-12'; });
+    // Auto-select first bookable GP slot so tester can click through
+    var minGp = gpMinDate();
+    var firstGp = gpSlots.find(function(s) { return s.date >= minGp; });
     if (firstGp && !state.gpDate) {
       selectGpDate(firstGp.date);
       if (firstGp.times.length > 0) selectGpTime(firstGp.times[0]);
     }
+    var longDate = function(iso) { return parseISO(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); };
+    document.getElementById('gpInfoBloodDate').textContent = longDate(state.bloodDate || bloodSlots[0].date);
+    document.getElementById('gpInfoMinDate').textContent = longDate(minGp);
   }
   if (n === 6) {
     var total = 320 + addonPrices[state.addon];
@@ -627,6 +692,13 @@ function goStep(n) {
   }
   if (n === 5) {
     startHoldTimer();
+    // Show the actual selected slots in the cart
+    if (state.bloodDate && state.bloodTime) {
+      document.getElementById('cartBloodSlot').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
+    }
+    if (state.gpDate && state.gpTime) {
+      document.getElementById('cartGpSlot').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
+    }
     // Update cart with addon info
     if (state.addon && state.addon !== 'none') {
       document.getElementById('cartAddons').style.display = 'block';
@@ -646,6 +718,10 @@ function goStep(n) {
     document.getElementById('confTotalPaid').textContent = '£' + totalPaid;
     var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('confReceiptRef').textContent = receiptRef;
+    var prepDesc = document.querySelector('#prepReminder .desc');
+    if (prepDesc && state.bloodTime) {
+      prepDesc.textContent = 'Your blood test is at ' + state.bloodTime + '. Please fast for 10–12 hours beforehand (water is fine). We’ll send a reminder the day before.';
+    }
     if (new URLSearchParams(location.search).get('entry') === 'bookfirst') {
       var dashBtn = document.getElementById('confDashboardBtn');
       dashBtn.textContent = 'Create your Evida account →';
@@ -726,24 +802,32 @@ function handlePayment() {
   setTimeout(() => {
     btn.classList.remove('btn-loading');
     btn.disabled = false;
-    if (Math.random() > 0.2) {
-      clearInterval(state.holdInterval);
-      EvidaStore.booking.confirm();
-      goStep(7);
-      setTimeout(function() { document.querySelector('.conf-card .check').classList.add('pulse'); }, 100);
-    } else {
+    // Failure is deterministic: armed via the gear-panel "Fail next payment" toggle
+    var failNext = false;
+    try { failNext = localStorage.getItem('evida:demo:fail-payment') === '1'; } catch(_) {}
+    if (failNext) {
+      try { localStorage.removeItem('evida:demo:fail-payment'); } catch(_) {}
       document.getElementById('paymentError').classList.add('visible');
       document.getElementById('retryTimer').textContent = formatTimer(state.holdSeconds);
+    } else {
+      clearInterval(state.holdInterval);
+      EvidaStore.booking.confirm({
+        clinic: (clinics.find(c => c.id === state.clinic) || clinics[0]).name,
+        bloodDate: state.bloodDate, bloodTime: state.bloodTime,
+        gpDate: state.gpDate, gpTime: state.gpTime
+      });
+      goStep(7);
+      setTimeout(function() { document.querySelector('.conf-card .check').classList.add('pulse'); }, 100);
     }
   }, 2000);
 }
 
 // Add to calendar — prefilled with event details per §5
 function addToCalendar() {
-  const bloodDate = state.bloodDate || '2026-06-07';
-  const bloodTime = state.bloodTime || '10:30';
-  const gpDate = state.gpDate || '2026-06-12';
-  const gpTime = state.gpTime || '14:00';
+  const bloodDate = state.bloodDate || bloodSlots[0].date;
+  const bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  const gpDate = state.gpDate || gpSlots[0].date;
+  const gpTime = state.gpTime || gpSlots[0].times[0];
   const clinic = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
 
   const bloodStart = `${bloodDate.replace(/-/g,'')}T${bloodTime.replace(':','')}00`;
@@ -779,68 +863,14 @@ function addToCalendar() {
   showToast('Calendar file downloaded — open to add both appointments');
 }
 
-// UAT state definitions
-// Legacy __UAT_STATES removed — use the gear-icon Demo controls panel instead
-var __LEGACY_UAT = [
-  { id: 'step3', label: 'Clinic',
-    setup: function() {
-      goStep(3);
-      selectClinic('oxford');
-      selectBloodDate('2026-06-07');
-      selectBloodTime('10:30');
-    }
-  },
-  { id: 'step4', label: 'GP consult',
-    setup: function() {
-      goStep(4);
-      selectGpDate('2026-06-12');
-      selectGpTime('14:00');
-    }
-  },
-  { id: 'step5', label: 'Review',
-    setup: function() {
-      state.bloodDate = '2026-06-07';
-      state.bloodTime = '10:30';
-      state.clinic = 'oxford';
-      state.gpDate = '2026-06-12';
-      state.gpTime = '14:00';
-      goStep(5);
-    }
-  },
-  { id: 'step6', label: 'Payment', setup: function() { goStep(6); } },
-  { id: 'step7', label: 'Confirmation',
-    setup: function() {
-      state.bloodDate = '2026-06-07';
-      state.bloodTime = '10:30';
-      state.clinic = 'oxford';
-      state.gpDate = '2026-06-12';
-      state.gpTime = '14:00';
-      goStep(7);
-    }
-  },
-  { id: 'payment-failed', label: 'Payment failed',
-    setup: function() {
-      state.bloodDate = '2026-06-07';
-      state.bloodTime = '10:30';
-      state.clinic = 'oxford';
-      state.gpDate = '2026-06-12';
-      state.gpTime = '14:00';
-      state.holdSeconds = 734;
-      document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
-      document.getElementById('step-payment-failed').classList.add('active');
-      document.getElementById('progressFill').style.width = '83%';
-    }
-  },
-  { id: 'slot-expired', label: 'Slot expired',
-    setup: function() {
-      document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
-      document.getElementById('step-recovery').classList.add('active');
-      document.getElementById('progressFill').style.width = '83%';
-    }
-  },
-]; // end legacy
-
 init();
+
+// Pre-select first clinic + first blood slot so testers can click straight through
+function autoSelectDefaults() {
+  selectClinic(clinics[0].id);
+  selectBloodDate(bloodSlots[0].date);
+  selectBloodTime(bloodSlots[0].times[0]);
+}
 
 // Handle flow params
 (function() {
@@ -848,15 +878,19 @@ init();
   var flow   = params.get('flow');
   var resume = params.get('resume');
   if (flow === 'signup' && resume === 'payment') {
-    goStep(6); // returning to pay — skip directly to payment
+    // Returning to pay — restore held slots so review/confirmation render real details
+    autoSelectDefaults();
+    var minGp = gpMinDate();
+    var firstGp = gpSlots.find(function(s) { return s.date >= minGp; });
+    if (firstGp) {
+      selectGpDate(firstGp.date);
+      selectGpTime(firstGp.times[0]);
+    }
+    startHoldTimer();
+    goStep(6);
   } else if (flow === 'signup') {
     goStep(3); // plan decided via signup — skip to clinic selection
-    // Auto-select first clinic and blood slot so tester can click through
-    selectClinic(clinics[0].id);
-    if (bloodSlots.length > 0) {
-      selectBloodDate(bloodSlots[0].date);
-      if (bloodSlots[0].times.length > 0) selectBloodTime(bloodSlots[0].times[0]);
-    }
+    autoSelectDefaults();
   }
 })();
 </script>

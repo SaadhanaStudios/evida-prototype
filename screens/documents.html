@@ -324,32 +324,6 @@ function submitUpload() {
   }, 1200);
 }
 
-window.__UAT_STATES = [
-  { id: 'default', label: 'Default view', setup: function() {} },
-  { id: 'upload-open', label: 'Upload modal open',
-    setup: function() {
-      openUploadModal();
-    }
-  },
-  { id: 'empty', label: 'Empty (no uploads)',
-    setup: function() {
-      document.getElementById('uploadedDocsList').innerHTML = '';
-      document.getElementById('docEmptyState').style.display = 'block';
-    }
-  },
-  { id: 'upload-ready', label: 'Upload ready',
-    setup: function() {
-      openUploadModal();
-      uploadFileData = { name: 'NHS-referral.pdf', size: 245000, type: 'application/pdf' };
-      document.getElementById('fpName').textContent = 'NHS-referral.pdf';
-      document.getElementById('fpSize').textContent = '0.2 MB';
-      document.getElementById('filePreview').style.display = 'flex';
-      document.getElementById('selectFileBtn').style.display = 'none';
-      document.getElementById('docTitle').value = 'NHS Referral - Cardiology';
-      document.getElementById('uploadSubmitBtn').disabled = false;
-    }
-  },
-];
 </script>
 <script src="_uat.js"></script>
 </body>

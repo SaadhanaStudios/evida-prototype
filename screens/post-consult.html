@@ -361,30 +361,6 @@ function toggleReminder(el) {
   }
 })();
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'reports', label: 'Reports',
-    setup: function() {
-      switchTab('reports', document.querySelector('.tab-item'));
-    }
-  },
-  { id: 'plan', label: 'Prevention plan',
-    setup: function() {
-      switchTab('plan', document.querySelectorAll('.tab-item')[1]);
-    }
-  },
-  { id: 'biomarkers', label: 'Biomarkers',
-    setup: function() {
-      switchTab('biomarkers', document.querySelectorAll('.tab-item')[2]);
-    }
-  },
-  { id: 'reminders', label: 'Reminders',
-    setup: function() {
-      switchTab('reminders', document.querySelectorAll('.tab-item')[3]);
-    }
-  },
-];
-
 </script>
 <script src="_uat.js"></script>
 </body>

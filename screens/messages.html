@@ -251,15 +251,6 @@ function sendMessage() {
   container.scrollTop = container.scrollHeight;
 }
 
-window.__UAT_STATES = [
-  { id: 'default', label: 'Thread list', setup: function() {} },
-  { id: 'empty', label: 'Empty (new member)',
-    setup: function() {
-      var list = document.getElementById('messageList');
-      if (list) list.innerHTML = '<div class="empty-state"><span class="es-letter"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span><h3>No messages yet</h3><p>Your care team will message you here about appointments, results, and your prevention plan.</p></div>';
-    }
-  },
-];
 </script>
 <script src="_uat.js"></script>
 </body>

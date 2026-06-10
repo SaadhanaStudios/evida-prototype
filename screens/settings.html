@@ -336,37 +336,6 @@ function confirmDeleteAccount() {
   });
 })();
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'live', label: 'Live',
-    setup: function() { window.location.reload(); }
-  },
-  { id: 'pilot-active', label: 'Pilot active',
-    setup: function() {
-      document.querySelector('.membership-card .plan-status').textContent = 'Active \u00b7 Renews 1 Jun 2027';
-      document.querySelector('.plan-price').innerHTML = '<span class="strike">&pound;320</span>&pound;160<span style="font-size:14px;font-weight:400;opacity:0.7">/yr</span>';
-    }
-  },
-  { id: 'renewal-soon', label: 'Renewal soon',
-    setup: function() {
-      document.querySelector('.membership-card .plan-status').textContent = 'Active \u00b7 Renews in 14 days';
-      document.querySelector('.plan-price').innerHTML = '&pound;320<span style="font-size:14px;font-weight:400;opacity:0.7">/yr</span>';
-    }
-  },
-  { id: 'expired', label: 'Expired',
-    setup: function() {
-      document.querySelector('.membership-card').style.background = 'linear-gradient(135deg, #4A4E5C, #6B6F7C)';
-      document.querySelector('.membership-card .plan-status').textContent = 'Expired \u00b7 Renew to continue';
-      document.querySelector('.plan-price').innerHTML = '&pound;320<span style="font-size:14px;font-weight:400;opacity:0.7">/yr</span>';
-    }
-  },
-  { id: 'no-payment', label: 'No payment',
-    setup: function() {
-      var container = document.querySelector('.payment-row').parentNode;
-      container.innerHTML = '<div class="text-body-small" style="color:var(--evida-muted);padding:12px 0">No payment history yet. Once you book your Baseline, your first payment will appear here.</div>';
-    }
-  },
-];
 </script>
 </body>
 </html>

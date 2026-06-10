@@ -1074,50 +1074,6 @@ setInterval(() => {
   }
 }, 8000);
 
-// UAT state definitions
-window.__UAT_STATES = [
-  { id: 'no-device', label: 'No device',
-    setup: function() {
-      // Do NOT remove evida:wearable:devices — that's a shared key that breaks
-      // cross-screen data. Just hide the UI and set the local flag.
-      var realDevices = getDevices();
-      isConnected = false;
-      document.getElementById('noDeviceState').style.display = 'block';
-      document.getElementById('insightsContent').style.display = 'none';
-      document.getElementById('connectedBanner').style.display = 'none';
-      // Don't block user data — show a notice if real devices are hidden
-      var emptyText = document.querySelector('#noDeviceState p');
-      if (emptyText && realDevices.length > 0) {
-        emptyText.textContent = 'Viewing empty state — ' + realDevices.length + ' device(s) connected in background. Click "Live" above to return to your data.';
-      }
-    }
-  },
-  { id: 'demo-data', label: 'Demo data',
-    setup: function() {
-      isConnected = true;
-      // Do NOT touch evida:wearable:devices — that's shared storage. Render demo pills in-memory.
-      document.getElementById('noDeviceState').style.display = 'none';
-      document.getElementById('insightsContent').style.display = 'block';
-      document.getElementById('connectedBanner').style.display = 'block';
-      document.getElementById('liveStatus').textContent = 'Demo data active — showing simulated wearable data';
-      renderDemoPills(['Apple Watch', 'Oura Ring']);
-      initCharts();
-    }
-  },
-  { id: 'connected', label: 'Connected',
-    setup: function() {
-      isConnected = true;
-      // Do NOT touch evida:wearable:devices — render from memory only
-      document.getElementById('noDeviceState').style.display = 'none';
-      document.getElementById('insightsContent').style.display = 'block';
-      document.getElementById('connectedBanner').style.display = 'block';
-      document.getElementById('liveStatus').textContent = 'Data syncing from 1 device: Apple Watch';
-      renderDemoPills(['Apple Watch']);
-      initCharts();
-    }
-  },
-];
-
 // Medical history questionnaire functions
 function openMQForm() {
   document.getElementById('mqModal').style.display = 'flex';

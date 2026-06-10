@@ -272,22 +272,22 @@
           <span>Upcoming appointments</span>
           <button class="see-all" onclick="switchPanel('appointments')">See all</button>
         </div>
-        <div class="evida-card-bordered appointment-list">
-          <div class="appt-row">
-            <div class="ar-date">7 Jun</div>
+        <div class="evida-card-bordered appointment-list" id="apptList">
+          <div class="appt-row" id="apptBloodRow">
+            <div class="ar-date" id="apptBloodDate">—</div>
             <div class="ar-info">
               <div class="ar-title">Baseline blood test</div>
-              <div class="ar-meta">Randox — Oxford Circus · 10:30</div>
+              <div class="ar-meta" id="apptBloodMeta">Randox clinic</div>
             </div>
             <span class="ar-action" onclick="event.stopPropagation();showToast('Added to calendar')">+ Calendar</span>
           </div>
-          <div class="appt-row">
-            <div class="ar-date">12 Jun</div>
+          <div class="appt-row" id="apptGpRow">
+            <div class="ar-date" id="apptGpDate">—</div>
             <div class="ar-info">
               <div class="ar-title">GP consultation (virtual)</div>
-              <div class="ar-meta">Dr. Sarah Chen · 14:00 · <span style="color:var(--evida-amber);font-weight:600">Results pending</span></div>
+              <div class="ar-meta" id="apptGpMeta">Dr. Sarah Chen · <span style="color:var(--evida-amber);font-weight:600">Results pending</span></div>
             </div>
-            <span class="ar-action" onclick="event.stopPropagation();showToast('Preparation checklist — see your pre-consult tasks below')">Prepare</span>
+            <span class="ar-action" id="apptGpAction" onclick="event.stopPropagation();showToast('Preparation checklist — see your pre-consult tasks below')">Prepare</span>
           </div>
         </div>
 
@@ -434,6 +434,8 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
 <script>
 function switchPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -470,8 +472,11 @@ function updateChecklist() {
   const pct = Math.round((done / 3) * 100);
   const prog = document.getElementById('chProgress');
   if (prog) prog.textContent = pct + '% ready';
+  // Post-consult the badge says "results ready" — don't clobber it
+  var postConsult = false;
+  try { postConsult = EvidaStore.consultations.hadConsultation(); } catch(_) {}
   const badge = document.getElementById('sbBadge');
-  if (badge) badge.textContent = "You’re " + pct + "% ready for your consultation";
+  if (badge && !postConsult) badge.textContent = "You’re " + pct + "% ready for your consultation";
 }
 
 // Render connected devices in the insights panel
@@ -516,6 +521,15 @@ function updateChecklist() {
   var wDone       = EvidaStore.wearables.list().length > 0;
   var postConsult = EvidaStore.consultations.hadConsultation();
 
+  // Personalise greeting + avatar from the account created at signup
+  var acct = EvidaStore.account.saved();
+  if (acct && acct.name) {
+    var parts = acct.name.trim().split(/\s+/);
+    document.getElementById('sbGreeting').textContent = 'Welcome back, ' + parts[0];
+    var av = document.querySelector('.sb-avatar');
+    if (av) av.textContent = parts.map(function(w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+  }
+
   // Auto-check checklist items based on real state
   var checks = document.querySelectorAll('#chBody .check');
   if (booked      && checks[0]) checks[0].classList.add('done');
@@ -527,12 +541,50 @@ function updateChecklist() {
   // Hide booking hero once booking exists
   if (booked || postConsult) document.getElementById('bookingHero').style.display = 'none';
 
+  // ID reminder only nags once there's a booking and ID is still outstanding
+  document.getElementById('idReminder').style.display =
+    (booked && !idDone && !postConsult) ? '' : 'none';
+
   // Status bar badge + subtitle
   if (postConsult) {
     badge.textContent = 'Your results are ready';
-    sub.textContent   = 'Your results have been reviewed. View your prevention plan.';
+    badge.style.cursor = 'pointer';
+    badge.onclick = function() { window.location.href = 'post-consult.html'; };
+    sub.textContent = 'Your results have been reviewed. View your prevention plan.';
+    // Pre-consult tasks are behind them — retire the checklist
+    document.getElementById('checklistCard').style.display = 'none';
   } else if (booked) {
-    sub.textContent   = 'Your Baseline is booked. Complete your pre-consult tasks below.';
+    sub.textContent = 'Your Baseline is booked. Complete your pre-consult tasks below.';
+  }
+
+  // Appointments reflect the actual booking
+  function shortISO(iso) {
+    var b = iso.split('-');
+    return new Date(+b[0], +b[1] - 1, +b[2]).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  }
+  if (!booked && !postConsult) {
+    document.getElementById('apptList').innerHTML =
+      '<div style="padding:18px 14px;text-align:center;font-size:12px;color:var(--evida-muted)">No appointments yet — book your Baseline to get started</div>';
+  } else {
+    var details = EvidaStore.booking.details() || {};
+    var fb1 = new Date(); fb1.setDate(fb1.getDate() + 1);
+    var fb2 = new Date(); fb2.setDate(fb2.getDate() + 8);
+    var shortD = function(d) { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); };
+    var clinic = details.clinic || 'Randox — Oxford Circus';
+    document.getElementById('apptBloodDate').textContent = details.bloodDate ? shortISO(details.bloodDate) : shortD(fb1);
+    document.getElementById('apptGpDate').textContent = details.gpDate ? shortISO(details.gpDate) : shortD(fb2);
+    if (postConsult) {
+      var apptTitle = document.querySelector('#panel-dashboard .section-title span');
+      if (apptTitle) apptTitle.textContent = 'Recent appointments';
+      document.getElementById('apptBloodMeta').textContent = clinic + ' · Completed';
+      document.getElementById('apptGpMeta').innerHTML = 'Dr. Sarah Chen · Virtual · <span style="color:var(--color-success);font-weight:600">Results ready</span>';
+      var act = document.getElementById('apptGpAction');
+      act.textContent = 'View report';
+      act.onclick = function(e) { e.stopPropagation(); window.location.href = 'post-consult.html'; };
+    } else {
+      document.getElementById('apptBloodMeta').textContent = clinic + ' · ' + (details.bloodTime || '10:30');
+      document.getElementById('apptGpMeta').innerHTML = 'Dr. Sarah Chen · ' + (details.gpTime || '14:00') + ' · <span style="color:var(--evida-amber);font-weight:600">Results pending</span>';
+    }
   }
 
   // Always show realistic stat card data
@@ -544,6 +596,17 @@ function updateChecklist() {
     statCards[1].querySelector('.value').textContent = '7.2h';
     statCards[1].querySelector('.trend').textContent = '→ Stable';
     statCards[1].querySelector('.trend').className = 'trend neutral';
+  }
+  // Post-consult the locked cards unlock
+  if (postConsult && statCards.length >= 4) {
+    statCards[2].classList.remove('stat-empty');
+    statCards[2].querySelector('.value').textContent = '42 markers';
+    statCards[3].classList.remove('stat-empty');
+    var hs = statCards[3].querySelector('.value');
+    hs.textContent = '72/100';
+    hs.removeAttribute('style');
+    var ht = statCards[3].querySelector('.trend');
+    if (ht) { ht.textContent = '↑ Baseline established'; ht.className = 'trend up'; }
   }
 })();
 
@@ -558,8 +621,6 @@ function updateChecklist() {
 })();
 
 </script>
-<script src="store.js"></script>
-<script src="_nav-helpers.js"></script>
 <script src="_uat.js"></script>
 </body>
 </html>

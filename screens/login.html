@@ -608,6 +608,11 @@ document.addEventListener('keydown', function(e) {
   }
   if (params.get('after') === 'booking') {
     showScreen('screen-signup');
+    // Returning from a paid book-first flow — adjust the copy to match
+    var h = document.querySelector('#screen-signup .brand-block h1');
+    var p = document.querySelector('#screen-signup .brand-block p');
+    if (h) h.textContent = 'Booking confirmed — create your account';
+    if (p) p.textContent = 'Your Baseline is booked and paid. Create your account to access your dashboard and pre-consult tasks.';
   }
 })();
 
@@ -628,9 +633,12 @@ function handleCreateAccount() {
   var name  = document.getElementById('suName').value  || 'James Chen';
   var email = document.getElementById('suEmail').value || 'james.chen@gmail.com';
   var data  = { name: name, email: email, savedAt: new Date().toISOString() };
-  try { EvidaStore.account.setPartial(data); } catch(_) {}
   try { EvidaStore.account.save(data); } catch(_) {}
-  window.location.href = 'booking.html?flow=signup';
+  try { EvidaStore.account.clearPartial(); } catch(_) {}
+  // Book-first path: the booking is already paid for — go straight to the dashboard
+  var alreadyBooked = false;
+  try { alreadyBooked = EvidaStore.booking.isConfirmed(); } catch(_) {}
+  window.location.href = alreadyBooked ? 'dashboard.html' : 'booking.html?flow=signup';
 }
 
 // Password strength
