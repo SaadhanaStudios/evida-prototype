@@ -107,6 +107,10 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
 .btn-lg { height: 56px; padding: 0 36px; font-size: 16px; }
 .btn-form { width: 100%; height: 48px; font-size: 15px; }
 
+/* ---- Info / tooltip help button ---- */
+.metric-help { background: none; border: 1px solid var(--evida-border); border-radius: 50%; width: 14px; height: 14px; font-size: 9px; cursor: pointer; color: var(--evida-muted); display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; margin-left: 3px; font-family: var(--font-body); padding: 0; transition: border-color 150ms, color 150ms; flex-shrink: 0; line-height: 1; }
+.metric-help:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
 /* ---- Form Inputs ---- */
 .input {
   height: 48px; width: 100%;

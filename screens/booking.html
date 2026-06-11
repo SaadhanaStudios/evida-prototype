@@ -15,12 +15,12 @@
   .app-body { padding: 0 0 32px; }
 
   .progress-track { padding: 16px 16px 0; max-width: var(--max-w); margin: 0 auto; }
-  .progress-steps { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .progress-steps { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
   .progress-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; }
   .progress-step .circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--evida-border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--evida-muted); background: var(--evida-surface); transition: all 200ms; }
   .progress-step.active .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
   .progress-step.done .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
-  .progress-step .label { font-size: 10px; color: var(--evida-muted); text-align: center; line-height: 1.2; }
+  .progress-step .label { font-size: 10px; color: var(--evida-muted); text-align: center; line-height: 1.2; min-height: 28px; }
   .progress-step.active .label { color: var(--color-primary); font-weight: 600; }
   .progress-step.done .label { color: var(--evida-fg-secondary); }
   .progress-bar-bg { height: 3px; background: var(--evida-border); border-radius: 2px; margin: 0 14px; position: relative; }
@@ -173,6 +173,8 @@
 
       <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
       <div class="step" id="step3" data-step="3">
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your blood test</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Choose a Randox clinic near you and pick a convenient time. Fasting is required — we'll remind you the evening before.</p>
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
           <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
           <ul style="margin:0;padding-left:18px;line-height:1.7">
@@ -190,11 +192,16 @@
           <div class="section-label" id="timeLabel" style="display:none">Available times</div>
           <div class="time-grid" id="bloodTimeGrid"></div>
         </div>
-        <button class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Continue</button>
+        <button class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Book Blood Test</button>
+        <div style="text-align:center;margin-top:10px">
+          <a href="javascript:void(0)" onclick="skipBloodBooking()" style="font-size:13px;color:var(--evida-muted);text-decoration:none">Skip for now — book and pay later</a>
+        </div>
       </div>
 
       <!-- STEP 4: GP consult (gated) -->
       <div class="step" id="step4" data-step="4">
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your GP consultation</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Your 45-minute virtual appointment. The GP will review your results with you and create your personalised prevention plan.</p>
         <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
           <span class="text-body-small">Your blood test is <strong id="gpInfoBloodDate">—</strong>. Your GP consultation can be booked from <strong id="gpInfoMinDate">—</strong> onwards (allows 4–5 working days for results).</span>
         </div>
@@ -212,7 +219,7 @@
         <div class="date-grid" id="gpDateGrid"></div>
         <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
         <div class="time-grid" id="gpTimeGrid"></div>
-        <button class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Continue</button>
+        <button class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
       </div>
 
       <!-- STEP 5: Review + cart -->
@@ -318,27 +325,37 @@
           <h2 class="text-h2">Booking confirmed!</h2>
           <p class="text-body-small">Your Evida membership is active. Here's what happens next:</p>
           <div class="conf-detail">
-            <div class="row"><span class="l">Blood test</span><span class="r" id="confBloodDateTime">7 Jun 2026, 10:30</span></div>
-            <div class="row"><span class="l">Location</span><span class="r" id="confLocation">Randox — Oxford Circus</span></div>
+            <!-- Blood test row with inline calendar button -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
+              <div>
+                <div style="font-size:11px;color:var(--evida-muted)">Blood test</div>
+                <div style="font-weight:600;font-size:13px" id="confBloodDateTime">7 Jun 2026, 10:30</div>
+                <div style="font-size:12px;color:var(--evida-muted)" id="confLocation">Randox — Oxford Circus</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addBloodTestToCalendar()" style="flex-shrink:0;margin-left:12px;font-size:11px;padding:4px 10px;height:auto">+ Calendar</button>
+            </div>
+            <!-- Fasting reminder checkbox -->
+            <label style="display:flex;align-items:center;gap:8px;padding:4px 0 8px;font-size:12px;color:var(--evida-fg-secondary);cursor:pointer;text-align:left">
+              <input type="checkbox" id="fastingReminderCheck" onchange="handleFastingCheck(this)" style="width:16px;height:16px;accent-color:var(--evida-teal);cursor:pointer;flex-shrink:0">
+              Add fasting reminder to calendar (6pm the evening before)
+            </label>
             <div class="divider"></div>
-            <div class="row"><span class="l">GP consultation</span><span class="r" id="confGpDateTime">12 Jun 2026, 14:00</span></div>
-            <div class="row"><span class="l">Duration</span><span class="r">45 min (virtual)</span></div>
+            <!-- GP consult row with inline calendar button -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
+              <div>
+                <div style="font-size:11px;color:var(--evida-muted)">GP consultation</div>
+                <div style="font-weight:600;font-size:13px" id="confGpDateTime">12 Jun 2026, 14:00</div>
+                <div style="font-size:12px;color:var(--evida-muted)">45 min · virtual</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addGpToCalendar()" style="flex-shrink:0;margin-left:12px;font-size:11px;padding:4px 10px;height:auto">+ Calendar</button>
+            </div>
             <div class="divider"></div>
             <div class="row" id="confDiscountRow" style="display:none"><span class="l" style="color:var(--evida-teal-dark)">Discount applied (<span id="confDiscountCode"></span>)</span><span class="r" id="confDiscountAmt" style="color:var(--evida-teal-dark);font-weight:600">−£0</span></div>
             <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
-            <div class="row" style="margin-top:4px"><span class="l">Receipt number</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
+            <div class="row" style="margin-top:4px"><span class="l">Receipt</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
           </div>
 
-          <!-- Fasting/preparation reminder -->
-          <div class="prep-reminder visible" id="prepReminder">
-            <div class="title">Fasting reminder</div>
-            <div class="desc">Your blood test is at 10:30. Please fast for 10–12 hours beforehand (water is fine). We'll also email you a reminder at 6pm the evening before.</div>
-            <button class="btn btn-secondary btn-sm" onclick="addFastingReminder()" style="margin-top:8px;width:100%">Add fasting reminder to calendar</button>
-          </div>
-
-          <button class="btn btn-secondary btn-form" id="addToCalendarBtn" onclick="addToCalendar()">Add appointments to calendar</button>
-          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:8px">Continue to onboarding →</button>
-          <button class="btn btn-ghost" id="confSkipBtn" onclick="window.location.href='dashboard.html'" style="margin-top:8px;width:auto">Skip to dashboard</button>
+          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:16px">Continue to onboarding →</button>
           <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email with your receipt has been sent to your registered email address.</p>
         </div>
       </div>
@@ -508,7 +525,7 @@ function gpMinDate() {
 }
 
 // Index 1 (step 2) is intentionally null — add-ons step was removed; steps jump 1→3
-const stepLabels = ['Plan', null, 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
+const stepLabels = ['Plan', null, 'Blood test', 'GP consult', 'Review', 'Payment', 'Done'];
 
 function init() {
   renderProgress();
@@ -687,6 +704,10 @@ function goStep(n) {
       document.getElementById('cartAddons').style.display = 'none';
       document.getElementById('cartTotalValue').textContent = '£' + MEMBERSHIP_PRICE;
     }
+    if (IS_SIGNUP_FLOW && !state.discountAmount) {
+      document.getElementById('discountCode').value = 'EVIDA160';
+      applyDiscount();
+    }
   }
   if (n === 7) {
     document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
@@ -698,12 +719,10 @@ function goStep(n) {
       document.getElementById('confDiscountCode').textContent = state.discountCode;
       document.getElementById('confDiscountAmt').textContent = '−£' + state.discountAmount;
     }
-    var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
-    document.getElementById('confReceiptRef').textContent = receiptRef;
-    var prepDesc = document.querySelector('#prepReminder .desc');
-    if (prepDesc && state.bloodTime) {
-      prepDesc.textContent = 'Your blood test is at ' + state.bloodTime + '. Please fast for 10–12 hours beforehand (water is fine). We’ll send a reminder the day before.';
-    }
+    var receiptRef = ‘EV-’ + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById(‘confReceiptRef’).textContent = receiptRef;
+    var fastingCb = document.getElementById(‘fastingReminderCheck’);
+    if (fastingCb) fastingCb.checked = false;
   }
   state.step = n;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -828,6 +847,49 @@ function handlePayment() {
       setTimeout(function() { document.querySelector('.conf-card .check').classList.add('pulse'); }, 100);
     }
   }, 2000);
+}
+
+function skipBloodBooking() {
+  state.bloodDate = null; state.bloodTime = null; state.clinic = null;
+  goStep(5);
+}
+
+function addBloodTestToCalendar() {
+  var bloodDate = state.bloodDate || bloodSlots[0].date;
+  var bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  var clinic = (clinics.find(function(c) { return c.id === state.clinic; }) || clinics[0]).name;
+  var start = bloodDate.replace(/-/g,'') + 'T' + bloodTime.replace(':','') + '00';
+  var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT','DTSTART:'+start,'DURATION:PT1H',
+    'SUMMARY:Evida Baseline - Blood Test @ '+clinic,
+    'DESCRIPTION:Fasting blood test. Fast for 10-12 hours beforehand (water is fine).',
+    'LOCATION:'+clinic,'END:VEVENT','END:VCALENDAR'].join('\n');
+  var blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'evida-blood-test.ics'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Blood test added to calendar');
+}
+
+function addGpToCalendar() {
+  var gpDate = state.gpDate || gpSlots[0].date;
+  var gpTime = state.gpTime || gpSlots[0].times[0];
+  var start = gpDate.replace(/-/g,'') + 'T' + gpTime.replace(':','') + '00';
+  var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT','DTSTART:'+start,'DURATION:PT45M',
+    'SUMMARY:Evida Baseline - GP Consultation (Virtual)',
+    'DESCRIPTION:45-min virtual consult. Join via link in your Evida dashboard.',
+    'END:VEVENT','END:VCALENDAR'].join('\n');
+  var blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'evida-gp-consult.ics'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('GP consultation added to calendar');
+}
+
+function handleFastingCheck(cb) {
+  if (cb.checked) { addFastingReminder(); }
+  else { showToast('Fasting reminder removed'); }
 }
 
 // Add to calendar — prefilled with event details per §5

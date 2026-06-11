@@ -587,6 +587,20 @@ function updateChecklist() {
   } catch(_) {}
 })();
 
+function markTaskDone(checkEl) {
+  if (!checkEl) return;
+  checkEl.classList.add('done');
+  checkEl.textContent = '✓';
+  var item = checkEl.closest ? checkEl.closest('.task-item') : checkEl.parentElement;
+  if (!item) return;
+  var title = item.querySelector('.content .title');
+  if (title) title.classList.add('done');
+  var tiGo = item.querySelector('.ti-go');
+  if (tiGo) tiGo.style.display = 'none';
+  item.style.cursor = 'default';
+  item.onclick = null;
+}
+
 // Adaptive status bar — reads real store state on every load
 (function initStatusBar() {
   var sub   = document.getElementById('sbSub');
@@ -609,10 +623,10 @@ function updateChecklist() {
 
   // Auto-check checklist items based on real state
   var checks = document.querySelectorAll('#chBody .check');
-  if (booked      && checks[0]) checks[0].classList.add('done');
-  if (idDone      && checks[1]) checks[1].classList.add('done');
-  if (qDone       && checks[2]) checks[2].classList.add('done');
-  if (wDone       && checks[3]) checks[3].classList.add('done');
+  if (booked      && checks[0]) markTaskDone(checks[0]);
+  if (idDone      && checks[1]) markTaskDone(checks[1]);
+  if (qDone       && checks[2]) markTaskDone(checks[2]);
+  if (wDone       && checks[3]) markTaskDone(checks[3]);
   updateChecklist();
 
   // Hide booking hero once booking exists

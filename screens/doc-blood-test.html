@@ -76,8 +76,8 @@
         <table class="biomarker-table">
           <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Trend</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td class="bt-name">Total cholesterol</td><td class="bt-value">4.8</td><td class="bt-range">&lt; 5.0 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
-            <tr><td class="bt-name">LDL cholesterol</td><td class="bt-value">3.1</td><td class="bt-range">&lt; 3.0 mmol/L</td><td class="bt-trend" style="color:var(--evida-amber)">↑</td><td><span class="bt-flag flag-amber">Borderline</span></td></tr>
+            <tr><td class="bt-name">Total cholesterol <button class="metric-help" onclick="showToast('Total cholesterol combines LDL, HDL, and other lipids. Below 5.0 mmol/L is the UK target. Your score of 4.8 is within normal range.');event.stopPropagation()">?</button></td><td class="bt-value">4.8</td><td class="bt-range">&lt; 5.0 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">LDL cholesterol <button class="metric-help" onclick="showToast('LDL (\'bad\' cholesterol) carries cholesterol to arteries. Above 3.0 mmol/L is borderline high — your GP will discuss lifestyle steps to bring this down.');event.stopPropagation()">?</button></td><td class="bt-value">3.1</td><td class="bt-range">&lt; 3.0 mmol/L</td><td class="bt-trend" style="color:var(--evida-amber)">↑</td><td><span class="bt-flag flag-amber">Borderline</span></td></tr>
             <tr><td class="bt-name">HDL cholesterol</td><td class="bt-value">1.4</td><td class="bt-range">&gt; 1.2 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Triglycerides</td><td class="bt-value">1.7</td><td class="bt-range">&lt; 2.3 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Non-HDL cholesterol</td><td class="bt-value">3.4</td><td class="bt-range">&lt; 3.8 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
@@ -92,7 +92,7 @@
         <table class="biomarker-table">
           <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Trend</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td class="bt-name">HbA1c</td><td class="bt-value">34</td><td class="bt-range">&lt; 42 mmol/mol</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">HbA1c <button class="metric-help" onclick="showToast('HbA1c reflects average blood glucose over the past 2–3 months. Below 42 mmol/mol is normal. 42–47 is pre-diabetic. Above 48 indicates type 2 diabetes.');event.stopPropagation()">?</button></td><td class="bt-value">34</td><td class="bt-range">&lt; 42 mmol/mol</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Fasting glucose</td><td class="bt-value">5.1</td><td class="bt-range">3.9–5.6 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
           </tbody>
         </table>
@@ -104,7 +104,7 @@
         <table class="biomarker-table">
           <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Trend</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td class="bt-name">Vitamin D (25-OH)</td><td class="bt-value">38</td><td class="bt-range">50–150 nmol/L</td><td class="bt-trend" style="color:var(--evida-amber)">↓</td><td><span class="bt-flag flag-amber">Low</span></td></tr>
+            <tr><td class="bt-name">Vitamin D (25-OH) <button class="metric-help" onclick="showToast('Vitamin D supports bone health, immune function, and mood. 50–150 nmol/L is optimal. Your level of 38 is below the target — supplementation and outdoor activity may help.');event.stopPropagation()">?</button></td><td class="bt-value">38</td><td class="bt-range">50–150 nmol/L</td><td class="bt-trend" style="color:var(--evida-amber)">↓</td><td><span class="bt-flag flag-amber">Low</span></td></tr>
             <tr><td class="bt-name">Ferritin</td><td class="bt-value">82</td><td class="bt-range">30–400 µg/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Vitamin B12</td><td class="bt-value">280</td><td class="bt-range">180–800 ng/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Folate</td><td class="bt-value">8.2</td><td class="bt-range">4.0–20.0 µg/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
@@ -137,7 +137,7 @@
           <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Trend</th><th>Status</th></tr></thead>
           <tbody>
             <tr><td class="bt-name">Creatinine</td><td class="bt-value">82</td><td class="bt-range">60–110 µmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
-            <tr><td class="bt-name">eGFR</td><td class="bt-value">92</td><td class="bt-range">&gt; 90 mL/min</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">eGFR <button class="metric-help" onclick="showToast('eGFR estimates how well your kidneys filter waste from the blood. Above 90 mL/min is normal. Below 60 may indicate chronic kidney disease.');event.stopPropagation()">?</button></td><td class="bt-value">92</td><td class="bt-range">&gt; 90 mL/min</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Urea</td><td class="bt-value">5.2</td><td class="bt-range">2.5–7.8 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Sodium</td><td class="bt-value">140</td><td class="bt-range">136–145 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Potassium</td><td class="bt-value">4.2</td><td class="bt-range">3.5–5.1 mmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
@@ -151,8 +151,8 @@
         <table class="biomarker-table">
           <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Trend</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td class="bt-name">hs-CRP</td><td class="bt-value">1.2</td><td class="bt-range">&lt; 3.0 mg/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
-            <tr><td class="bt-name">TSH</td><td class="bt-value">2.1</td><td class="bt-range">0.4–4.0 mIU/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">hs-CRP <button class="metric-help" onclick="showToast('High-sensitivity C-Reactive Protein is a marker of systemic inflammation. Below 3.0 mg/L is normal. Elevated levels are linked to cardiovascular risk.');event.stopPropagation()">?</button></td><td class="bt-value">1.2</td><td class="bt-range">&lt; 3.0 mg/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">TSH <button class="metric-help" onclick="showToast('Thyroid Stimulating Hormone controls metabolism. 0.4–4.0 mIU/L is normal. High TSH can indicate an underactive thyroid; low TSH an overactive one.');event.stopPropagation()">?</button></td><td class="bt-value">2.1</td><td class="bt-range">0.4–4.0 mIU/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
             <tr><td class="bt-name">Free T4</td><td class="bt-value">14.5</td><td class="bt-range">9.0–19.0 pmol/L</td><td class="bt-trend" style="color:var(--evida-muted)">→</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
           </tbody>
         </table>
