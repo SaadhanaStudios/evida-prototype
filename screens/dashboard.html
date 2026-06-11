@@ -18,12 +18,19 @@
   .app-header .header-btn { background: none; border: none; cursor: pointer; color: var(--evida-fg); position: relative; padding: 4px; }
 
 
-  .status-bar { padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-  .status-bar .sb-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--evida-teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .status-bar { padding: 18px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(120deg, var(--evida-navy) 0%, var(--evida-teal-dark) 80%);
+    border: none; color: white; box-shadow: var(--shadow-sm); }
+  .status-bar .sb-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.92); color: var(--evida-teal-dark); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
   .status-bar .sb-text { flex: 1; min-width: 0; }
-  .status-bar .sb-greeting { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .status-bar .sb-sub { font-size: 12px; color: var(--evida-fg-secondary); margin-top: 1px; }
-  .status-bar .sb-badge { font-size: 10px; padding: 2px 8px; border-radius: var(--radius-full); font-weight: 600; background: var(--evida-teal-light); color: var(--evida-teal-dark); white-space: nowrap; }
+  .status-bar .sb-greeting { font-weight: 700; font-size: 16px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .status-bar .sb-sub { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+  .status-bar .sb-badge { font-size: 11px; padding: 4px 12px; border-radius: var(--radius-full); font-weight: 600; background: rgba(255,255,255,0.16); color: white; border: 1px solid rgba(255,255,255,0.25); white-space: nowrap; }
+
+  .dash-search { position: relative; margin-bottom: 14px; }
+  .dash-search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--evida-muted); pointer-events: none; }
+  .dash-search input { width: 100%; height: 42px; padding: 0 12px 0 38px; border: 1px solid var(--evida-border); border-radius: var(--radius-md); font-family: var(--font-body); font-size: 13px; color: var(--evida-fg); background: var(--evida-surface); outline: none; box-sizing: border-box; transition: border-color 150ms, box-shadow 150ms; }
+  .dash-search input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--evida-teal-light); }
 
   .inline-alert { border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.4; }
   .inline-alert.alert-amber { background: var(--evida-amber-light); color: #8A5A2A; }
@@ -92,14 +99,16 @@
   .checklist-body.open { max-height: 500px; }
   .checklist-body-inner { padding: 0 14px 8px; }
 
-  .task-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
-  .task-item .check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 150ms; font-size: 9px; color: transparent; }
+  .task-item { display: flex; align-items: center; gap: 10px; padding: 9px 8px; margin: 0 -8px; border-radius: var(--radius-sm); cursor: pointer; transition: background 150ms; }
+  .task-item:hover { background: var(--evida-bg); }
+  .task-item:hover .ti-go { opacity: 1; transform: translateX(0); }
+  .task-item .check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 150ms; font-size: 9px; color: transparent; }
   .task-item .check.done { border-color: var(--color-primary); background: var(--color-primary); color: white; }
-  .task-item .check:hover { border-color: var(--color-primary); }
   .task-item .content { flex: 1; }
   .task-item .content .title { font-size: 12px; font-weight: 500; }
   .task-item .content .title.done { text-decoration: line-through; color: var(--evida-muted); }
   .task-item .content .sub { font-size: 11px; color: var(--evida-muted); }
+  .task-item .ti-go { font-size: 12px; font-weight: 600; color: var(--color-primary); opacity: 0; transform: translateX(-4px); transition: all 150ms; white-space: nowrap; }
 
   .empty-state { text-align: center; padding: 32px 16px; }
   .empty-state .es-letter { display: inline-flex; width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--evida-bg); align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: var(--evida-muted); margin-bottom: 12px; }
@@ -111,11 +120,27 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
+  /* Cards get gentle depth instead of flat borders */
+  #panel-dashboard .evida-card-bordered { box-shadow: var(--shadow-xs); }
+  .stat-card .label { text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; }
+  .stat-card .value { font-size: 22px; }
+  .stat-card:not(.stat-empty) { border-left: 3px solid var(--evida-teal); }
+
   @media (min-width: 1024px) {
     :root { --header-h: 64px; }
-    .app-body { flex: 1; padding: 24px 32px; }
-    .app-body-inner { max-width: 900px; }
-    .stat-row { grid-template-columns: repeat(4, 1fr); }
+    .app-body { flex: 1; padding: 28px 40px; }
+    .app-body-inner { max-width: 1080px; }
+    .status-bar { padding: 24px 28px; margin-bottom: 20px; }
+    .status-bar .sb-greeting { font-size: 20px; }
+    .status-bar .sb-sub { font-size: 13px; }
+    .dash-search input { height: 46px; font-size: 14px; }
+    /* Two-column layout: tasks & appointments left, live stats right */
+    .dash-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+    .stat-row { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .stat-card { padding: 16px 14px; }
+    .checklist-header { padding: 16px 18px; }
+    .checklist-body-inner { padding: 0 18px 12px; }
+    .appt-row { padding: 13px 0; }
     .welcome-banner { padding: 28px; }
     .welcome-banner h2 { font-size: 22px; }
   }
@@ -142,6 +167,7 @@
     </div>
     <button class="nav-item-desktop active" data-panel="dashboard">Dashboard</button>
     <button class="nav-item-desktop" onclick="window.location.href='insights.html'">Data &amp; Insights</button>
+    <button class="nav-item-desktop" onclick="window.location.href='wearables.html'">Wearables</button>
     <button class="nav-item-desktop" data-panel="appointments">Appointments</button>
     <button class="nav-item-desktop" data-panel="documents">Documents</button>
     <button class="nav-item-desktop" data-panel="ask-evi">Ask Evi</button>
@@ -158,6 +184,12 @@
 
       <!-- PANEL: Dashboard -->
       <div class="panel active" id="panel-dashboard">
+
+        <!-- Universal search -->
+        <div class="dash-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="dashSearch" placeholder="Search Evida — biomarkers, documents, FAQs…" onkeydown="if(event.key==='Enter')handleDashSearch()">
+        </div>
 
         <!-- Status bar — combines greeting + posture in one row -->
         <div class="evida-card-bordered status-bar" id="statusBar">
@@ -178,7 +210,7 @@
         <div class="inline-alert alert-amber" id="idReminder">
           <span class="ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 8h2M14 12h2M8 14h8"/></svg></span>
           <span class="ia-text">Identity verification pending</span>
-          <span class="ia-action" onclick="window.location.href='profile.html'">Verify now</span>
+          <span class="ia-action" onclick="window.location.href='profile.html#id-verification'">Verify now</span>
         </div>
         <div class="inline-alert alert-teal" id="onboardingBanner" style="display:none">
           <span class="ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
@@ -191,6 +223,9 @@
           <span class="ia-action" style="color:white" onclick="document.getElementById('celebrationBanner').style.display='none'">Dismiss</span>
         </div>
         
+        <div class="dash-grid">
+        <div class="dash-main">
+
         <!-- Pre-consult checklist — front and centre -->
         <div class="evida-card-bordered checklist-card" id="checklistCard">
           <div class="checklist-header" onclick="toggleChecklist()">
@@ -200,21 +235,25 @@
           </div>
           <div class="checklist-body open" id="chBody">
             <div class="checklist-body-inner">
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+              <div class="task-item" onclick="window.location.href='booking.html'">
+                <div class="check"></div>
                 <div class="content"><span class="title">Blood test booked</span><div class="sub">Book your Randox clinic appointment</div></div>
+                <span class="ti-go">Book →</span>
               </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+              <div class="task-item" onclick="window.location.href='profile.html#id-verification'">
+                <div class="check"></div>
                 <div class="content"><span class="title">ID verification complete</span><div class="sub">Upload photo ID — 2 min</div></div>
+                <span class="ti-go">Verify →</span>
               </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+              <div class="task-item" onclick="window.location.href='profile.html#health-questionnaire'">
+                <div class="check"></div>
                 <div class="content"><span class="title">Health questionnaire submitted</span><div class="sub">~10 min · helps your GP prepare</div></div>
+                <span class="ti-go">Start →</span>
               </div>
-              <div class="task-item">
-                <div class="check" onclick="this.classList.toggle('done');updateChecklist()"></div>
+              <div class="task-item" onclick="window.location.href='wearables.html'">
+                <div class="check"></div>
                 <div class="content"><span class="title">Wearables connected <span style="font-size:10px;font-weight:400;color:var(--evida-muted)">optional</span></span><div class="sub">Apple Watch, Garmin, Whoop, or Oura</div></div>
+                <span class="ti-go">Connect →</span>
               </div>
             </div>
           </div>
@@ -233,37 +272,6 @@
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);font-variant-numeric:tabular-nums"><s style="font-size:14px;font-weight:400;color:var(--evida-muted)">£320</s> £160<span style="font-size:13px;font-weight:400;color:var(--evida-muted)">/year</span></div>
             <button class="btn btn-primary btn-sm" style="pointer-events:none">Book now →</button>
-          </div>
-        </div>
-
-        <!-- Trust signals -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">CQC registered</span>
-          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GMC licensed GPs</span>
-          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GDPR compliant</span>
-          <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-teal-light);color:var(--evida-teal-dark)">500+ UK members</span>
-        </div>
-
-        <!-- At a glance: 2 live metrics + inline appts -->
-        <div class="stat-row">
-          <div class="evida-card-bordered stat-card">
-            <div class="label">Steps (7d avg)</div>
-            <div class="value">6,842</div>
-            <div class="trend up">↑ 12% vs last week</div>
-          </div>
-          <div class="evida-card-bordered stat-card">
-            <div class="label">Sleep (7d avg)</div>
-            <div class="value">7.2h</div>
-            <div class="trend neutral">→ Stable</div>
-          </div>
-          <div class="evida-card-bordered stat-card stat-empty">
-            <div class="label">Blood tests</div>
-            <div class="value">— Not yet taken</div>
-          </div>
-          <div class="evida-card-bordered stat-card stat-empty">
-            <div class="label">Health score</div>
-            <div class="value" style="font-size:13px;line-height:1.4;color:var(--evida-fg-secondary)">Unlocks after<br>your first consult</div>
-            <div class="trend neutral" style="margin-top:4px">~3 weeks after baseline</div>
           </div>
         </div>
 
@@ -290,6 +298,42 @@
             <span class="ar-action" id="apptGpAction" onclick="event.stopPropagation();showToast('Preparation checklist — see your pre-consult tasks below')">Prepare</span>
           </div>
         </div>
+
+        </div><!-- /dash-main -->
+
+        <aside class="dash-rail">
+          <!-- At a glance: live metrics -->
+          <div class="stat-row">
+            <div class="evida-card-bordered stat-card">
+              <div class="label">Steps (7d avg)</div>
+              <div class="value">6,842</div>
+              <div class="trend up">↑ 12% vs last week</div>
+            </div>
+            <div class="evida-card-bordered stat-card">
+              <div class="label">Sleep (7d avg)</div>
+              <div class="value">7.2h</div>
+              <div class="trend neutral">→ Stable</div>
+            </div>
+            <div class="evida-card-bordered stat-card stat-empty">
+              <div class="label">Blood tests</div>
+              <div class="value">— Not yet taken</div>
+            </div>
+            <div class="evida-card-bordered stat-card stat-empty">
+              <div class="label">Health score</div>
+              <div class="value" style="font-size:13px;line-height:1.4;color:var(--evida-fg-secondary)">Unlocks after<br>your first consult</div>
+              <div class="trend neutral" style="margin-top:4px">~3 weeks after baseline</div>
+            </div>
+          </div>
+
+          <!-- Trust signals -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">CQC registered</span>
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GMC licensed GPs</span>
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-border);color:var(--evida-muted)">GDPR compliant</span>
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--evida-teal-light);color:var(--evida-teal-dark)">500+ UK members</span>
+          </div>
+        </aside>
+        </div><!-- /dash-grid -->
 
       </div>
 
@@ -458,6 +502,15 @@ document.querySelectorAll('.nav-item, .nav-item-desktop').forEach(el => {
     switchPanel(this.dataset.panel);
   });
 });
+
+function handleDashSearch() {
+  var val = document.getElementById('dashSearch').value.trim();
+  if (val.length > 0) {
+    // Results page is a later build — hand the query to Ask Evi meanwhile
+    showToast('Searching "' + val + '"…');
+    setTimeout(function() { window.location.href = 'ask-evi.html'; }, 700);
+  }
+}
 
 function toggleChecklist() {
   const body = document.getElementById('chBody');
@@ -658,5 +711,6 @@ function updateChecklist() {
 
 </script>
 <script src="_uat.js"></script>
+<script src="_evi.js"></script>
 </body>
 </html>

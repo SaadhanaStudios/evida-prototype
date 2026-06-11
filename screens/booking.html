@@ -163,65 +163,15 @@
               <div class="title">Evida Membership</div>
               <div class="desc">Full diagnostic blood panel (42 biomarkers), 45-min GP consultation, health coach session, personalised prevention plan, and 12 months of data insights.</div>
               <div class="meta">
-                <span class="pill pill-price" style="background:var(--evida-navy);color:white"><s style="opacity:0.6;font-weight:400">£320</s> £160 / year</span>
-                <span class="pill pill-free">Founding member — 50% off</span>
+                <span class="pill pill-price" style="background:var(--evida-navy);color:white">£320 / year</span>
               </div>
-            </div>
-          </div>
-        </div>
-        <button class="btn btn-primary btn-form" onclick="goStep(2)">Continue</button>
-      </div>
-
-      <!-- STEP 2: Optional add-ons -->
-      <div class="step" id="step2" data-step="2">
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Optional add-ons</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Enhance your Baseline with these premium additions.</p>
-        <div class="card-option selected" id="addonNone" onclick="selectAddon('none')">
-          <div class="top">
-            <div class="radio-outline"></div>
-            <div class="info">
-              <div class="title">No add-ons — just the Baseline</div>
-              <div class="desc">Your membership includes everything you need. Add-ons can be added later.</div>
-            </div>
-          </div>
-        </div>
-        <div class="card-option" id="addonNurse" onclick="selectAddon('nurse')">
-          <div class="top">
-            <div class="radio-outline"></div>
-            <div class="info">
-              <div class="title">Home nurse blood draw</div>
-              <div class="desc">A registered nurse visits your home to take your blood sample. Available in most London areas and select UK cities.</div>
-              <div class="meta"><span class="pill pill-price">£70</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="card-option" id="addonHormone" onclick="selectAddon('hormone')">
-          <div class="top">
-            <div class="radio-outline"></div>
-            <div class="info">
-              <div class="title">Hormone panel upgrade</div>
-              <div class="desc">Extended hormone analysis including cortisol, DHEA-S, testosterone (free & total), oestradiol, progesterone, and SHBG. Added to your standard blood panel.</div>
-              <div class="meta">
-                <span class="pill pill-price">£85</span>
-                <span class="pill pill-free">Add to Baseline</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-option" id="addonBoth" onclick="selectAddon('both')">
-          <div class="top">
-            <div class="radio-outline"></div>
-            <div class="info">
-              <div class="title">Nurse visit + Hormone panel</div>
-              <div class="desc">Both premium upgrades combined at a small saving.</div>
-              <div class="meta"><span class="pill pill-price">£140</span><span class="pill pill-free">Save £15</span></div>
             </div>
           </div>
         </div>
         <button class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
       </div>
 
-      <!-- STEP 3: Clinic location + date/time -->
+      <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
       <div class="step" id="step3" data-step="3">
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
           <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
@@ -268,13 +218,12 @@
       <!-- STEP 5: Review + cart -->
       <div class="step" id="step5" data-step="5">
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review your booking</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan, founding member price</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan at £320</p>
         <div class="hold-banner visible" id="holdBanner">
           <span>Slots held for <span class="timer" id="holdTimer">14:58</span></span>
         </div>
         <div class="evida-card cart-card">
           <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px"><span class="label" style="font-weight:700">Evida Membership (12 months)</span><span class="value" style="font-size:18px;font-weight:700">£320</span></div>
-          <div class="cart-item"><span class="label" style="color:var(--evida-teal-dark);font-weight:600">Founding member discount (50%)</span><span class="value" style="color:var(--evida-teal-dark);font-weight:600">−£160</span></div>
           <div class="cart-item"><span class="label">Blood test — Randox clinic</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
           <div class="cart-item"><span class="label">GP consultation (45 min virtual)</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
           <div class="cart-item"><span class="label">Blood test slot</span><span class="value" style="font-size:13px" id="cartBloodSlot">7 Jun 2026, 10:30</span></div>
@@ -284,13 +233,13 @@
           </div>
           <div class="cart-total" style="border-top:2px solid var(--evida-fg)">
             <span>Total</span>
-            <span id="cartTotalValue">£160</span>
+            <span id="cartTotalValue">£320</span>
           </div>
         </div>
         <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged the total shown above.</p>
         <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
         <div style="text-align:center;margin-top:8px">
-          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">Take me to the dashboard</button>
+          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — bookings won't be confirmed</button>
         </div>
       </div>
 
@@ -332,13 +281,23 @@
 
         </div>
 
+        <!-- Discount code -->
+        <div style="margin:14px 0 4px">
+          <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px" for="discountCode">Discount code</label>
+          <div style="display:flex;gap:8px">
+            <input class="evida-input" id="discountCode" placeholder="Enter code" style="flex:1;height:44px;font-size:14px;text-transform:uppercase;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px">
+            <button class="btn btn-secondary" onclick="applyDiscount()" style="width:auto;padding:0 20px;height:44px;font-size:13px">Apply</button>
+          </div>
+          <div id="discountFeedback" style="display:none;font-size:12px;font-weight:600;margin-top:6px"></div>
+        </div>
+
         <div style="display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-teal-dark)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span style="font-size:12px;color:var(--evida-teal-dark)">Your data is encrypted and processed securely via Stripe.</span>
         </div>
 
         <button class="btn btn-primary btn-form" id="payBtn" onclick="handlePayment()">
-          <span class="btn-text" id="payBtnText">Pay £160 — Activate membership</span>
+          <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
           <span class="btn-spinner"></span>
         </button>
         <button class="btn btn-ghost" onclick="goStep(5)" style="width:auto;margin-top:8px">← Back to review</button>
@@ -363,20 +322,22 @@
             <div class="row"><span class="l">GP consultation</span><span class="r" id="confGpDateTime">12 Jun 2026, 14:00</span></div>
             <div class="row"><span class="l">Duration</span><span class="r">45 min (virtual)</span></div>
             <div class="divider"></div>
-            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£160</span></div>
-            <div class="row" style="margin-top:4px"><span class="l" style="color:var(--evida-muted)">Reference</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;color:var(--evida-muted)">EV-XXXXXX</span></div>
+            <div class="row" id="confDiscountRow" style="display:none"><span class="l" style="color:var(--evida-teal-dark)">Discount applied (<span id="confDiscountCode"></span>)</span><span class="r" id="confDiscountAmt" style="color:var(--evida-teal-dark);font-weight:600">−£0</span></div>
+            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
+            <div class="row" style="margin-top:4px"><span class="l">Receipt number</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
           </div>
 
           <!-- Fasting/preparation reminder -->
           <div class="prep-reminder visible" id="prepReminder">
             <div class="title">Fasting reminder</div>
-            <div class="desc">Your blood test is at 10:30. Please fast for 10–12 hours beforehand (water is fine). We'll send a reminder the day before.</div>
-            <button class="btn-ghost" onclick="showToast('Reminder set — we\'ll notify you the day before')" style="font-size:12px;margin-top:6px">Set reminder</button>
+            <div class="desc">Your blood test is at 10:30. Please fast for 10–12 hours beforehand (water is fine). We'll also email you a reminder at 6pm the evening before.</div>
+            <button class="btn btn-secondary btn-sm" onclick="addFastingReminder()" style="margin-top:8px;width:100%">Add fasting reminder to calendar</button>
           </div>
 
-          <button class="btn btn-secondary btn-form" id="addToCalendarBtn" onclick="addToCalendar()">Add both to calendar</button>
-          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='dashboard.html'" style="margin-top:8px">Go to dashboard</button>
-          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered email address.</p>
+          <button class="btn btn-secondary btn-form" id="addToCalendarBtn" onclick="addToCalendar()">Add appointments to calendar</button>
+          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:8px">Continue to onboarding →</button>
+          <button class="btn btn-ghost" id="confSkipBtn" onclick="window.location.href='dashboard.html'" style="margin-top:8px;width:auto">Skip to dashboard</button>
+          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email with your receipt has been sent to your registered email address.</p>
         </div>
       </div>
 
@@ -425,6 +386,7 @@
       <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
       <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
       <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
       <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
       <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
       <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
@@ -447,10 +409,26 @@ const state = {
   clinic: null, bloodDate: null, bloodTime: null,
   gpDate: null, gpTime: null, selectedPayment: 'card',
   holdInterval: null, holdSeconds: 900,
+  discountCode: null, discountAmount: 0,
 };
 
-// £320 list price with the 50% founding-member discount applied throughout
-const MEMBERSHIP_PRICE = 160;
+// Add-ons (internal step 2) are not in the MVP; signup flow also skips Plan
+// since the membership was already chosen at account creation. The progress
+// track only ever shows the steps the member will actually walk through.
+const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
+const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5, 6, 7] : [1, 3, 4, 5, 6, 7];
+
+function currentTotal() {
+  return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
+}
+
+const MEMBERSHIP_PRICE = 320;
+// Early members receive a code by email; applied at payment, never shown before
+const DISCOUNT_CODES = {
+  'EVIDA160': { amount: 160, label: 'Early member discount (50%)' },
+  'EARLY100': { amount: 100, label: 'Early member discount' },
+  'NHS50':    { amount: 160, label: 'NHS staff discount (50%)' }
+};
 const addonPrices = { none: 0, nurse: 70, hormone: 85, both: 140 };
 const addonLabels = { none: null, nurse: 'Home nurse blood draw', hormone: 'Hormone panel upgrade', both: 'Nurse visit + Hormone panel' };
 
@@ -527,7 +505,7 @@ function gpMinDate() {
   return isoLocal(addWorkingDays(parseISO(base), 5));
 }
 
-const stepLabels = ['Plan', 'Add-ons', 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
+const stepLabels = ['Plan', 'Add-ons (removed)', 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
 
 function init() {
   renderProgress();
@@ -538,19 +516,20 @@ function init() {
 
 function renderProgress() {
   const container = document.getElementById('progressSteps');
-  container.innerHTML = stepLabels.map((label, i) => `
+  container.innerHTML = VISIBLE_STEPS.map((s, i) => `
     <div class="progress-step" data-idx="${i}">
       <div class="circle">${i + 1}</div>
-      <div class="label">${label}</div>
+      <div class="label">${stepLabels[s - 1]}</div>
     </div>
   `).join('');
 }
 
 function updateProgress(step) {
+  const idx = VISIBLE_STEPS.indexOf(step);
   document.querySelectorAll('.progress-step').forEach((el, i) => {
-    el.className = 'progress-step' + (i + 1 === step ? ' active' : i + 1 < step ? ' done' : '');
+    el.className = 'progress-step' + (i === idx ? ' active' : i < idx ? ' done' : '');
   });
-  document.getElementById('progressFill').style.width = ((step - 1) / (stepLabels.length - 1) * 100) + '%';
+  document.getElementById('progressFill').style.width = (Math.max(idx, 0) / (VISIBLE_STEPS.length - 1) * 100) + '%';
 }
 
 function selectPackage(pkg) {
@@ -562,13 +541,6 @@ function selectDiagnostic(type) {
   state.diagnostic = type;
   document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
   document.getElementById('diagClinic').classList.add('selected');
-}
-
-function selectAddon(addon) {
-  state.addon = addon;
-  document.querySelectorAll('#step2 .card-option').forEach(c => c.classList.remove('selected'));
-  const el = document.getElementById('addon' + addon.charAt(0).toUpperCase() + addon.slice(1));
-  if (el) el.classList.add('selected');
 }
 
 function renderClinics() {
@@ -691,8 +663,7 @@ function goStep(n) {
     document.getElementById('gpInfoMinDate').textContent = longDate(minGp);
   }
   if (n === 6) {
-    var total = MEMBERSHIP_PRICE + addonPrices[state.addon];
-    document.getElementById('payBtnText').textContent = 'Pay £' + total + ' — Activate membership';
+    document.getElementById('payBtnText').textContent = 'Pay £' + currentTotal() + ' — Activate membership';
   }
   if (n === 5) {
     startHoldTimer();
@@ -718,21 +689,17 @@ function goStep(n) {
     document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
     document.getElementById('confLocation').textContent = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
     document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
-    var totalPaid = MEMBERSHIP_PRICE + addonPrices[state.addon];
-    document.getElementById('confTotalPaid').textContent = '£' + totalPaid;
+    document.getElementById('confTotalPaid').textContent = '£' + currentTotal();
+    if (state.discountAmount > 0) {
+      document.getElementById('confDiscountRow').style.display = '';
+      document.getElementById('confDiscountCode').textContent = state.discountCode;
+      document.getElementById('confDiscountAmt').textContent = '−£' + state.discountAmount;
+    }
     var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('confReceiptRef').textContent = receiptRef;
     var prepDesc = document.querySelector('#prepReminder .desc');
     if (prepDesc && state.bloodTime) {
       prepDesc.textContent = 'Your blood test is at ' + state.bloodTime + '. Please fast for 10–12 hours beforehand (water is fine). We’ll send a reminder the day before.';
-    }
-    if (new URLSearchParams(location.search).get('entry') === 'bookfirst') {
-      var dashBtn = document.getElementById('confDashboardBtn');
-      dashBtn.textContent = 'Create your Evida account →';
-      dashBtn.onclick = function() {
-        showToast('Redirecting to account creation…');
-        setTimeout(function() { window.location.href = 'login.html?after=booking'; }, 800);
-      };
     }
   }
   state.step = n;
@@ -746,6 +713,9 @@ function goStep(n) {
 function handleBack() {
   if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
   if (state.step === 6) { goStep(5); return; }
+  // Signup flow starts at step 3 — back from there returns to account creation
+  if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'login.html'; return; }
+  if (state.step === 3) { goStep(1); return; } // add-ons step removed from MVP
   if (state.step > 1) { goStep(state.step - 1); return; }
   window.location.href = 'dashboard.html';
 }
@@ -795,6 +765,28 @@ function selectPayment(el) {
 function handleSkipPayment() {
   clearInterval(state.holdInterval);
   window.location.href = 'dashboard.html?pending=payment';
+}
+
+function applyDiscount() {
+  var input = document.getElementById('discountCode');
+  var feedback = document.getElementById('discountFeedback');
+  var code = input.value.trim().toUpperCase();
+  if (!code) { feedback.style.display = 'none'; return; }
+  var d = DISCOUNT_CODES[code];
+  if (d) {
+    state.discountCode = code;
+    state.discountAmount = d.amount;
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--color-success)';
+    feedback.textContent = '✓ ' + d.label + ' — £' + d.amount + ' off';
+  } else {
+    state.discountCode = null;
+    state.discountAmount = 0;
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--evida-coral)';
+    feedback.textContent = '✗ Invalid code. Please check and try again.';
+  }
+  document.getElementById('payBtnText').textContent = 'Pay £' + currentTotal() + ' — Activate membership';
 }
 
 function handlePayment() {
@@ -865,6 +857,35 @@ function addToCalendar() {
   a.click();
   URL.revokeObjectURL(url);
   showToast('Calendar file downloaded — open to add both appointments');
+}
+
+// Separate 6pm-the-evening-before fasting reminder, downloadable as its own event
+function addFastingReminder() {
+  const bloodDate = state.bloodDate || bloodSlots[0].date;
+  const bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  const evening = parseISO(bloodDate);
+  evening.setDate(evening.getDate() - 1);
+  const stamp = isoLocal(evening).replace(/-/g, '') + 'T180000';
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Evida//FastingReminder//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${stamp}`,
+    `DTEND:${stamp}`,
+    'SUMMARY:Start fasting for your Evida blood test',
+    `DESCRIPTION:Your blood test is tomorrow at ${bloodTime}. Stop eating from now — water is fine. Fast for 10-12 hours before your appointment.`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'evida-fasting-reminder.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Fasting reminder added — 6pm the evening before your test');
 }
 
 init();

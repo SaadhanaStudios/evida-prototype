@@ -195,6 +195,7 @@
     <button class="nav-item-desktop" onclick="window.location.href='ask-evi.html'">Ask Evi</button>
     <div class="sidebar-spacer"></div>
     <button class="nav-item-desktop" onclick="window.location.href='messages.html'">Messages</button>
+    <button class="nav-item-desktop" onclick="window.location.href='contact.html'">Contact us</button>
     <button class="nav-item-desktop" onclick="window.location.href='faq.html'">FAQ</button>
     <button class="nav-item-desktop" onclick="window.location.href='profile.html'">Profile</button>
     <button class="nav-item-desktop" onclick="window.location.href='settings.html'">Settings</button>
@@ -207,7 +208,7 @@
       <!-- Universal search stub -->
       <div style="position:relative;margin-bottom:16px">
         <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" id="insightsSearch" placeholder="Search your health data…" style="width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--evida-border);border-radius:var(--radius-md);font-family:var(--font-body);font-size:13px;color:var(--evida-fg);background:var(--evida-surface);outline:none;box-sizing:border-box" oninput="handleInsightsSearch()">
+        <input type="search" id="insightsSearch" placeholder="Search your health data…" style="width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--evida-border);border-radius:var(--radius-md);font-family:var(--font-body);font-size:13px;color:var(--evida-fg);background:var(--evida-surface);outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')handleInsightsSearch()">
       </div>
 
       <!-- Connected devices banner -->
@@ -770,6 +771,7 @@
       <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
       <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
       <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
       <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
       <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
       <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
@@ -1185,5 +1187,6 @@ function exportInsightsCSV() {
 })();
 </script>
 <script src="_uat.js"></script>
+<script src="_evi.js"></script>
 </body>
 </html>

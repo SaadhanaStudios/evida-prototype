@@ -48,11 +48,14 @@
   .id-status.verified { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
   .id-status.uploaded { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
 
-  .id-upload-area { border: 2px dashed var(--evida-border); border-radius: var(--radius-md); padding: 24px; text-align: center; margin-top: 12px; cursor: pointer; transition: border-color 200ms; }
-  .id-upload-area:hover { border-color: var(--color-primary); }
-  .id-upload-area .file-label { font-size: 13px; font-weight: 600; }
-  .id-upload-area .file-desc { font-size: 11px; color: var(--evida-muted); margin-top: 4px; }
-  .id-upload-area .uploaded-file { display: flex; align-items: center; gap: 8px; justify-content: center; padding: 8px; background: var(--evida-teal-light); border-radius: var(--radius-sm); margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--evida-teal-dark); }
+  .photo-box { border: 2px dashed var(--evida-border); border-radius: var(--radius-md); padding: 18px 12px; text-align: center; cursor: pointer; transition: border-color 200ms, background 200ms; }
+  .photo-box:hover { border-color: var(--color-primary); }
+  .photo-box.has-file { border-color: var(--color-success); border-style: solid; background: var(--evida-teal-light); }
+  .photo-box .pb-icon { font-size: 22px; font-weight: 300; color: var(--evida-muted); line-height: 1; }
+  .photo-box.has-file .pb-icon { color: var(--color-success); font-weight: 700; }
+  .photo-box .pb-title { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .photo-box .pb-sub { font-size: 11px; color: var(--evida-muted); margin-top: 2px; line-height: 1.4; }
+  .photo-box.has-file .pb-sub { color: var(--evida-teal-dark); font-weight: 600; }
 
   .device-summary-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
   .device-summary-item + .device-summary-item { border-top: 1px solid var(--evida-border); }
@@ -99,11 +102,13 @@
     </div>
     <button class="nav-item-desktop" onclick="window.location.href='dashboard.html'">Dashboard</button>
     <button class="nav-item-desktop" onclick="window.location.href='insights.html'">Data &amp; Insights</button>
+    <button class="nav-item-desktop" onclick="window.location.href='wearables.html'">Wearables</button>
     <button class="nav-item-desktop" onclick="window.location.href='dashboard.html#appointments'">Appointments</button>
     <button class="nav-item-desktop" onclick="window.location.href='documents.html'">Documents</button>
     <button class="nav-item-desktop" onclick="window.location.href='ask-evi.html'">Ask Evi</button>
     <div class="sidebar-spacer"></div>
     <button class="nav-item-desktop" onclick="window.location.href='messages.html'">Messages</button>
+    <button class="nav-item-desktop" onclick="window.location.href='contact.html'">Contact us</button>
     <button class="nav-item-desktop" onclick="window.location.href='faq.html'">FAQ</button>
     <button class="nav-item-desktop active" onclick="window.location.href='profile.html'">Profile</button>
     <button class="nav-item-desktop" onclick="window.location.href='settings.html'">Settings</button>
@@ -159,15 +164,19 @@
             <strong>Why we need this:</strong> UK clinical regulations (CQC) require us to verify your identity before delivering clinical services. Your photo is used by your GP for visual confirmation during your first consultation. Uploaded documents are encrypted and stored securely in compliance with UK data protection law.
           </p>
         </div>
-        <div class="id-upload-area" id="idUploadArea" onclick="uploadID()" style="margin-bottom:8px">
-          <div id="idUploadContent">
-            <div class="file-label">Upload profile photo + photo ID</div>
-            <div class="file-desc">Passport, driving licence, or national ID card. A selfie-style photo is fine for your profile.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="photo-box" id="photoBox" onclick="document.getElementById('photoFileInput').click()">
+            <div class="pb-icon">+</div>
+            <div class="pb-title">Profile photo</div>
+            <div class="pb-sub">Selfie-style · optional</div>
           </div>
-          <div id="idUploadedContent" style="display:none">
-            <div class="uploaded-file">Uploaded — pending review</div>
+          <div class="photo-box" id="idBox" onclick="uploadID()">
+            <div class="pb-icon">+</div>
+            <div class="pb-title">Photo ID</div>
+            <div class="pb-sub">Passport, driving licence, or national ID</div>
           </div>
         </div>
+        <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
         <input type="file" id="idFileInput" accept="image/*,.pdf" style="display:none" onchange="handleIDUpload(event)">
         <div style="display:flex;gap:8px;align-items:center">
           <button class="btn-ghost btn-sm" id="retakeBtn" style="display:none" onclick="retakeID()">Upload new files</button>
@@ -310,6 +319,7 @@
       <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
       <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
       <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
       <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
       <div class="sheet-item active" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
       <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
@@ -324,6 +334,7 @@
 <script src="store.js"></script>
 <script src="_nav-helpers.js"></script>
 <script src="_uat.js"></script>
+<script src="_evi.js"></script>
 <script>
 function saveProfile() {
   var data = {
@@ -369,17 +380,32 @@ function uploadID() {
   document.getElementById('idFileInput').click();
 }
 
+function markIdUploaded() {
+  var box = document.getElementById('idBox');
+  box.classList.add('has-file');
+  box.querySelector('.pb-icon').textContent = '✓';
+  box.querySelector('.pb-sub').textContent = 'Uploaded — pending review';
+  document.getElementById('idStatusBadge').className = 'id-status uploaded';
+  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+  document.getElementById('retakeBtn').style.display = 'inline-flex';
+}
+
 function handleIDUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
-  document.getElementById('idUploadContent').style.display = 'none';
-  document.getElementById('idUploadedContent').style.display = 'block';
-  document.getElementById('retakeBtn').style.display = 'inline-flex';
-  document.getElementById('idUploadArea').style.borderColor = 'var(--evida-teal)';
-  document.getElementById('idStatusBadge').className = 'id-status uploaded';
-  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+  markIdUploaded();
   EvidaStore.idVerification.setVerified();
   showToast('ID uploaded for review');
+}
+
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  var box = document.getElementById('photoBox');
+  box.classList.add('has-file');
+  box.querySelector('.pb-icon').textContent = '✓';
+  box.querySelector('.pb-sub').textContent = 'Photo uploaded';
+  showToast('Profile photo uploaded');
 }
 
 function retakeID() {
@@ -409,11 +435,7 @@ loadProfile();
 // Restore ID verification status on load
 (function() {
   if (!EvidaStore.idVerification.isVerified()) return;
-  document.getElementById('idUploadContent').style.display   = 'none';
-  document.getElementById('idUploadedContent').style.display = 'block';
-  document.getElementById('idUploadArea').style.borderColor  = 'var(--evida-teal)';
-  document.getElementById('idStatusBadge').className   = 'id-status uploaded';
-  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
+  markIdUploaded();
 })();
 
 function saveQuestionnaire() {

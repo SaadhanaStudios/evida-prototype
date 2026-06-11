@@ -83,7 +83,7 @@
 
   var css = document.createElement('style');
   css.textContent =
-    '#demoGearWrap{position:fixed;bottom:12px;right:12px;z-index:99999}' +
+    '#demoGearWrap{position:fixed;bottom:12px;left:12px;z-index:99999}' +
     '#demoGear{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);' +
       'background:rgba(10,14,26,0.85);backdrop-filter:blur(6px);color:rgba(255,255,255,0.7);' +
       'cursor:pointer;display:grid;place-items:center;transition:all 150ms;' +
@@ -91,7 +91,7 @@
     '#demoGear:hover,#demoGear.open{background:var(--evida-teal);color:white;border-color:var(--evida-teal)}' +
     '@media(max-width:600px){#demoGear{width:32px;height:32px}}' +
 
-    '#demoPanel{position:fixed;bottom:56px;right:12px;z-index:99998;' +
+    '#demoPanel{position:fixed;bottom:56px;left:12px;z-index:99998;' +
       'background:rgba(10,14,26,0.95);backdrop-filter:blur(10px);' +
       'border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;' +
       'min-width:210px;box-shadow:0 8px 24px rgba(0,0,0,0.4);' +

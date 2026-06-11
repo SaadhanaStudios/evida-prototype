@@ -160,14 +160,7 @@
           <div style="font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">More than a health check</div>
           <h1>Preventive health,<br>powered by data</h1>
           <div class="lh-sub">Clinician-led membership. Comprehensive blood panel, GP consultation, personalised prevention plan, and 12 months of insights.</div>
-          <div class="lh-price"><span style="font-size:20px;font-weight:500;color:var(--evida-muted);text-decoration:line-through;margin-right:8px">£320</span>£160<span class="lh-period">/year</span></div>
-          <div style="display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--radius-full);background:var(--evida-teal-light);color:var(--evida-teal-dark);margin-bottom:12px">Founding member price — first 500 members</div>
-          <div class="lh-inclusions">
-            <div>✓ 42-marker blood panel at a Randox clinic</div>
-            <div>✓ 45-min virtual GP consultation</div>
-            <div>✓ Personalised prevention plan</div>
-            <div>✓ 12 months of biomarker tracking &amp; insights</div>
-          </div>
+          <div class="lh-price">£320<span class="lh-period">/year</span></div>
         </div>
 
         <div class="landing-benefits">
@@ -190,8 +183,7 @@
         </div>
 
         <div class="cta-wrap">
-          <button class="btn btn-primary btn-join" onclick="startMembership()">Join Evida — £160/year</button>
-          <button class="btn btn-secondary btn-join" style="margin-top:10px;height:44px;font-size:14px" onclick="window.location.href='booking.html?entry=bookfirst'">Book first, pay after →</button>
+          <button class="btn btn-primary btn-join" onclick="startMembership()">Create account</button>
         </div>
         <div class="form-footer" style="margin-top:16px">
           Already a member? <a onclick="showScreen('screen-signin')">Sign in</a>
@@ -292,6 +284,7 @@
               </div>
               <div class="field-error" id="suCodeError">Invalid code. Please check your email.</div>
               <div style="margin-top:6px;font-size:12px;color:var(--evida-muted)">Enter the code sent to your email. Code is also in the email subject line.</div>
+              <div style="margin-top:6px;font-size:12px;color:var(--evida-muted)">Didn't receive the code? <a class="text-link" style="cursor:pointer;font-weight:600" onclick="showToast('New code sent: EV-2847 (also in the email subject line)')">Send again</a></div>
             </div>
           </div>
           <div class="form-group">
@@ -310,8 +303,20 @@
           </div>
           <div class="form-group">
             <label for="suPhone">Phone number <span style="font-weight:400;color:var(--evida-muted)">(optional — for appointment reminders)</span></label>
-            <div class="input-wrap">
+            <div class="input-wrap has-inline">
               <input type="tel" id="suPhone" placeholder="07700 900000" autocomplete="tel" inputmode="numeric">
+              <button class="inline-btn" id="suPhoneVerifyBtn" onclick="handleSuSendSms()">Verify phone</button>
+            </div>
+          </div>
+          <div class="verify-control" id="suPhoneVerifyControl">
+            <div class="form-group">
+              <label for="suSmsCode">SMS verification code</label>
+              <div class="input-wrap">
+                <input type="text" id="suSmsCode" placeholder="000000" maxlength="6" inputmode="numeric" oninput="checkSmsCode(this.value)">
+              </div>
+              <div class="field-error" id="suSmsError">Invalid code. Please check the text message.</div>
+              <div style="margin-top:6px;font-size:12px;color:var(--evida-muted)">Enter the 6-digit code we texted you.</div>
+              <div style="margin-top:6px;font-size:12px;color:var(--evida-muted)">Didn't receive the code? <a class="text-link" style="cursor:pointer;font-weight:600" onclick="showToast('New code texted: 482719')">Send again</a></div>
             </div>
           </div>
           <div class="form-group">
@@ -358,7 +363,7 @@
           <span class="btn-text">Verify email</span>
           <span class="btn-spinner"></span>
         </button>
-        <button class="btn btn-ghost" onclick="resendCode()" style="margin-top:8px;width:auto">Resend code</button>
+        <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--evida-muted)">Didn't receive the code? <a class="text-link" style="cursor:pointer;font-weight:600" onclick="resendCode()">Send again</a></div>
       </div>
 
       <!-- SCREEN 4: SUCCESS / WELCOME -->
@@ -389,7 +394,6 @@
 
     </div>
   </div>
-</div>
 
   <!-- Mobile bottom nav -->
   <nav class="bottom-nav" id="bottomNav">
@@ -408,6 +412,7 @@
       <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
       <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
       <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
       <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
       <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
       <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
@@ -578,6 +583,41 @@ function handleSuSendCode() {
   }, 1000);
 }
 
+function handleSuSendSms() {
+  var phone = document.getElementById('suPhone').value.trim();
+  if (!phone) {
+    document.getElementById('suPhone').focus();
+    showToast('Enter your phone number first');
+    return;
+  }
+  const btn = document.getElementById('suPhoneVerifyBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  setTimeout(function() {
+    btn.textContent = 'Sent';
+    btn.className = 'inline-btn sent';
+    document.getElementById('suPhoneVerifyControl').classList.add('open');
+    document.getElementById('suSmsCode').focus();
+    showToast('Dev code: 482719 (sent by SMS)');
+  }, 1000);
+}
+
+function checkSmsCode(val) {
+  if (val.length < 6) return;
+  var err = document.getElementById('suSmsError');
+  if (val === '482719') {
+    err.classList.remove('visible');
+    document.getElementById('suPhoneVerifyControl').classList.remove('open');
+    var btn = document.getElementById('suPhoneVerifyBtn');
+    btn.textContent = '✓ Verified';
+    btn.className = 'inline-btn sent';
+    btn.disabled = true;
+    showToast('Phone number verified');
+  } else {
+    err.classList.add('visible');
+  }
+}
+
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
     const focused = document.activeElement;
@@ -599,19 +639,10 @@ document.addEventListener('keydown', function(e) {
 })();
 
 // Resume payment — payment now happens in booking.html, redirect there
-// Also handle ?after=booking (book-first return path)
 (function() {
   var params = new URLSearchParams(location.search);
   if (params.get('resume') === 'payment') {
     window.location.href = 'booking.html?flow=signup&resume=payment';
-  }
-  if (params.get('after') === 'booking') {
-    showScreen('screen-signup');
-    // Returning from a paid book-first flow — adjust the copy to match
-    var h = document.querySelector('#screen-signup .brand-block h1');
-    var p = document.querySelector('#screen-signup .brand-block p');
-    if (h) h.textContent = 'Booking confirmed — create your account';
-    if (p) p.textContent = 'Your Baseline is booked and paid. Create your account to access your dashboard and pre-consult tasks.';
   }
 })();
 
@@ -634,10 +665,7 @@ function handleCreateAccount() {
   var data  = { name: name, email: email, savedAt: new Date().toISOString() };
   try { EvidaStore.account.save(data); } catch(_) {}
   try { EvidaStore.account.clearPartial(); } catch(_) {}
-  // Book-first path: the booking is already paid for — go straight to the dashboard
-  var alreadyBooked = false;
-  try { alreadyBooked = EvidaStore.booking.isConfirmed(); } catch(_) {}
-  window.location.href = alreadyBooked ? 'dashboard.html' : 'booking.html?flow=signup';
+  window.location.href = 'booking.html?flow=signup';
 }
 
 // Password strength
