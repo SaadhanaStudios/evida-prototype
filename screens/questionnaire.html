@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, viewport-fit=cover">
+<title>Evida — Health Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+
+  .progress-wrap { padding: 0 16px 12px; background: var(--evida-surface); border-bottom: 1px solid var(--evida-border); }
+  .progress-label { font-size: 11px; color: var(--evida-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 4px; background: var(--evida-border); border-radius: var(--radius-full); }
+  .progress-fill { height: 100%; background: var(--evida-teal); border-radius: var(--radius-full); transition: width 400ms ease; }
+
+  .q-step { display: none; }
+  .q-step.active { display: block; }
+
+  .step-heading { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .step-sub { font-size: 13px; color: var(--evida-fg-secondary); margin-bottom: 24px; line-height: 1.5; }
+
+  .field-group { margin-bottom: 20px; }
+  .field-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--evida-fg); }
+  .field-group .hint { font-size: 11px; color: var(--evida-muted); margin-top: 4px; line-height: 1.4; }
+  .field-group textarea { width: 100%; min-height: 80px; padding: 10px 12px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px; color: var(--evida-fg); background: var(--evida-surface); resize: vertical; box-sizing: border-box; line-height: 1.5; outline: none; transition: border-color 150ms, box-shadow 150ms; }
+  .field-group textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--evida-teal-light); }
+  .field-group input[type="text"] { width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px; color: var(--evida-fg); background: var(--evida-surface); box-sizing: border-box; outline: none; transition: border-color 150ms, box-shadow 150ms; }
+  .field-group input[type="text"]:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--evida-teal-light); }
+
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-opt { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); cursor: pointer; transition: all 150ms; }
+  .radio-opt:hover { border-color: var(--color-primary); background: var(--evida-teal-light); }
+  .radio-opt input[type="radio"] { width: 18px; height: 18px; accent-color: var(--color-primary); flex-shrink: 0; }
+  .radio-opt.selected { border-color: var(--color-primary); background: var(--evida-teal-light); }
+  .radio-opt span { font-size: 14px; }
+
+  .info-box { padding: 12px 14px; background: var(--evida-teal-light); border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 12px; color: var(--evida-teal-dark); line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+  .info-box svg { flex-shrink: 0; margin-top: 1px; }
+
+  .step-nav { display: flex; gap: 10px; margin-top: 24px; }
+  .step-nav .btn-back { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg-secondary); }
+  .step-nav .btn-back:hover { border-color: var(--evida-muted); color: var(--evida-fg); }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" id="backBtn" onclick="handleBack()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="page-title">Health Questionnaire</span>
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><span class="notif-badge">3</span></div></div>
+  </header>
+
+  <nav class="sidebar"></nav>
+
+  <div class="app-body">
+    <div class="app-body-inner">
+
+      <!-- Progress bar -->
+      <div class="progress-wrap" style="margin: -16px -16px 16px; padding: 8px 16px 12px;">
+        <div class="progress-label">
+          <span id="stepLabel">Step 1 of 3</span>
+          <span id="stepPct">33%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+      </div>
+
+      <!-- Step 1: Medical history -->
+      <div class="q-step active" id="step1">
+        <h2 class="step-heading">Medical history</h2>
+        <p class="step-sub">This helps your GP tailor your consultation and review your results in context.</p>
+
+        <div class="info-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Your answers are confidential and shared only with your Evida GP.
+        </div>
+
+        <div class="field-group">
+          <label for="q_conditions">Current medical conditions</label>
+          <textarea id="q_conditions" placeholder="e.g. Hypertension (diagnosed 2019), Type 2 diabetes…&#10;Write 'None' if you have no diagnosed conditions."></textarea>
+        </div>
+        <div class="field-group">
+          <label for="q_medications">Current medications &amp; supplements</label>
+          <textarea id="q_medications" placeholder="e.g. Lisinopril 10mg daily, Vitamin D 1000 IU…&#10;Write 'None' if you take no medications."></textarea>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary btn-back" onclick="window.location.href='onboarding.html'">Cancel</button>
+          <button class="btn btn-primary" style="flex:1" onclick="goStep(2)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Family history & allergies -->
+      <div class="q-step" id="step2">
+        <h2 class="step-heading">Family history &amp; allergies</h2>
+        <p class="step-sub">Family history helps identify patterns that may affect your own risk profile.</p>
+
+        <div class="field-group">
+          <label for="q_family">Family history of illness</label>
+          <textarea id="q_family" placeholder="e.g. Father: type 2 diabetes, coronary artery disease&#10;Mother: breast cancer&#10;Write 'None known' if uncertain."></textarea>
+        </div>
+        <div class="field-group">
+          <label for="q_allergies">Known allergies</label>
+          <textarea id="q_allergies" placeholder="e.g. Penicillin (rash), latex, nuts…&#10;Write 'None' if you have no known allergies."></textarea>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary btn-back" onclick="goStep(1)">Back</button>
+          <button class="btn btn-primary" style="flex:1" onclick="goStep(3)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Lifestyle -->
+      <div class="q-step" id="step3">
+        <h2 class="step-heading">Lifestyle</h2>
+        <p class="step-sub">A quick snapshot of your daily habits. Used to personalise your prevention plan.</p>
+
+        <div class="field-group">
+          <label>Smoking</label>
+          <div class="radio-group" id="q_smoking">
+            <label class="radio-opt" onclick="selectRadio('q_smoking', 'never')"><input type="radio" name="smoking" value="never"><span>Never smoked</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_smoking', 'ex')"><input type="radio" name="smoking" value="ex"><span>Ex-smoker</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_smoking', 'occasional')"><input type="radio" name="smoking" value="occasional"><span>Occasional / social smoker</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_smoking', 'daily')"><input type="radio" name="smoking" value="daily"><span>Daily smoker</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Alcohol</label>
+          <div class="radio-group" id="q_alcohol">
+            <label class="radio-opt" onclick="selectRadio('q_alcohol', 'none')"><input type="radio" name="alcohol" value="none"><span>None</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_alcohol', 'light')"><input type="radio" name="alcohol" value="light"><span>Light (1–7 units/week)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_alcohol', 'moderate')"><input type="radio" name="alcohol" value="moderate"><span>Moderate (8–14 units/week)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_alcohol', 'heavy')"><input type="radio" name="alcohol" value="heavy"><span>Heavy (15+ units/week)</span></label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Exercise</label>
+          <div class="radio-group" id="q_exercise">
+            <label class="radio-opt" onclick="selectRadio('q_exercise', 'sedentary')"><input type="radio" name="exercise" value="sedentary"><span>Sedentary (little or no exercise)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_exercise', 'light')"><input type="radio" name="exercise" value="light"><span>Light (1–2 days/week)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_exercise', 'moderate')"><input type="radio" name="exercise" value="moderate"><span>Moderate (3–4 days/week)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_exercise', 'active')"><input type="radio" name="exercise" value="active"><span>Active (5+ days/week)</span></label>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-secondary btn-back" onclick="goStep(2)">Back</button>
+          <button class="btn btn-primary" style="flex:1" id="submitBtn" onclick="submitQuestionnaire()">Submit</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="ask-evi" onclick="window.location.href='ask-evi.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="label">Ask Evi</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script>
+var currentStep = 1;
+var TOTAL_STEPS = 3;
+
+function goStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step' + currentStep).classList.add('active');
+  var pct = Math.round((n / TOTAL_STEPS) * 100);
+  document.getElementById('stepLabel').textContent = 'Step ' + n + ' of ' + TOTAL_STEPS;
+  document.getElementById('stepPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  window.scrollTo(0, 0);
+}
+
+function selectRadio(groupId, value) {
+  var opts = document.querySelectorAll('#' + groupId + ' .radio-opt');
+  for (var i = 0; i < opts.length; i++) {
+    var radio = opts[i].querySelector('input[type="radio"]');
+    var isSelected = radio.value === value;
+    radio.checked = isSelected;
+    opts[i].classList.toggle('selected', isSelected);
+  }
+}
+
+function getRadioValue(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : '';
+}
+
+function handleBack() {
+  if (currentStep > 1) {
+    goStep(currentStep - 1);
+  } else {
+    window.location.href = 'onboarding.html';
+  }
+}
+
+function submitQuestionnaire() {
+  var smoking  = getRadioValue('smoking');
+  var alcohol  = getRadioValue('alcohol');
+  var exercise = getRadioValue('exercise');
+
+  if (!smoking || !alcohol || !exercise) {
+    showToast('Please answer all questions on this page');
+    return;
+  }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  EvidaStore.questionnaire.save({
+    conditions:    document.getElementById('q_conditions').value.trim() || 'None',
+    medications:   document.getElementById('q_medications').value.trim() || 'None',
+    familyHistory: document.getElementById('q_family').value.trim() || 'None known',
+    allergies:     document.getElementById('q_allergies').value.trim() || 'None',
+    smoking:       smoking,
+    alcohol:       alcohol,
+    exercise:      exercise
+  });
+
+  EvidaStore.onboarding.completeTask('questionnaire');
+
+  setTimeout(function() {
+    window.location.href = 'onboarding.html';
+  }, 600);
+}
+
+// Pre-fill if questionnaire was already partially completed
+(function() {
+  var existing = EvidaStore.questionnaire.get();
+  if (!existing) return;
+  if (existing.conditions)    document.getElementById('q_conditions').value  = existing.conditions;
+  if (existing.medications)   document.getElementById('q_medications').value = existing.medications;
+  if (existing.familyHistory) document.getElementById('q_family').value      = existing.familyHistory;
+  if (existing.allergies)     document.getElementById('q_allergies').value   = existing.allergies;
+  if (existing.smoking)       selectRadio('q_smoking',  existing.smoking);
+  if (existing.alcohol)       selectRadio('q_alcohol',  existing.alcohol);
+  if (existing.exercise)      selectRadio('q_exercise', existing.exercise);
+})();
+</script>
+</body>
+</html>

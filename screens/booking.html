@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 <title>Evida — Book your Baseline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +43,7 @@
   .card-option .desc { font-size: 13px; color: var(--evida-fg-secondary); line-height: 1.4; }
   .card-option .meta { display: flex; gap: 8px; margin-top: 6px; }
   .card-option .pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-full); }
-  .card-option .pill-coming { background: var(--evida-amber-light); color: #8A5A2A; }
+  .card-option .pill-coming { background: var(--evida-amber-light); color: var(--color-warning-fg); }
   .card-option .pill-price { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
   .card-option .pill-free { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
 
@@ -82,7 +82,7 @@
   .cart-total .price-original { font-size: 14px; font-weight: 400; color: var(--evida-muted); text-decoration: line-through; }
   .cart-total .price-discount { color: var(--color-success); font-size: 13px; font-weight: 600; margin-top: 2px; }
 
-  .hold-banner { display: none; align-items: center; gap: 8px; padding: 10px 14px; background: var(--evida-amber-light); border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px; color: #8A5A2A; }
+  .hold-banner { display: none; align-items: center; gap: 8px; padding: 10px 14px; background: var(--evida-amber-light); border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px; color: var(--color-warning-fg); }
   .hold-banner.visible { display: flex; }
   .hold-banner .timer { font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
@@ -114,7 +114,7 @@
   .conf-detail .divider { height: 1px; background: var(--evida-border); margin: 8px 0; }
 
   .app-header .header-actions { margin-left: auto; }
-  .error-banner { display: none; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-md); background: #FDE8E8; color: #B34343; font-size: 13px; margin-bottom: 16px; line-height: 1.4; }
+  .error-banner { display: none; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-md); background: var(--color-danger-bg); color: var(--color-danger-fg); font-size: 13px; margin-bottom: 16px; line-height: 1.4; }
   .error-banner.visible { display: flex; }
   .error-banner .w-icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
   /* Fasting/prep reminder banner */
@@ -231,11 +231,23 @@
           <div id="cartAddons" style="display:none">
             <div class="cart-item" id="cartAddonRow"><span class="label" id="cartAddonLabel">Home nurse visit</span><span class="value" id="cartAddonPrice">£70</span></div>
           </div>
+          <div id="cartDiscountRow" class="cart-item" style="display:none;color:var(--color-success)"><span class="label" id="cartDiscountLabel">Discount</span><span class="value" id="cartDiscountAmt"></span></div>
           <div class="cart-total" style="border-top:2px solid var(--evida-fg)">
             <span>Total</span>
             <span id="cartTotalValue">£320</span>
           </div>
         </div>
+
+        <!-- Discount code — applied before reviewing total -->
+        <div style="margin:12px 0">
+          <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px" for="discountCode">Have a discount code?</label>
+          <div style="display:flex;gap:8px">
+            <input class="evida-input" id="discountCode" placeholder="Enter code" style="flex:1;height:44px;font-size:14px;text-transform:uppercase;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px">
+            <button class="btn btn-secondary" onclick="applyDiscount()" style="width:auto;padding:0 20px;height:44px;font-size:13px">Apply</button>
+          </div>
+          <div id="discountFeedback" style="display:none;font-size:12px;font-weight:600;margin-top:6px"></div>
+        </div>
+
         <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged the total shown above.</p>
         <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
         <div style="text-align:center;margin-top:8px">
@@ -279,16 +291,6 @@
             </div>
           </div>
 
-        </div>
-
-        <!-- Discount code -->
-        <div style="margin:14px 0 4px">
-          <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px" for="discountCode">Discount code</label>
-          <div style="display:flex;gap:8px">
-            <input class="evida-input" id="discountCode" placeholder="Enter code" style="flex:1;height:44px;font-size:14px;text-transform:uppercase;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px">
-            <button class="btn btn-secondary" onclick="applyDiscount()" style="width:auto;padding:0 20px;height:44px;font-size:13px">Apply</button>
-          </div>
-          <div id="discountFeedback" style="display:none;font-size:12px;font-weight:600;margin-top:6px"></div>
         </div>
 
         <div style="display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
@@ -505,7 +507,8 @@ function gpMinDate() {
   return isoLocal(addWorkingDays(parseISO(base), 5));
 }
 
-const stepLabels = ['Plan', 'Add-ons (removed)', 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
+// Index 1 (step 2) is intentionally null — add-ons step was removed; steps jump 1→3
+const stepLabels = ['Plan', null, 'Clinic & time', 'GP consult', 'Review', 'Payment', 'Confirmation'];
 
 function init() {
   renderProgress();
@@ -551,7 +554,7 @@ function renderClinics() {
       <div class="addr">${c.addr}</div>
       <div class="bottom">
         <span class="dist">${c.dist}</span>
-        <span class="avail" style="background:${c.avail === 'Limited' ? 'var(--evida-amber-light)' : 'var(--evida-teal-light)'};color:${c.avail === 'Limited' ? '#8A5A2A' : 'var(--evida-teal-dark)'}">${c.avail}</span>
+        <span class="avail" style="background:${c.avail === 'Limited' ? 'var(--evida-amber-light)' : 'var(--evida-teal-light)'};color:${c.avail === 'Limited' ? 'var(--color-warning-fg)' : 'var(--evida-teal-dark)'}">${c.avail}</span>
       </div>
     </div>
   `).join('');
@@ -734,8 +737,8 @@ function startHoldTimer() {
     state.holdSeconds--;
     document.getElementById('holdTimer').textContent = formatTimer(state.holdSeconds);
     if (state.holdSeconds <= 60 && state.holdSeconds > 0) {
-      document.getElementById('holdBanner').style.background = '#FDE8E8';
-      document.getElementById('holdBanner').style.color = '#B34343';
+      document.getElementById('holdBanner').style.background = 'var(--color-danger-bg)';
+      document.getElementById('holdBanner').style.color = 'var(--color-danger-fg)';
     }
     if (state.holdSeconds <= 0) {
       clearInterval(state.holdInterval);
@@ -779,13 +782,22 @@ function applyDiscount() {
     feedback.style.display = 'block';
     feedback.style.color = 'var(--color-success)';
     feedback.textContent = '✓ ' + d.label + ' — £' + d.amount + ' off';
+    var discountRow = document.getElementById('cartDiscountRow');
+    if (discountRow) {
+      document.getElementById('cartDiscountLabel').textContent = d.label;
+      document.getElementById('cartDiscountAmt').textContent = '−£' + d.amount;
+      discountRow.style.display = '';
+    }
   } else {
     state.discountCode = null;
     state.discountAmount = 0;
     feedback.style.display = 'block';
     feedback.style.color = 'var(--evida-coral)';
     feedback.textContent = '✗ Invalid code. Please check and try again.';
+    var discountRow = document.getElementById('cartDiscountRow');
+    if (discountRow) discountRow.style.display = 'none';
   }
+  document.getElementById('cartTotalValue').textContent = '£' + currentTotal();
   document.getElementById('payBtnText').textContent = 'Pay £' + currentTotal() + ' — Activate membership';
 }
 
@@ -835,14 +847,14 @@ function addToCalendar() {
     'PRODID:-//Evida//Booking//EN',
     'BEGIN:VEVENT',
     `DTSTART:${bloodStart}`,
-    `DTEND:${bloodStart}`,
+    'DURATION:PT1H',
     `SUMMARY:Evida Baseline - Blood Test @ ${clinic}`,
     `DESCRIPTION:Fasting blood test. Fast for 10-12 hours beforehand (water is fine).`,
     'LOCATION:' + clinic,
     'END:VEVENT',
     'BEGIN:VEVENT',
     `DTSTART:${gpStart}`,
-    `DTEND:${gpStart}`,
+    'DURATION:PT45M',
     'SUMMARY:Evida Baseline - GP Consultation (Virtual)',
     'DESCRIPTION:45-min virtual consult with Dr. Sarah Chen + health coach. Join via link in your dashboard.',
     'END:VEVENT',

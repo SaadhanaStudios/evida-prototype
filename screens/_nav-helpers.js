@@ -36,8 +36,26 @@ var SIDEBAR_ICONS = {
   'messages':     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>',
   'faq':          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
   'profile':      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  'settings':     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'
+  'settings':     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  'wearables':    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg>',
+  'contact':      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.34 6.34l.94-.94a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
 };
+
+var SIDEBAR_LOGO = '<svg width="32" height="32" viewBox="68 25 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M123.386 81.6125C123.386 83.4833 121.889 84.9998 120.042 84.9998H102.486V63.8291H123.386V81.6125Z" fill="white"/><path d="M68.32 32.5751C68.32 30.7043 69.8172 29.1877 71.664 29.1877H89.2203V50.3584H68.32V32.5751Z" fill="white"/><path d="M71.664 85.0001C69.8172 85.0001 68.32 83.4835 68.32 81.6127L68.32 63.8293H89.2202V85.0001H71.664Z" fill="white"/><path d="M120.117 34.0259C115.586 34.0259 111.914 37.6742 111.914 42.1747C111.914 46.6753 115.586 50.3237 120.117 50.3237C124.647 50.3237 128.32 46.6753 128.32 42.1747C128.32 37.6742 124.647 34.0259 120.117 34.0259Z" fill="white"/><path d="M110.715 25C106.17 25 102.486 28.6484 102.486 33.1489C102.486 37.6494 106.17 41.2979 110.715 41.2979C115.26 41.2979 118.944 37.6494 118.944 33.1489C118.944 28.6484 115.26 25 110.715 25Z" fill="white"/><path d="M120.09 50.3235L112.489 40.4017L102.486 33.1489V50.3235H120.09Z" fill="white"/></svg>';
+
+var SIDEBAR_ITEMS = [
+  { label: 'Dashboard',       href: 'dashboard.html',             key: 'dashboard'  },
+  { label: 'Data & Insights', href: 'insights.html',              key: 'insights'   },
+  { label: 'Wearables',       href: 'wearables.html',             key: 'wearables'  },
+  { label: 'Appointments',    href: 'dashboard.html#appointments', key: null         },
+  { label: 'Documents',       href: 'documents.html',             key: 'documents'  },
+  { label: 'Ask Evi',         href: 'ask-evi.html',               key: 'ask-evi'    },
+  { label: 'Messages',        href: 'messages.html',              key: 'messages'   },
+  { label: 'Contact Us',      href: 'contact.html',               key: 'contact'    },
+  { label: 'FAQ',             href: 'faq.html',                   key: 'faq'        },
+  { label: 'Profile',         href: 'profile.html',               key: 'profile'    },
+  { label: 'Settings',        href: 'settings.html',              key: 'settings'   }
+];
 
 /* ---- Sheet Nav ---- */
 var SCROLL_POS = 0;
@@ -78,7 +96,7 @@ function showToast(msg) {
 }
 
 /* ---- Bottom Nav Active Highlighter ---- */
-var SHEET_PAGES = ['messages', 'ask-evi', 'profile', 'settings', 'faq', 'documents', 'post-consult', 'wearables', 'contact'];
+var SHEET_PAGES = ['messages', 'profile', 'settings', 'faq', 'documents', 'post-consult', 'wearables', 'contact', 'questionnaire'];
 function initBottomNav() {
   var items = document.querySelectorAll('.bottom-nav .nav-item');
   var page = window.location.pathname.split('/').pop().replace(/\.html$/, '') || 'dashboard';
@@ -173,25 +191,36 @@ function initNavSheet() {
   }
 }
 
-/* ---- Sidebar Icon Injector ---- */
-function initSidebarIcons() {
-  var items = document.querySelectorAll('.sidebar .nav-item-desktop');
-  for (var i = 0; i < items.length; i++) {
-    var item = items[i];
-    if (item.querySelector('svg')) continue;
-    var text = item.textContent.trim().toLowerCase();
-    var matched = null;
-    var keys = Object.keys(SIDEBAR_ICONS);
-    for (var k = 0; k < keys.length; k++) {
-      if (text.indexOf(keys[k]) !== -1) { matched = keys[k]; break; }
+/* ---- Sidebar Builder ---- */
+function initSidebar() {
+  var nav = document.querySelector('.sidebar');
+  if (!nav) return;
+
+  var page = window.location.pathname.split('/').pop().replace(/\.html$/, '') || 'dashboard';
+  var activePage = page.indexOf('doc-') === 0 ? 'documents' : page;
+
+  var html = '<div class="logo-wrap">' + SIDEBAR_LOGO + '<span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span></div>';
+
+  for (var i = 0; i < SIDEBAR_ITEMS.length; i++) {
+    var item = SIDEBAR_ITEMS[i];
+    var isActive = item.key !== null && activePage === item.key;
+    var labelKey = item.label.toLowerCase().replace('&', '').replace(/\s+/g, ' ').trim();
+    var iconHtml = '';
+    var ikeys = Object.keys(SIDEBAR_ICONS);
+    for (var k = 0; k < ikeys.length; k++) {
+      if (labelKey.indexOf(ikeys[k]) !== -1) {
+        iconHtml = '<span class="nid-icon">' + SIDEBAR_ICONS[ikeys[k]] + '</span>';
+        break;
+      }
     }
-    if (matched) {
-      var iconSpan = document.createElement('span');
-      iconSpan.className = 'nid-icon';
-      iconSpan.innerHTML = SIDEBAR_ICONS[matched];
-      item.insertBefore(iconSpan, item.firstChild);
-    }
+    html += '<button class="nav-item-desktop' + (isActive ? ' active' : '') + '" onclick="window.location.href=\'' + item.href + '\'">' + iconHtml + item.label + '</button>';
   }
+
+  html += '<div class="sidebar-spacer"></div>';
+  html += '<button class="sidebar-dark-toggle" id="sidebarDarkToggle" onclick="toggleDarkMode()">Dark mode</button>';
+
+  nav.innerHTML = html;
+  updateDarkToggleLabel();
 }
 
 /* ---- Back Button Chevron ---- */
@@ -294,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initBottomNav();
   initNotifications();
   initNavSheet();
-  initSidebarIcons();
+  initSidebar();
   initBackButtons();
   initSendButtons();
   initChevrons();

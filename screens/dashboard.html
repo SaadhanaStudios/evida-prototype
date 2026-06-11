@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 <title>Evida — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
   .dash-search input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--evida-teal-light); }
 
   .inline-alert { border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.4; }
-  .inline-alert.alert-amber { background: var(--evida-amber-light); color: #8A5A2A; }
+  .inline-alert.alert-amber { background: var(--evida-amber-light); color: var(--color-warning-fg); }
   .inline-alert.alert-teal { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
   .inline-alert .ia-icon { font-weight: 700; flex-shrink: 0; width: 18px; text-align: center; }
   .inline-alert .ia-text { flex: 1; }
@@ -161,23 +161,7 @@
     </div>
   </header>
 
-  <nav class="sidebar" id="desktopSidebar">
-    <div class="logo-wrap">
-      <svg width="32" height="32" viewBox="68 25 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M123.386 81.6125C123.386 83.4833 121.889 84.9998 120.042 84.9998H102.486V63.8291H123.386V81.6125Z" fill="white"/><path d="M68.32 32.5751C68.32 30.7043 69.8172 29.1877 71.664 29.1877H89.2203V50.3584H68.32V32.5751Z" fill="white"/><path d="M71.664 85.0001C69.8172 85.0001 68.32 83.4835 68.32 81.6127L68.32 63.8293H89.2202V85.0001H71.664Z" fill="white"/><path d="M120.117 34.0259C115.586 34.0259 111.914 37.6742 111.914 42.1747C111.914 46.6753 115.586 50.3237 120.117 50.3237C124.647 50.3237 128.32 46.6753 128.32 42.1747C128.32 37.6742 124.647 34.0259 120.117 34.0259Z" fill="white"/><path d="M110.715 25C106.17 25 102.486 28.6484 102.486 33.1489C102.486 37.6494 106.17 41.2979 110.715 41.2979C115.26 41.2979 118.944 37.6494 118.944 33.1489C118.944 28.6484 115.26 25 110.715 25Z" fill="white"/><path d="M120.09 50.3235L112.489 40.4017L102.486 33.1489V50.3235H120.09Z" fill="white"/></svg><span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span>
-    </div>
-    <button class="nav-item-desktop active" data-panel="dashboard">Dashboard</button>
-    <button class="nav-item-desktop" onclick="window.location.href='insights.html'">Data &amp; Insights</button>
-    <button class="nav-item-desktop" onclick="window.location.href='wearables.html'">Wearables</button>
-    <button class="nav-item-desktop" data-panel="appointments">Appointments</button>
-    <button class="nav-item-desktop" data-panel="documents">Documents</button>
-    <button class="nav-item-desktop" data-panel="ask-evi">Ask Evi</button>
-    <div class="sidebar-spacer"></div>
-    <button class="nav-item-desktop" data-panel="messages">Messages</button>
-    <button class="nav-item-desktop" onclick="window.location.href='faq.html'">FAQ</button>
-    <button class="nav-item-desktop" onclick="window.location.href='profile.html'">Profile</button>
-    <button class="nav-item-desktop" onclick="window.location.href='settings.html'">Settings</button>
-    <button class="sidebar-dark-toggle" id="sidebarDarkToggle" onclick="toggleDarkMode()">Dark mode</button>
-  </nav>
+  <nav class="sidebar" id="desktopSidebar"></nav>
 
   <div class="app-body">
     <div class="app-body-inner">
@@ -369,7 +353,7 @@
           <div class="info">
             <div class="title">GP consultation (Baseline)</div>
             <div class="meta" id="paGpMeta">Virtual · Dr. Sarah Chen · 14:00 · 45 min</div>
-            <span class="badge" id="paGpBadge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-amber-light);color:#8A5A2A;font-weight:600">Awaiting results</span>
+            <span class="badge" id="paGpBadge" style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--evida-amber-light);color:var(--color-warning-fg);font-weight:600">Awaiting results</span>
           </div>
           <div class="action"><button class="btn-sm" onclick="event.stopPropagation();showToast('Added to calendar')">Calendar</button></div>
         </div>
@@ -484,22 +468,24 @@
 <script>
 function switchPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  document.querySelectorAll('.nav-item, .nav-item-desktop').forEach(n => {
+  var target = document.getElementById('panel-' + id);
+  if (target) target.classList.add('active');
+  // Only sync active state on bottom-nav items; sidebar uses page navigation
+  document.querySelectorAll('.bottom-nav .nav-item').forEach(n => {
     n.classList.toggle('active', n.dataset.panel === id);
   });
 }
 
 // URL hash panel pre-selection
-var initHash = window.location.hash.replace('#','');
-var validPanels = ['dashboard','insights','appointments','documents','ask-evi','messages'];
+var initHash = window.location.hash.replace('#', '');
+var validPanels = ['dashboard', 'insights', 'appointments', 'documents', 'ask-evi', 'messages'];
 if (initHash && validPanels.includes(initHash)) {
   switchPanel(initHash);
 }
 
-document.querySelectorAll('.nav-item, .nav-item-desktop').forEach(el => {
+document.querySelectorAll('.bottom-nav .nav-item').forEach(function(el) {
   el.addEventListener('click', function() {
-    switchPanel(this.dataset.panel);
+    if (this.dataset.panel) switchPanel(this.dataset.panel);
   });
 });
 
@@ -672,15 +658,25 @@ function updateChecklist() {
     }
   }
 
-  // Always show realistic stat card data
+  // Stat cards only show live data when a wearable is connected
   var statCards = document.querySelectorAll('.stat-card');
+  var hasWearable = EvidaStore.wearables.list().length > 0;
   if (statCards.length >= 2) {
-    statCards[0].querySelector('.value').textContent = '6,842';
-    statCards[0].querySelector('.trend').textContent = '↑ 12% vs last week';
-    statCards[0].querySelector('.trend').className = 'trend up';
-    statCards[1].querySelector('.value').textContent = '7.2h';
-    statCards[1].querySelector('.trend').textContent = '→ Stable';
-    statCards[1].querySelector('.trend').className = 'trend neutral';
+    if (hasWearable) {
+      statCards[0].querySelector('.value').textContent = '6,842';
+      statCards[0].querySelector('.trend').textContent = '↑ 12% vs last week';
+      statCards[0].querySelector('.trend').className = 'trend up';
+      statCards[1].querySelector('.value').textContent = '7.2h';
+      statCards[1].querySelector('.trend').textContent = '→ Stable';
+      statCards[1].querySelector('.trend').className = 'trend neutral';
+    } else {
+      statCards[0].querySelector('.value').textContent = '—';
+      statCards[0].querySelector('.trend').textContent = 'Connect a wearable';
+      statCards[0].querySelector('.trend').className = 'trend neutral';
+      statCards[1].querySelector('.value').textContent = '—';
+      statCards[1].querySelector('.trend').textContent = 'Connect a wearable';
+      statCards[1].querySelector('.trend').className = 'trend neutral';
+    }
   }
   // Booked but not yet tested — the blood-test card acknowledges the booking
   if (booked && !postConsult && statCards.length >= 3) {

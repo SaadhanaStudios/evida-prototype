@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 <title>Evida — Get started</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -487,8 +487,10 @@ if (getUrlParam('pending')) {
 }
 
 function toggleSetup(el, type) {
-  if (type === 'booking') { window.location.href = 'booking.html'; return; }
-  if (type === 'wearables') { window.location.href = 'wearables.html'; return; }
+  if (type === 'booking')       { window.location.href = 'booking.html'; return; }
+  if (type === 'wearables')     { window.location.href = 'wearables.html'; return; }
+  if (type === 'records')       { window.location.href = 'documents.html?from=onboarding'; return; }
+  if (type === 'questionnaire') { window.location.href = 'questionnaire.html'; return; }
   const icon = el.querySelector('.status-icon');
   if (icon.classList.contains('done')) return;
   icon.className = 'status-icon done';
