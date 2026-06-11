@@ -43,19 +43,24 @@ var SIDEBAR_ICONS = {
 
 var SIDEBAR_LOGO = '<svg width="32" height="32" viewBox="68 25 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M123.386 81.6125C123.386 83.4833 121.889 84.9998 120.042 84.9998H102.486V63.8291H123.386V81.6125Z" fill="white"/><path d="M68.32 32.5751C68.32 30.7043 69.8172 29.1877 71.664 29.1877H89.2203V50.3584H68.32V32.5751Z" fill="white"/><path d="M71.664 85.0001C69.8172 85.0001 68.32 83.4835 68.32 81.6127L68.32 63.8293H89.2202V85.0001H71.664Z" fill="white"/><path d="M120.117 34.0259C115.586 34.0259 111.914 37.6742 111.914 42.1747C111.914 46.6753 115.586 50.3237 120.117 50.3237C124.647 50.3237 128.32 46.6753 128.32 42.1747C128.32 37.6742 124.647 34.0259 120.117 34.0259Z" fill="white"/><path d="M110.715 25C106.17 25 102.486 28.6484 102.486 33.1489C102.486 37.6494 106.17 41.2979 110.715 41.2979C115.26 41.2979 118.944 37.6494 118.944 33.1489C118.944 28.6484 115.26 25 110.715 25Z" fill="white"/><path d="M120.09 50.3235L112.489 40.4017L102.486 33.1489V50.3235H120.09Z" fill="white"/></svg>';
 
-var SIDEBAR_ITEMS = [
+/* Sidebar items — two groups: primary (core health tools) and secondary (support+account).
+   Secondary group is pinned to the bottom of the sidebar. */
+var SIDEBAR_ITEMS_PRIMARY = [
   { label: 'Dashboard',       href: 'dashboard.html',             key: 'dashboard'  },
   { label: 'Data & Insights', href: 'insights.html',              key: 'insights'   },
   { label: 'Wearables',       href: 'wearables.html',             key: 'wearables'  },
   { label: 'Appointments',    href: 'dashboard.html#appointments', key: null         },
   { label: 'Documents',       href: 'documents.html',             key: 'documents'  },
   { label: 'Ask Evi',         href: 'ask-evi.html',               key: 'ask-evi'    },
-  { label: 'Messages',        href: 'messages.html',              key: 'messages'   },
+  { label: 'Messages',        href: 'messages.html',              key: 'messages'   }
+];
+var SIDEBAR_ITEMS_SECONDARY = [
   { label: 'Contact Us',      href: 'contact.html',               key: 'contact'    },
   { label: 'FAQ',             href: 'faq.html',                   key: 'faq'        },
   { label: 'Profile',         href: 'profile.html',               key: 'profile'    },
   { label: 'Settings',        href: 'settings.html',              key: 'settings'   }
 ];
+var SIDEBAR_ITEMS = SIDEBAR_ITEMS_PRIMARY.concat(SIDEBAR_ITEMS_SECONDARY);
 
 /* ---- Sheet Nav ---- */
 var SCROLL_POS = 0;
@@ -192,17 +197,12 @@ function initNavSheet() {
 }
 
 /* ---- Sidebar Builder ---- */
-function initSidebar() {
-  var nav = document.querySelector('.sidebar');
-  if (!nav) return;
+var SVG_SEARCH = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
 
-  var page = window.location.pathname.split('/').pop().replace(/\.html$/, '') || 'dashboard';
-  var activePage = page.indexOf('doc-') === 0 ? 'documents' : page;
-
-  var html = '<div class="logo-wrap">' + SIDEBAR_LOGO + '<span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span></div>';
-
-  for (var i = 0; i < SIDEBAR_ITEMS.length; i++) {
-    var item = SIDEBAR_ITEMS[i];
+function buildSidebarItems(items, activePage) {
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
     var isActive = item.key !== null && activePage === item.key;
     var labelKey = item.label.toLowerCase().replace('&', '').replace(/\s+/g, ' ').trim();
     var iconHtml = '';
@@ -215,12 +215,47 @@ function initSidebar() {
     }
     html += '<button class="nav-item-desktop' + (isActive ? ' active' : '') + '" onclick="window.location.href=\'' + item.href + '\'">' + iconHtml + item.label + '</button>';
   }
+  return html;
+}
 
+function initSidebar() {
+  var nav = document.querySelector('.sidebar');
+  if (!nav) return;
+
+  var page = window.location.pathname.split('/').pop().replace(/\.html$/, '') || 'dashboard';
+  var activePage = page.indexOf('doc-') === 0 ? 'documents' : page;
+
+  /* Logo */
+  var html = '<div class="logo-wrap">' + SIDEBAR_LOGO + '<span style="color:white;font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-0.02em">Evida</span></div>';
+
+  /* Universal search trigger */
+  html += '<div class="sidebar-search" onclick="sidebarSearch()" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \')sidebarSearch()">'
+    + '<span class="nid-icon" style="opacity:0.65">' + SVG_SEARCH + '</span>'
+    + '<span style="font-size:13px;color:rgba(255,255,255,0.5);flex:1">Search…</span>'
+    + '<span style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:3px;padding:1px 5px">⌘K</span>'
+    + '</div>';
+
+  /* Primary nav */
+  html += buildSidebarItems(SIDEBAR_ITEMS_PRIMARY, activePage);
+
+  /* Spacer pushes secondary group + dark toggle to bottom */
   html += '<div class="sidebar-spacer"></div>';
+
+  /* Section divider */
+  html += '<div class="sidebar-divider"></div>';
+
+  /* Secondary nav */
+  html += buildSidebarItems(SIDEBAR_ITEMS_SECONDARY, activePage);
+
+  /* Dark mode toggle */
   html += '<button class="sidebar-dark-toggle" id="sidebarDarkToggle" onclick="toggleDarkMode()">Dark mode</button>';
 
   nav.innerHTML = html;
   updateDarkToggleLabel();
+}
+
+function sidebarSearch() {
+  window.location.href = 'search.html';
 }
 
 /* ---- Back Button Chevron ---- */

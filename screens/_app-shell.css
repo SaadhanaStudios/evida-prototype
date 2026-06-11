@@ -214,6 +214,20 @@ button.send svg { width: 18px; height: 18px; }
   }
   .sidebar .nav-item-desktop:hover { color: white; background: rgba(255,255,255,0.07); }
   .sidebar .nav-item-desktop.active { color: white; background: rgba(255,255,255,0.12); border-left-color: white; }
+  .sidebar-search {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 12px 8px; padding: 8px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    cursor: pointer; font-size: 13px;
+    transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+  .sidebar-search:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+  .sidebar-divider {
+    height: 1px; background: rgba(255,255,255,0.1);
+    margin: 4px 12px 4px;
+  }
   .sidebar .sidebar-spacer { flex: 1; min-height: 0; }
   .sidebar-dark-toggle {
     display: flex; align-items: center; gap: 12px; padding: 16px 20px 12px;

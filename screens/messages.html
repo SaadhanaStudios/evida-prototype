@@ -25,22 +25,46 @@
 
   .empty-state { text-align: center; padding: 48px 16px; }
 
+  /* Thread detail overlay */
   .thread-detail-overlay { position: fixed; inset: 0; z-index: 100; background: var(--evida-bg); display: none; flex-direction: column; padding-top: env(safe-area-inset-top); }
   .thread-detail-overlay.open { display: flex; }
-  .td-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--evida-border); background: var(--evida-surface); }
-  .td-back { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--evida-fg); padding: 8px; }
-  .td-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; }
-  .td-name { font-size: 15px; font-weight: 600; flex: 1; }
-  .td-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-  .td-msg { max-width: 85%; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; line-height: 1.5; }
-  .td-msg.incoming { align-self: flex-start; background: var(--evida-surface); border: 1px solid var(--evida-border); color: var(--evida-fg); }
-  .td-msg.outgoing { align-self: flex-end; background: var(--color-primary); color: white; }
-  .td-msg .td-msg-time { display: block; font-size: 10px; margin-top: 4px; opacity: 0.65; }
-  .td-msg.outgoing .td-msg-time { opacity: 0.75; }
-  .td-compose { display: flex; gap: 8px; padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--evida-border); background: var(--evida-surface); }
-  .td-compose input { flex: 1; height: 40px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); padding: 0 12px; font-family: var(--font-body); font-size: 13px; outline: none; background: var(--evida-bg); color: var(--evida-fg); }
-  .td-compose input:focus { border-color: var(--color-primary); }
-  .td-compose button { height: 40px; padding: 0 16px; border: none; border-radius: var(--radius-sm); background: var(--color-primary); color: white; font-weight: 600; font-size: 12px; cursor: pointer; font-family: var(--font-body); }
+
+  .td-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--evida-border); background: var(--evida-surface); box-shadow: var(--shadow-sm); min-height: 64px; }
+  .td-back { background: none; border: none; cursor: pointer; color: var(--evida-fg); padding: 8px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--dur-fast); }
+  .td-back:hover { background: var(--evida-bg); }
+  .td-av-wrap { position: relative; flex-shrink: 0; }
+  .td-av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; }
+  .td-av-status { position: absolute; bottom: 0; right: 0; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--evida-surface); }
+  .td-av-status.online { background: var(--color-success); }
+  .td-av-status.auto { background: var(--evida-muted); }
+  .td-header-info { flex: 1; min-width: 0; }
+  .td-name { font-size: 15px; font-weight: 700; color: var(--evida-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .td-role { font-size: 11px; color: var(--evida-muted); margin-top: 1px; }
+  .td-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .td-action-btn { width: 36px; height: 36px; border-radius: var(--radius-md); border: 1px solid var(--evida-border); background: var(--evida-bg); color: var(--evida-fg-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--dur-fast); }
+  .td-action-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--evida-teal-light); }
+
+  .td-messages { flex: 1; padding: 20px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+  .td-date-sep { text-align: center; font-size: 11px; font-weight: 600; color: var(--evida-muted); margin: 12px 0 8px; letter-spacing: 0.03em; }
+  .td-msg-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .td-msg-group.outgoing { align-items: flex-end; }
+  .td-msg-group.incoming { align-items: flex-start; }
+  .td-msg-sender { font-size: 11px; font-weight: 600; color: var(--evida-muted); margin-bottom: 4px; margin-left: 2px; }
+  .td-msg { max-width: 78%; padding: 10px 14px; font-size: 14px; line-height: 1.5; }
+  .td-msg.incoming { background: var(--evida-surface); border: 1px solid var(--evida-border); color: var(--evida-fg); border-radius: 4px 18px 18px 18px; }
+  .td-msg.outgoing { background: var(--color-primary); color: white; border-radius: 18px 18px 4px 18px; }
+  .td-msg-time { font-size: 10px; margin-top: 5px; color: var(--evida-muted); }
+  .td-msg-group.outgoing .td-msg-time { text-align: right; }
+
+  .td-compose { display: flex; align-items: center; gap: 10px; padding: 12px 16px; padding-bottom: max(14px, env(safe-area-inset-bottom)); border-top: 1px solid var(--evida-border); background: var(--evida-surface); }
+  .td-compose-attach { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--evida-border); background: var(--evida-bg); color: var(--evida-fg-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all var(--dur-fast); }
+  .td-compose-attach:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .td-compose-input { flex: 1; height: 44px; border: 1.5px solid var(--evida-border); border-radius: 22px; padding: 0 18px; font-family: var(--font-body); font-size: 14px; outline: none; background: var(--evida-bg); color: var(--evida-fg); transition: border-color var(--dur-fast), box-shadow var(--dur-fast); }
+  .td-compose-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent); }
+  .td-compose-input::placeholder { color: var(--evida-muted); }
+  .td-send { width: 44px; height: 44px; border-radius: 50%; background: var(--color-primary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background var(--dur-fast), transform var(--dur-fast); }
+  .td-send:hover { background: var(--color-primary-hover); }
+  .td-send:active { transform: scale(0.9); }
 
   @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
   @media (min-width: 1024px) {
@@ -117,14 +141,35 @@
       <!-- Thread detail overlay -->
       <div class="thread-detail-overlay" id="threadDetail">
         <div class="td-header">
-          <button class="td-back" onclick="closeThread()">&larr;</button>
-          <div class="td-av" id="tdAv">SC</div>
-          <span class="td-name" id="tdName">Dr. Sarah Chen</span>
+          <button class="td-back" onclick="closeThread()" aria-label="Back to messages">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="td-av-wrap">
+            <div class="td-av" id="tdAv">SC</div>
+            <span class="td-av-status" id="tdStatus"></span>
+          </div>
+          <div class="td-header-info">
+            <div class="td-name" id="tdName">Dr. Sarah Chen</div>
+            <div class="td-role" id="tdRole">GP Physician</div>
+          </div>
+          <div class="td-actions">
+            <button class="td-action-btn" onclick="showToast('Calling — please wait...')" aria-label="Call">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6 6l.85-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </button>
+            <button class="td-action-btn" onclick="showToast('Contact details — feature coming soon')" aria-label="Details">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </button>
+          </div>
         </div>
         <div class="td-messages" id="tdMessages"></div>
         <div class="td-compose">
-          <input type="text" id="tdInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
-          <button onclick="sendMessage()">Send</button>
+          <button class="td-compose-attach" onclick="showToast('Attachments — feature coming soon')" aria-label="Attach file">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <input class="td-compose-input" type="text" id="tdInput" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMessage()">
+          <button class="td-send" onclick="sendMessage()" aria-label="Send message">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
         </div>
       </div>
 
@@ -165,58 +210,91 @@
 var THREADS = [
   {
     name: 'Dr. Sarah Chen',
+    role: 'GP Physician',
+    status: 'online',
     initial: 'SC',
     color: 'var(--evida-teal)',
     messages: [
-      { from: 'them', text: 'Hi James, your baseline blood results are in. Everything looks within normal range.', time: '14:15' },
-      { from: 'me', text: 'That\'s great news, thank you!', time: '14:20' },
-      { from: 'them', text: 'Your vitamin D is slightly on the lower side — I\'ve added a note in your prevention plan. We can discuss supplementation at your follow-up.', time: '14:25' },
-      { from: 'them', text: 'Your blood results are looking good. I\'ve shared some notes in your prevention plan—', time: '14:32' }
+      { date: 'Today', from: 'them', text: 'Hi James, your baseline blood results are in. Everything looks within normal range.', time: '14:15' },
+      { from: 'me', text: 'That\'s great news, thank you! Any things to watch out for?', time: '14:20' },
+      { from: 'them', text: 'Your vitamin D is slightly on the lower side — I\'ve added a note to your prevention plan. We can discuss supplementation at your 6-month follow-up.', time: '14:25' },
+      { from: 'them', text: 'Your blood results are otherwise looking great. I\'ve shared some additional notes and resources in your prevention plan. Let me know if you have questions!', time: '14:32' }
     ]
   },
   {
     name: 'Health Coach — Emma',
+    role: 'Health Coach',
+    status: 'online',
     initial: 'HC',
     color: 'var(--evida-amber)',
     messages: [
-      { from: 'them', text: 'Great session today, James! Here\'s a quick summary:', time: 'Yesterday' },
-      { from: 'them', text: 'We covered your sleep quality (improving — avg 7.2 hrs), daily steps (6,800 — aiming for 8k), and stress management.', time: 'Yesterday' },
-      { from: 'me', text: 'Thanks Emma, the breathing exercises have been really helpful.', time: 'Yesterday' },
-      { from: 'them', text: 'Great session earlier! Here are the notes from our check-in and some resources to review before your next appointment.', time: 'Yesterday' }
+      { date: 'Yesterday', from: 'them', text: 'Great session today, James! Here\'s a quick summary:', time: '11:05' },
+      { from: 'them', text: 'We covered your sleep quality (improving — avg 7.2 hrs this week), daily steps (6,800 avg — aiming for 8k), and your stress management routine.', time: '11:05' },
+      { from: 'me', text: 'Thanks Emma, the breathing exercises you recommended have been really helpful.', time: '11:10' },
+      { from: 'them', text: 'Amazing to hear! I\'ve attached some resources below to review before our next check-in. Keep up the great work!', time: '11:12' }
     ]
   },
   {
     name: 'Evida System',
+    role: 'Automated · Appointments & Updates',
+    status: 'auto',
     initial: 'E',
     color: 'var(--evida-navy)',
     messages: [
-      { from: 'them', text: 'Your 6-month follow-up GP consultation has been booked for 12 December 2026 at 14:30.', time: '12 Jun' },
-      { from: 'them', text: 'You\'ll receive a reminder 48 hours before. Please ensure your profile and health questionnaire are up to date.', time: '12 Jun' },
-      { from: 'them', text: 'Your 6-month follow-up GP consultation has been booked for 12 December 2026', time: '12 Jun' }
+      { date: '12 Jun', from: 'them', text: 'Your 6-month follow-up GP consultation has been confirmed and booked for 12 December 2026 at 14:30.', time: '09:00' },
+      { from: 'them', text: 'You\'ll receive a reminder 48 hours before the appointment. Please ensure your health questionnaire is up to date beforehand.', time: '09:00' }
     ]
   },
   {
     name: 'Randox Results',
+    role: 'Lab Results & Reports',
+    status: 'auto',
     initial: 'R',
     color: 'var(--evida-muted)',
     messages: [
-      { from: 'them', text: 'Your baseline blood test is complete. 42 biomarkers have been analysed.', time: '10 Jun' },
-      { from: 'them', text: 'Results are now available in your Data & Insights dashboard. A GP review is pending.', time: '10 Jun' },
-      { from: 'them', text: 'Your baseline blood test results are ready — 42 biomarkers available for review', time: '10 Jun' }
+      { date: '10 Jun', from: 'them', text: 'Your baseline blood test is complete. 42 biomarkers have been analysed and are ready for review.', time: '08:45' },
+      { from: 'them', text: 'Results are now available in your Data & Insights dashboard. Your GP will review and add commentary within 48 hours.', time: '08:45' }
     ]
   }
 ];
 
 function openThread(index) {
   var thread = THREADS[index];
-  document.getElementById('tdAv').textContent = thread.initial;
-  document.getElementById('tdAv').style.background = thread.color;
+  var avEl = document.getElementById('tdAv');
+  avEl.textContent = thread.initial;
+  avEl.style.background = thread.color;
   document.getElementById('tdName').textContent = thread.name;
+  document.getElementById('tdRole').textContent = thread.role;
+  var statusEl = document.getElementById('tdStatus');
+  statusEl.className = 'td-av-status ' + (thread.status || 'auto');
+
   var container = document.getElementById('tdMessages');
-  container.innerHTML = thread.messages.map(function(m) {
-    var cls = m.from === 'me' ? 'outgoing' : 'incoming';
-    return '<div class="td-msg ' + cls + '">' + m.text + '<span class="td-msg-time">' + m.time + '</span></div>';
-  }).join('');
+  var html = '';
+  var lastDate = null;
+  var lastFrom = null;
+
+  thread.messages.forEach(function(m, i) {
+    if (m.date && m.date !== lastDate) {
+      html += '<div class="td-date-sep">' + m.date + '</div>';
+      lastDate = m.date;
+      lastFrom = null;
+    }
+    var isMe = m.from === 'me';
+    var groupClass = isMe ? 'outgoing' : 'incoming';
+    var showSender = !isMe && m.from !== lastFrom;
+
+    html += '<div class="td-msg-group ' + groupClass + '">';
+    if (showSender) {
+      html += '<div class="td-msg-sender">' + thread.name.split(' — ')[0] + '</div>';
+    }
+    html += '<div class="td-msg ' + (isMe ? 'outgoing' : 'incoming') + '">' + m.text.replace(/</g, '&lt;') + '</div>';
+    html += '<div class="td-msg-time">' + m.time + '</div>';
+    html += '</div>';
+
+    lastFrom = m.from;
+  });
+
+  container.innerHTML = html;
   document.getElementById('threadDetail').classList.add('open');
   container.scrollTop = container.scrollHeight;
 }
@@ -232,7 +310,7 @@ function sendMessage() {
   var container = document.getElementById('tdMessages');
   var now = new Date();
   var time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-  container.innerHTML += '<div class="td-msg outgoing">' + text.replace(/</g, '&lt;') + '<span class="td-msg-time">' + time + '</span></div>';
+  container.innerHTML += '<div class="td-msg-group outgoing"><div class="td-msg outgoing">' + text.replace(/</g, '&lt;') + '</div><div class="td-msg-time">' + time + '</div></div>';
   input.value = '';
   container.scrollTop = container.scrollHeight;
 }
