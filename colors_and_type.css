@@ -27,6 +27,7 @@
   --evida-white: #FFFFFF;
   --evida-bg: #F7F8FA;
   --evida-surface: #FFFFFF;
+  --evida-surface-2: #F9FAFB;
   --evida-border: #E2E4E9;
   --evida-muted: #8B8FA0;
   --evida-fg: #1A1D26;
@@ -68,6 +69,7 @@
   --color-warning-bg: #FCF0DC;  --color-warning-fg: #8A5A2A;
   --color-danger-bg:  #FDE8E8;  --color-danger-fg:  #B33A3A;
   --color-info-bg:    #E4EEFB;  --color-info-fg:    #2D6BB8;
+  --color-neutral-bg: #F3F4F6;  --color-neutral-fg: #4B5563;
 }
 
 /* ---- Motion tokens (DESIGN.md §7) ---- */
@@ -130,12 +132,13 @@
   --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
   --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
   --shadow-xl: 0 20px 25px rgba(0,0,0,0.08), 0 10px 10px rgba(0,0,0,0.04);
+  --shadow-2xl: 0 32px 48px rgba(0,0,0,0.12), 0 16px 24px rgba(0,0,0,0.08);
 }
 
 /* ---- Typography ---- */
 :root {
   --font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
 }
 
@@ -343,10 +346,11 @@
   font-family: var(--font-body); font-size: 11px; font-weight: 600;
   line-height: 1.4; white-space: nowrap;
 }
-.status-pill.is-good { background: var(--color-success-bg); color: var(--color-success-fg); }
-.status-pill.is-warn { background: var(--color-warning-bg); color: var(--color-warning-fg); }
-.status-pill.is-bad  { background: var(--color-danger-bg);  color: var(--color-danger-fg); }
-.status-pill.is-info { background: var(--color-info-bg);    color: var(--color-info-fg); }
+.status-pill.is-good    { background: var(--color-success-bg); color: var(--color-success-fg); }
+.status-pill.is-warn    { background: var(--color-warning-bg); color: var(--color-warning-fg); }
+.status-pill.is-bad     { background: var(--color-danger-bg);  color: var(--color-danger-fg); }
+.status-pill.is-info    { background: var(--color-info-bg);    color: var(--color-info-fg); }
+.status-pill.is-neutral { background: var(--color-neutral-bg); color: var(--color-neutral-fg); }
 
 /* ---- Global focus ring (DESIGN.md §7 — 2px teal, 2px offset) ---- */
 :focus-visible {
