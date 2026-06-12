@@ -174,7 +174,7 @@
       <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
       <div class="step" id="step3" data-step="3">
         <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your blood test</h2>
-        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Choose a Randox clinic near you and pick a convenient time. Fasting is required — we'll remind you the evening before.</p>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Choose a Randox clinic near you and pick a convenient time. <strong>Fasting is required</strong> — we'll remind you the evening before.</p>
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
           <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
           <ul style="margin:0;padding-left:18px;line-height:1.7">
@@ -184,7 +184,8 @@
           </ul>
         </div>
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Choose a clinic</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Select your nearest Randox clinic and preferred time.</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:8px">Select your nearest Randox clinic and preferred time.</p>
+        <input class="evida-input" id="postcodeInput" placeholder="Filter by postcode (e.g. W1D, EC2N)" style="width:100%;height:44px;font-size:14px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px;box-sizing:border-box;margin-bottom:10px;text-transform:uppercase" oninput="filterClinics(this.value)">
         <div id="clinicList"></div>
         <div id="dateTimeSection" style="display:none">
           <div class="section-label">Available dates</div>
@@ -222,30 +223,34 @@
         <button type="button" class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
       </div>
 
-      <!-- STEP 5: Review + cart -->
+      <!-- STEP 5: Review & Pay (merged) -->
       <div class="step" id="step5" data-step="5">
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review your booking</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Evida Membership — annual plan at £320</p>
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review &amp; pay</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Check your booking, then complete payment below.</p>
         <div class="hold-banner visible" id="holdBanner">
           <span>Slots held for <span class="timer" id="holdTimer">14:58</span></span>
         </div>
         <div class="evida-card cart-card">
-          <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px"><span class="label" style="font-weight:700">Evida Membership (12 months)</span><span class="value" style="font-size:18px;font-weight:700">£320</span></div>
-          <div class="cart-item"><span class="label">Blood test — Randox clinic</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
-          <div class="cart-item"><span class="label">GP consultation (45 min virtual)</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
-          <div class="cart-item"><span class="label">Blood test slot</span><span class="value" style="font-size:13px" id="cartBloodSlot">7 Jun 2026, 10:30</span></div>
-          <div class="cart-item" style="border-bottom:none"><span class="label">GP consult slot</span><span class="value" style="font-size:13px" id="cartGpSlot">12 Jun 2026, 14:00</span></div>
+          <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px">
+            <span class="label" style="font-weight:700">Evida Membership (12 months)</span>
+            <span class="value" style="font-size:18px;font-weight:700">£320</span>
+          </div>
+          <div class="cart-item">
+            <span class="label">Blood test slot <button onclick="goStep(3)" style="background:none;border:none;color:var(--color-primary);font-size:11px;font-weight:600;cursor:pointer;padding:0 0 0 4px;font-family:inherit">Edit</button></span>
+            <span class="value" style="font-size:13px" id="cartBloodSlot">—</span>
+          </div>
+          <div class="cart-item">
+            <span class="label">GP consult slot <button onclick="goStep(4)" style="background:none;border:none;color:var(--color-primary);font-size:11px;font-weight:600;cursor:pointer;padding:0 0 0 4px;font-family:inherit">Edit</button></span>
+            <span class="value" style="font-size:13px" id="cartGpSlot">—</span>
+          </div>
+          <div class="cart-item" style="color:var(--evida-fg-secondary)"><span class="label">2× virtual GP credits</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
+          <div class="cart-item" style="color:var(--evida-fg-secondary)"><span class="label">6-month follow-up consult</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
           <div id="cartAddons" style="display:none">
             <div class="cart-item" id="cartAddonRow"><span class="label" id="cartAddonLabel">Home nurse visit</span><span class="value" id="cartAddonPrice">£70</span></div>
           </div>
           <div id="cartDiscountRow" class="cart-item" style="display:none;color:var(--color-success)"><span class="label" id="cartDiscountLabel">Discount</span><span class="value" id="cartDiscountAmt"></span></div>
-          <div class="cart-total" style="border-top:2px solid var(--evida-fg)">
-            <span>Total</span>
-            <span id="cartTotalValue">£320</span>
-          </div>
+          <div class="cart-total" style="border-top:2px solid var(--evida-fg)"><span>Total</span><span id="cartTotalValue">£320</span></div>
         </div>
-
-        <!-- Discount code — applied before reviewing total -->
         <div style="margin:12px 0">
           <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px" for="discountCode">Have a discount code?</label>
           <div style="display:flex;gap:8px">
@@ -254,18 +259,7 @@
           </div>
           <div id="discountFeedback" style="display:none;font-size:12px;font-weight:600;margin-top:6px"></div>
         </div>
-
-        <p class="text-tiny" style="color:var(--evida-muted);margin-bottom:8px">Slots will be released if payment is not completed within the hold period. Your card will be charged the total shown above.</p>
-        <button class="btn btn-primary btn-form" onclick="goStep(6)" id="cartBtn">Continue to payment</button>
-        <div style="text-align:center;margin-top:8px">
-          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — bookings won't be confirmed</button>
-        </div>
-      </div>
-
-      <!-- STEP 6: Payment — Stripe-style UI -->
-      <div class="step" id="step6" data-step="6">
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Complete payment</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Secure payment via Stripe. Your membership will activate immediately.</p>
+        <p style="font-size:11px;font-weight:700;color:var(--evida-fg-secondary);letter-spacing:0.06em;text-transform:uppercase;margin:16px 0 10px">Payment details</p>
         <div class="evida-card payment-card">
           <div class="card-row selected" onclick="selectPayment(this)">
             <div><div class="radio"></div></div>
@@ -275,8 +269,6 @@
               <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect x="0.5" y="0.5" width="23" height="15" rx="2" fill="#fff" stroke="#ddd"/><text x="3" y="11" font-size="7" fill="#FF5F00" font-weight="bold">MC</text></svg>
             </span>
           </div>
-
-          <!-- Stripe Element-style card form -->
           <div style="background:var(--evida-bg);border:1px solid var(--evida-border);border-radius:var(--radius-md);padding:16px;margin-top:12px">
             <div class="form-group" style="margin-bottom:16px">
               <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Card number</label>
@@ -297,22 +289,18 @@
               <input class="evida-input" id="stripeName" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="James Chen" autocomplete="cc-name">
             </div>
           </div>
-
         </div>
-
-        <div style="display:flex;align-items:center;gap:8px;margin:8px 0 16px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-teal-dark)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span style="font-size:12px;color:var(--evida-teal-dark)">Your data is encrypted and processed securely via Stripe.</span>
+          <span style="font-size:12px;color:var(--evida-teal-dark)">Encrypted and processed securely via Stripe.</span>
         </div>
-
-        <button class="btn btn-primary btn-form" id="payBtn" onclick="handlePayment()">
-          <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
-          <span class="btn-spinner"></span>
-        </button>
-        <button class="btn btn-ghost" onclick="goStep(5)" style="width:auto;margin-top:8px">← Back to review</button>
-        <div class="error-banner" id="paymentError" style="margin-top:12px">
+        <div class="error-banner" id="paymentError" style="margin-top:8px">
           <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
           <span>Payment declined. Your slots are still held — please try again or use a different card.</span>
+        </div>
+        <p class="text-tiny" style="color:var(--evida-muted);margin:8px 0 80px">Slots will be released if payment is not completed within the hold period.</p>
+        <div style="text-align:center;padding-bottom:8px">
+          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — bookings won't be confirmed</button>
         </div>
       </div>
 
@@ -322,10 +310,9 @@
           <div class="check">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
           </div>
-          <h2 class="text-h2">Booking confirmed!</h2>
-          <p class="text-body-small">Your Evida membership is active. Here's what happens next:</p>
+          <h2 class="text-h2">Welcome to Evida!</h2>
+          <p class="text-body-small" style="margin-bottom:4px">Your membership is active — congratulations on taking the first step.</p>
           <div class="conf-detail">
-            <!-- Blood test row with inline calendar button -->
             <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
               <div>
                 <div style="font-size:11px;color:var(--evida-muted)">Blood test</div>
@@ -334,13 +321,11 @@
               </div>
               <button class="btn btn-secondary btn-sm" onclick="addBloodTestToCalendar()" style="flex-shrink:0;margin-left:12px;font-size:11px;padding:4px 10px;height:auto">+ Calendar</button>
             </div>
-            <!-- Fasting reminder checkbox -->
             <label style="display:flex;align-items:center;gap:8px;padding:4px 0 8px;font-size:12px;color:var(--evida-fg-secondary);cursor:pointer;text-align:left">
               <input type="checkbox" id="fastingReminderCheck" onchange="handleFastingCheck(this)" style="width:16px;height:16px;accent-color:var(--evida-teal);cursor:pointer;flex-shrink:0">
               Add fasting reminder to calendar (6pm the evening before)
             </label>
             <div class="divider"></div>
-            <!-- GP consult row with inline calendar button -->
             <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
               <div>
                 <div style="font-size:11px;color:var(--evida-muted)">GP consultation</div>
@@ -354,9 +339,9 @@
             <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
             <div class="row" style="margin-top:4px"><span class="l">Receipt</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
           </div>
-
           <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:16px">Continue to onboarding →</button>
-          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email with your receipt has been sent to your registered email address.</p>
+          <button class="btn btn-secondary btn-form" onclick="window.print()" style="margin-top:8px">Download invoice</button>
+          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered address.</p>
         </div>
       </div>
 
@@ -380,7 +365,7 @@
           </div>
           <h2>Payment unsuccessful</h2>
           <p>Your slots are still held for <strong id="retryTimer">12:34</strong>. You can retry or choose different times.</p>
-          <button class="btn btn-primary btn-form" onclick="goStep(6)" style="margin-bottom:8px">Try paying again</button>
+          <button class="btn btn-primary btn-form" onclick="goStep(5)" style="margin-bottom:8px">Try paying again</button>
           <button class="btn btn-secondary btn-form" onclick="goStep(3)">Choose different slots</button>
         </div>
       </div>
@@ -415,6 +400,23 @@
   </div>
 </div>
 
+<!-- Sticky pay bar — visible only on step 5 (Review & Pay) -->
+<div id="payStickyBar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--evida-surface);border-top:1px solid var(--evida-border);padding:12px 16px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,0.08)">
+  <div style="max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px">
+    <div style="flex-shrink:0">
+      <div style="font-size:11px;color:var(--evida-muted);line-height:1.2">Total due</div>
+      <div id="stickyTotal" style="font-weight:700;font-size:20px;line-height:1.2">£320</div>
+    </div>
+    <button class="btn btn-primary" id="payBtn" onclick="handlePayment()" style="flex:1;height:48px;font-size:15px;font-weight:700">
+      <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
+      <span class="btn-spinner"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Confetti canvas -->
+<canvas id="confettiCanvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:999;display:none"></canvas>
+
 <div class="toast" id="toast"></div>
 
 <script src="store.js"></script>
@@ -435,7 +437,7 @@ const state = {
 // since the membership was already chosen at account creation. The progress
 // track only ever shows the steps the member will actually walk through.
 const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
-const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5, 6, 7] : [1, 3, 4, 5, 6, 7];
+const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5] : [1, 3, 4, 5];
 
 function currentTotal() {
   return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
@@ -525,7 +527,7 @@ function gpMinDate() {
 }
 
 // Index 1 (step 2) is intentionally null — add-ons step was removed; steps jump 1→3
-const stepLabels = ['Plan', null, 'Blood test', 'GP consult', 'Review', 'Payment', 'Done'];
+const stepLabels = ['Plan', null, 'Blood test', 'GP consult', 'Pay', null, null];
 
 function init() {
   renderProgress();
@@ -682,8 +684,14 @@ function goStep(n) {
     document.getElementById('gpInfoBloodDate').textContent = longDate(state.bloodDate || bloodSlots[0].date);
     document.getElementById('gpInfoMinDate').textContent = longDate(minGp);
   }
-  if (n === 6) {
-    document.getElementById('payBtnText').textContent = 'Pay £' + currentTotal() + ' — Activate membership';
+  if (n === 5) {
+    // Update sticky bar total
+    var tot = currentTotal();
+    document.getElementById('stickyTotal').textContent = '£' + tot;
+    document.getElementById('payBtnText').textContent = 'Pay £' + tot + ' — Activate membership';
+    document.getElementById('payStickyBar').style.display = 'block';
+  } else {
+    document.getElementById('payStickyBar').style.display = 'none';
   }
   if (n === 5) {
     startHoldTimer();
@@ -710,6 +718,7 @@ function goStep(n) {
     }
   }
   if (n === 7) {
+    setTimeout(launchConfetti, 300);
     document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
     document.getElementById('confLocation').textContent = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
     document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
@@ -738,7 +747,6 @@ function goStep(n) {
 
 function handleBack() {
   if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
-  if (state.step === 6) { goStep(5); return; }
   // Signup flow starts at step 3 — back from there returns to account creation
   if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'login.html'; return; }
   if (state.step === 3) { goStep(1); return; } // add-ons step removed from MVP
@@ -820,8 +828,10 @@ function applyDiscount() {
     var discountRow = document.getElementById('cartDiscountRow');
     if (discountRow) discountRow.style.display = 'none';
   }
-  document.getElementById('cartTotalValue').textContent = '£' + currentTotal();
-  document.getElementById('payBtnText').textContent = 'Pay £' + currentTotal() + ' — Activate membership';
+  var _t = currentTotal();
+  document.getElementById('cartTotalValue').textContent = '£' + _t;
+  document.getElementById('stickyTotal').textContent = '£' + _t;
+  document.getElementById('payBtnText').textContent = 'Pay £' + _t + ' — Activate membership';
 }
 
 function handlePayment() {
@@ -966,6 +976,43 @@ function addFastingReminder() {
   showToast('Fasting reminder added — 6pm the evening before your test');
 }
 
+function filterClinics(q) {
+  q = q.trim().toUpperCase();
+  document.querySelectorAll('#clinicList .location-card').forEach(function(card) {
+    card.style.display = (!q || card.textContent.toUpperCase().indexOf(q) >= 0) ? '' : 'none';
+  });
+}
+
+function launchConfetti() {
+  var canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var colors = ['#0D9488','#1E3A5F','#F59E0B','#10B981','#6366F1','#F97316'];
+  var pieces = Array.from({length: 110}, function() {
+    return { x: Math.random() * canvas.width, y: -10 - Math.random() * 80,
+      r: 4 + Math.random() * 5, color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 5, vy: 2.5 + Math.random() * 3.5,
+      angle: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.18 };
+  });
+  var frames = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(function(p) {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.6);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.angle += p.spin;
+    });
+    frames++;
+    if (frames < 130) { requestAnimationFrame(draw); }
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
+  }
+  draw();
+}
+
 init();
 
 // Pre-select first clinic + first blood slot so testers can click straight through
@@ -985,11 +1032,12 @@ if (IS_SIGNUP_FLOW && _resume === 'payment') {
   var _firstGp = gpSlots.find(function(s) { return s.date >= _minGp; });
   if (_firstGp) { selectGpDate(_firstGp.date); selectGpTime(_firstGp.times[0]); }
   startHoldTimer();
-  goStep(6);
+  goStep(5);
 } else if (IS_SIGNUP_FLOW) {
   // Signup flow: plan already chosen — skip straight to clinic booking
   goStep(3);
   autoSelectDefaults();
+  setTimeout(function() { showToast('Account created — now book your baseline.'); }, 600);
 } else {
   // Direct / non-signup entry: show the plan selection screen
   goStep(1);

@@ -553,7 +553,11 @@ function updateChecklist() {
   try { postConsult = EvidaStore.consultations.hadConsultation(); } catch(_) {}
   const badge = document.getElementById(‘sbBadge’);
   if (badge && !postConsult) {
-    badge.textContent = done === 3 ? ‘Ready for consultation’ : done + ‘/3 tasks done’;
+    if (done === 3) {
+      badge.style.display = ‘none’;
+    } else {
+      badge.textContent = done === 0 ? ‘Getting started’ : done + ‘/3 tasks done’;
+    }
   }
 }
 
@@ -636,6 +640,12 @@ function markTaskDone(checkEl) {
   // ID reminder only nags once there's a booking and ID is still outstanding
   document.getElementById('idReminder').style.display =
     (booked && !idDone && !postConsult) ? '' : 'none';
+
+  // Pre-consult: badge is a shortcut back to onboarding
+  if (!postConsult) {
+    badge.style.cursor = 'pointer';
+    badge.onclick = function() { window.location.href = 'onboarding.html'; };
+  }
 
   // Status bar badge + subtitle
   if (postConsult) {
