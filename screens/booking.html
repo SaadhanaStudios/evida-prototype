@@ -153,7 +153,7 @@
       </div>
 
       <!-- STEP 1: Choose package -->
-      <div class="step active" id="step1" data-step="1">
+      <div class="step" id="step1" data-step="1">
         <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Your membership</p>
         <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Everything you need for 12 months of preventive health.</p>
         <div class="card-option selected" id="pkgBaseline" onclick="selectPackage('baseline')">
@@ -436,8 +436,6 @@ const state = {
 // track only ever shows the steps the member will actually walk through.
 const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
 const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5, 6, 7] : [1, 3, 4, 5, 6, 7];
-// Hide step 1 immediately (synchronously) in signup flow so it never flashes
-if (IS_SIGNUP_FLOW) { var _s1 = document.getElementById('step1'); if (_s1) _s1.style.display = 'none'; }
 
 function currentTotal() {
   return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
@@ -973,27 +971,25 @@ function autoSelectDefaults() {
   selectBloodTime(bloodSlots[0].times[0]);
 }
 
-// Handle flow params
-(function() {
-  var params = new URLSearchParams(location.search);
-  var flow   = params.get('flow');
-  var resume = params.get('resume');
-  if (flow === 'signup' && resume === 'payment') {
-    // Returning to pay — restore held slots so review/confirmation render real details
-    autoSelectDefaults();
-    var minGp = gpMinDate();
-    var firstGp = gpSlots.find(function(s) { return s.date >= minGp; });
-    if (firstGp) {
-      selectGpDate(firstGp.date);
-      selectGpTime(firstGp.times[0]);
-    }
-    startHoldTimer();
-    goStep(6);
-  } else if (flow === 'signup') {
-    goStep(3); // plan decided via signup — skip to clinic selection
-    autoSelectDefaults();
-  }
-})();
+// Set the initial visible step — always done via JS so no step is hardcoded active in HTML
+var _flowParams = new URLSearchParams(location.search);
+var _resume = _flowParams.get('resume');
+if (IS_SIGNUP_FLOW && _resume === 'payment') {
+  // Returning to pay — restore held slots so review/confirmation render real details
+  autoSelectDefaults();
+  var _minGp = gpMinDate();
+  var _firstGp = gpSlots.find(function(s) { return s.date >= _minGp; });
+  if (_firstGp) { selectGpDate(_firstGp.date); selectGpTime(_firstGp.times[0]); }
+  startHoldTimer();
+  goStep(6);
+} else if (IS_SIGNUP_FLOW) {
+  // Signup flow: plan already chosen — skip straight to clinic booking
+  goStep(3);
+  autoSelectDefaults();
+} else {
+  // Direct / non-signup entry: show the plan selection screen
+  goStep(1);
+}
 </script>
 </body>
 </html>
