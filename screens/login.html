@@ -538,18 +538,13 @@ function handleSignIn() {
   const email = document.getElementById('signinEmail').value.trim();
   const pass = document.getElementById('signinPass').value;
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('signinEmailError').classList.add('visible');
-    document.getElementById('signinEmail').focus();
-    return;
-  }
-  if (!pass) {
-    showFormError('signinError', 'Please enter your password.');
-    document.getElementById('signinPass').focus();
-    return;
-  }
-
   document.getElementById('signinEmailError').classList.remove('visible');
+
+  // Only block the one known locked-account demo state; everything else signs in
+  if (email === 'locked@evida.co.uk') {
+    showFormError('signinError', 'This account has been temporarily locked due to too many failed attempts. Please reset your password or try again in 30 minutes.');
+    return;
+  }
 
   const btn = document.getElementById('signinBtn');
   btn.classList.add('btn-loading');
@@ -558,12 +553,8 @@ function handleSignIn() {
   setTimeout(function() {
     btn.classList.remove('btn-loading');
     btn.disabled = false;
-    if (email === 'locked@evida.co.uk') {
-      showFormError('signinError', 'This account has been temporarily locked due to too many failed attempts. Please reset your password or try again in 30 minutes.');
-    } else {
-      showToast('Signed in — redirecting to dashboard');
-      window.location.href = '../screens/dashboard.html';
-    }
+    showToast('Signed in — redirecting to dashboard');
+    window.location.href = 'dashboard.html';
   }, 800);
 }
 
@@ -786,9 +777,15 @@ document.getElementById('legalModal').addEventListener('click', function(e) {
   if (e.target === this) closeLegalModal();
 });
 
-// Pre-fill signup form with demo data so testers can click through without typing
+// Pre-fill both forms with demo data so testers can click through without typing
 (function() {
   try {
+    // Sign-in form
+    document.getElementById('signinEmail').value = 'james.chen@gmail.com';
+    document.getElementById('signinPass').value  = 'MyHealth2026!';
+  } catch(_) {}
+  try {
+    // Sign-up form
     document.getElementById('suName').value    = 'James Chen';
     document.getElementById('suEmail').value   = 'james.chen@gmail.com';
     document.getElementById('suPass').value    = 'MyHealth2026!';

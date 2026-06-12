@@ -168,7 +168,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
+        <button type="button" class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
       </div>
 
       <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
@@ -192,7 +192,7 @@
           <div class="section-label" id="timeLabel" style="display:none">Available times</div>
           <div class="time-grid" id="bloodTimeGrid"></div>
         </div>
-        <button class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Book Blood Test</button>
+        <button type="button" class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Book Blood Test</button>
         <div style="text-align:center;margin-top:10px">
           <a href="javascript:void(0)" onclick="skipBloodBooking()" style="font-size:13px;color:var(--evida-muted);text-decoration:none">Skip for now — book and pay later</a>
         </div>
@@ -219,7 +219,7 @@
         <div class="date-grid" id="gpDateGrid"></div>
         <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
         <div class="time-grid" id="gpTimeGrid"></div>
-        <button class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
+        <button type="button" class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
       </div>
 
       <!-- STEP 5: Review + cart -->
@@ -436,6 +436,8 @@ const state = {
 // track only ever shows the steps the member will actually walk through.
 const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
 const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5, 6, 7] : [1, 3, 4, 5, 6, 7];
+// Hide step 1 immediately (synchronously) in signup flow so it never flashes
+if (IS_SIGNUP_FLOW) { var _s1 = document.getElementById('step1'); if (_s1) _s1.style.display = 'none'; }
 
 function currentTotal() {
   return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
