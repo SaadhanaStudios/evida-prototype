@@ -311,6 +311,7 @@ function nextTour(n) {
   renderDots();
   if (n === totalSteps) persistClear();
   else persistStep();
+  history.replaceState({}, '', '?step=' + n);
 }
 
 function prevTour(n) {
@@ -323,6 +324,7 @@ function skipTour() {
   tourStep = 3;
   renderDots();
   persistClear();
+  history.replaceState({}, '', '?step=3');
 }
 
 function persistClear() {

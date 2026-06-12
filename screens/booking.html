@@ -730,6 +730,10 @@ function goStep(n) {
   if (el) el.classList.add('active');
   updateProgress(n);
   document.getElementById('bookingError').classList.remove('visible');
+  // Reflect current step in URL so every state is shareable
+  var _p = new URLSearchParams(location.search);
+  _p.set('step', n);
+  history.replaceState({}, '', '?' + _p.toString());
 }
 
 function handleBack() {

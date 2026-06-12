@@ -522,7 +522,18 @@ function showScreen(id) {
   document.getElementById('backBtn').style.visibility = hideBack ? 'hidden' : 'visible';
   dismissError('signinError');
   dismissError('signupError');
+  // Reflect current screen in URL so every state is directly shareable
+  var slug = id.replace('screen-', '');
+  history.replaceState({}, '', slug === 'landing' ? location.pathname : '?s=' + slug);
 }
+
+// On load: jump to screen specified by ?s= param
+(function() {
+  var s = new URLSearchParams(location.search).get('s');
+  if (s === 'signin')  { showScreen('screen-signin'); }
+  else if (s === 'signup') { showScreen('screen-signup'); nextSignupStep(1); }
+  else if (s && document.getElementById('screen-' + s)) { showScreen('screen-' + s); }
+})();
 
 document.getElementById('backBtn').addEventListener('click', function() {
   if (currentScreen === 'screen-signup') {
