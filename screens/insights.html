@@ -775,7 +775,21 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   document.querySelectorAll('.insight-tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  history.replaceState({}, '', id === 'overview' ? location.pathname : '?tab=' + id);
 }
+
+// On load: restore tab from ?tab= param
+(function() {
+  var tab = new URLSearchParams(location.search).get('tab');
+  var valid = ['overview', 'activity', 'sleep', 'heart', 'biomarkers'];
+  if (tab && valid.includes(tab)) {
+    var match = null;
+    document.querySelectorAll('.insight-tab').forEach(function(b) {
+      if ((b.getAttribute('onclick') || '').indexOf("'" + tab + "'") >= 0) match = b;
+    });
+    switchTab(tab, match);
+  }
+})();
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 function renderBars(containerId, values, maxValue, unit) {

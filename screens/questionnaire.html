@@ -199,7 +199,14 @@ function goStep(n) {
   document.getElementById('stepPct').textContent = pct + '%';
   document.getElementById('progressFill').style.width = pct + '%';
   window.scrollTo(0, 0);
+  history.replaceState({}, '', n === 1 ? location.pathname : '?step=' + n);
 }
+
+// On load: restore step from ?step= param
+(function() {
+  var s = parseInt(new URLSearchParams(location.search).get('step'), 10);
+  if (s >= 1 && s <= TOTAL_STEPS) goStep(s);
+})();
 
 function selectRadio(groupId, value) {
   var opts = document.querySelectorAll('#' + groupId + ' .radio-opt');

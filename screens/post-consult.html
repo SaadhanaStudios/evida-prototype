@@ -330,7 +330,21 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  history.replaceState({}, '', id === 'reports' ? location.pathname : '?tab=' + id);
 }
+
+// On load: restore tab from ?tab= param
+(function() {
+  var tab = new URLSearchParams(location.search).get('tab');
+  var valid = ['reports', 'plan', 'biomarkers', 'reminders'];
+  if (tab && valid.includes(tab)) {
+    var match = null;
+    document.querySelectorAll('.tab-item').forEach(function(b) {
+      if ((b.getAttribute('onclick') || '').indexOf("'" + tab + "'") >= 0) match = b;
+    });
+    switchTab(tab, match);
+  }
+})();
 
 function toggleReminder(el) {
   el.querySelector('.toggle').classList.toggle('on');

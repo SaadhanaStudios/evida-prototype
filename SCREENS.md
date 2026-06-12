@@ -90,14 +90,71 @@ URL updates live. `?step=` on the URL is purely cosmetic for shareability — th
 
 ---
 
-### Other Screens
+### `dashboard.html` — Main Dashboard
+
+| URL | Panel shown |
+|-----|------------|
+| `dashboard.html` | Main dashboard panel |
+| `dashboard.html#appointments` | Appointments panel |
+| `dashboard.html#documents` | Documents panel |
+| `dashboard.html#ask-evi` | Ask Evi panel |
+| `dashboard.html#messages` | Messages panel |
+
+Hash updates live as panels switch. Hash is read on load for direct deep-links.
+
+---
+
+### `insights.html` — Data & Insights
+
+| URL | Tab shown |
+|-----|----------|
+| `insights.html` | Overview tab |
+| `insights.html?tab=activity` | Activity tab |
+| `insights.html?tab=sleep` | Sleep tab |
+| `insights.html?tab=heart` | Heart tab |
+| `insights.html?tab=biomarkers` | Biomarkers tab |
+
+---
+
+### `post-consult.html` — Post-Consultation
+
+| URL | Tab shown |
+|-----|----------|
+| `post-consult.html` | Reports tab |
+| `post-consult.html?tab=plan` | Prevention plan tab |
+| `post-consult.html?tab=biomarkers` | Biomarkers tab |
+| `post-consult.html?tab=reminders` | Reminders tab |
+
+---
+
+### `questionnaire.html` — Health Questionnaire
+
+| URL | Step shown |
+|-----|-----------|
+| `questionnaire.html` | Step 1 — Medical history |
+| `questionnaire.html?step=2` | Step 2 — Family history & allergies |
+| `questionnaire.html?step=3` | Step 3 — Lifestyle |
+
+---
+
+### Single-state pages (no navigable internal state)
 
 | File | Purpose |
 |------|---------|
-| `dashboard.html` | Main logged-in dashboard |
+| `ask-evi.html` | AI health assistant chat |
+| `contact.html` | Contact / support |
 | `doc-blood-test.html` | Blood test results detail |
-| `doc-gp-summary.html` | GP consultation summary |
-| `booking-manage.html` | Manage / reschedule existing booking |
+| `doc-lifestyle.html` | Lifestyle document detail |
+| `doc-physical-health.html` | Physical health document detail |
+| `doc-questionnaire.html` | Questionnaire document detail |
+| `doc-upload-viewer.html` | Uploaded document viewer |
+| `documents.html` | Documents library |
+| `faq.html` | FAQ |
+| `messages.html` | Messaging inbox |
+| `profile.html` | User profile |
+| `search.html` | Search results |
+| `settings.html` | Account settings |
+| `wearables.html` | Wearable device connection |
 
 ---
 
@@ -112,6 +169,11 @@ URL updates live. `?step=` on the URL is purely cosmetic for shareability — th
 | Onboarding tour start | `onboarding.html?step=1` |
 | Onboarding setup checklist | `onboarding.html?step=3` |
 | Dashboard (pre-seeded) | `dashboard.html` (use gear panel → "Baseline booked") |
+| Dashboard appointments panel | `dashboard.html#appointments` |
+| Insights — sleep tab | `insights.html?tab=sleep` |
+| Insights — biomarkers tab | `insights.html?tab=biomarkers` |
+| Post-consult — prevention plan | `post-consult.html?tab=plan` |
+| Questionnaire step 2 | `questionnaire.html?step=2` |
 
 ---
 
