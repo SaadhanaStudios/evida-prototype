@@ -719,9 +719,9 @@ function goStep(n) {
       document.getElementById('confDiscountCode').textContent = state.discountCode;
       document.getElementById('confDiscountAmt').textContent = '−£' + state.discountAmount;
     }
-    var receiptRef = ‘EV-’ + Math.floor(100000 + Math.random() * 900000);
-    document.getElementById(‘confReceiptRef’).textContent = receiptRef;
-    var fastingCb = document.getElementById(‘fastingReminderCheck’);
+    var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('confReceiptRef').textContent = receiptRef;
+    var fastingCb = document.getElementById('fastingReminderCheck');
     if (fastingCb) fastingCb.checked = false;
   }
   state.step = n;
