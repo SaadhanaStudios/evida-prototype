@@ -355,7 +355,7 @@
             <div class="row" style="margin-top:4px"><span class="l">Receipt</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
           </div>
 
-          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html?step=3'" style="margin-top:16px">Continue to onboarding →</button>
+          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:16px">Continue to onboarding →</button>
           <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email with your receipt has been sent to your registered email address.</p>
         </div>
       </div>
@@ -736,7 +736,7 @@ function handleBack() {
   if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
   if (state.step === 6) { goStep(5); return; }
   // Signup flow starts at step 3 — back from there returns to account creation
-  if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'onboarding.html?step=3'; return; }
+  if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'login.html'; return; }
   if (state.step === 3) { goStep(1); return; } // add-ons step removed from MVP
   if (state.step > 1) { goStep(state.step - 1); return; }
   window.location.href = 'dashboard.html';
