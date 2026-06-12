@@ -289,6 +289,12 @@ try {
   }
 } catch (_) {}
 
+// URL param override: ?step=N jumps directly to that tour step (e.g. returning from booking)
+(function() {
+  var n = parseInt(new URLSearchParams(location.search).get('step'), 10);
+  if (n >= 1 && n <= totalSteps) tourStep = n;
+})();
+
 function persistStep() {
   EvidaStore.onboarding.setTourStep(tourStep);
 }
@@ -487,7 +493,7 @@ if (getUrlParam('pending')) {
 }
 
 function toggleSetup(el, type) {
-  if (type === 'booking')       { window.location.href = 'booking.html'; return; }
+  if (type === 'booking')       { window.location.href = 'booking.html?flow=signup'; return; }
   if (type === 'wearables')     { window.location.href = 'wearables.html'; return; }
   if (type === 'records')       { window.location.href = 'documents.html?from=onboarding'; return; }
   if (type === 'questionnaire') { window.location.href = 'questionnaire.html'; return; }

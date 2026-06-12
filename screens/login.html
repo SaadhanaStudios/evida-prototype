@@ -656,7 +656,7 @@ function handleCreateAccount() {
   var data  = { name: name, email: email, savedAt: new Date().toISOString() };
   try { EvidaStore.account.save(data); } catch(_) {}
   try { EvidaStore.account.clearPartial(); } catch(_) {}
-  window.location.href = 'booking.html?flow=signup';
+  window.location.href = 'onboarding.html';
 }
 
 // Password strength
