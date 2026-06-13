@@ -4,8 +4,9 @@
   "private": true,
   "description": "Evida patient app — interactive static HTML prototype (design spec for engineering handover)",
   "scripts": {
-    "dev": "serve -p 3001 .",
-    "start": "serve -p 3001 ."
+    "sync-tokens": "cp ../../packages/design-system/tokens.css tokens.css",
+    "dev": "npm run sync-tokens && serve -p 3001 .",
+    "start": "npm run sync-tokens && serve -p 3001 ."
   },
   "devDependencies": {
     "serve": "^14"

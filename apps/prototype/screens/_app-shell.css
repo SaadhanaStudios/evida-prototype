@@ -96,8 +96,8 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
 .btn:active { transform: translateY(1px); opacity: 0.9; }
 .btn:disabled,
 .btn[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-.btn-primary { background: var(--color-primary); color: white; }
-.btn-primary:hover:not(:disabled) { background: var(--color-primary-hover); box-shadow: var(--shadow-sm); }
+.btn-primary { background: var(--evida-btn-bg); color: var(--evida-teal-text); }
+.btn-primary:hover:not(:disabled) { background: var(--evida-btn-hover); box-shadow: var(--shadow-sm); }
 .btn-secondary { background: transparent; color: var(--evida-fg); border: 1px solid var(--evida-border); }
 .btn-secondary:hover:not(:disabled) { background: var(--evida-bg); border-color: var(--evida-muted); }
 .btn-sm { height: 36px; padding: 0 16px; font-size: 13px; }
