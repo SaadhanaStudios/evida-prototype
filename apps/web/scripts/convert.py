@@ -9,9 +9,13 @@ import json
 import re
 from pathlib import Path
 
+# Output dirs resolve relative to this script (apps/web/scripts/convert.py) so
+# the generator works regardless of checkout location.
+APP_ROOT = Path(__file__).resolve().parent.parent
+# SOURCE_DIR is the external exported-HTML archive (outside this repo).
 SOURCE_DIR = Path("/home/ubuntaman/projects/evida/old_website/evida-uk-clone/evida.uk")
-PAGES_DIR = Path("/home/ubuntaman/projects/evida/website/src/app")
-LIB_DIR = Path("/home/ubuntaman/projects/evida/website/src/lib")
+PAGES_DIR = APP_ROOT / "src/app"
+LIB_DIR = APP_ROOT / "src/lib"
 
 DEFAULT_DESCRIPTION = (
     "Evida brings together your data, technology, and clinical expertise "

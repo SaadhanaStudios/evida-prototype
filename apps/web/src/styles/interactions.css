@@ -130,8 +130,8 @@
     width: 100%;
     padding: 14px 24px;
     margin-top: 18px;
-    background-color: #216a74;
-    color: #ffffff;
+    background-color: var(--evida-teal);
+    color: var(--evida-white);
     font-family: inherit;
     font-size: 16px;
     font-weight: 400;
@@ -142,7 +142,7 @@
   }
 
   .w-nav-menu::after:hover {
-    background-color: #1a545c;
+    background-color: var(--evida-teal-text);
   }
 }
 
@@ -165,41 +165,41 @@
 /* ---- Navbar theme (scroll-based logo/link colours) ---- */
 .nav-navbar path[fill="white"] {
   transition: fill 0.3s ease;
-  fill: #216a74;
+  fill: var(--evida-teal);
 }
 
 .nav-navbar.nav--on-dark path[fill="white"] {
-  fill: #ffffff !important;
+  fill: var(--evida-white) !important;
 }
 
 .nav-navbar.nav--on-light path[fill="white"] {
-  fill: #216a74 !important;
+  fill: var(--evida-teal) !important;
 }
 
 .nav-navbar .nav-link-3 {
   transition: color 0.3s ease;
-  color: #2d2700 !important;
+  color: var(--evida-text) !important;
 }
 
 .nav-navbar.nav--on-dark .nav-link-3 {
-  color: #ffffff !important;
+  color: var(--evida-white) !important;
 }
 
 .nav-navbar.nav--on-light .nav-link-3 {
-  color: #2d2700 !important;
+  color: var(--evida-text) !important;
 }
 
 .nav-navbar .nav-burger path {
   transition: stroke 0.3s ease;
-  stroke: #2d2700 !important;
+  stroke: var(--evida-text) !important;
 }
 
 .nav-navbar.nav--on-dark .nav-burger path {
-  stroke: #ffffff !important;
+  stroke: var(--evida-white) !important;
 }
 
 .nav-navbar.nav--on-light .nav-burger path {
-  stroke: #2d2700 !important;
+  stroke: var(--evida-text) !important;
 }
 
 /* ---- Modal overlay ---- */
