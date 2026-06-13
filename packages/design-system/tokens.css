@@ -1,0 +1,102 @@
+/* ============================================================================
+ * Evida Design System — Canonical Tokens
+ * ----------------------------------------------------------------------------
+ * SINGLE SOURCE OF TRUTH for the Evida visual language, extracted from the
+ * live website (https://evida.uk) Webflow stylesheet on 2026-06-13.
+ *
+ * Both surfaces consume this file:
+ *   - apps/web        → imported into src/app/globals.css, mapped to @theme
+ *   - apps/prototype  → linked from each screen, replaces the old palette in
+ *                       colors_and_type.css
+ *
+ * Do NOT hard-code brand values anywhere else. Add or change a value here and
+ * it propagates to both apps. Naming uses the `--evida-*` convention already
+ * established in the prototype to minimise churn.
+ *
+ * Source mapping note: the live site declares these as Webflow variables
+ * (`--_color-var---color-*`). The original names are noted in comments so this
+ * file can be re-reconciled against the site if the brand evolves.
+ * ========================================================================== */
+
+:root {
+  /* --- Brand & teal family ------------------------------------------------ */
+  --evida-teal:           #216A74; /* brand anchor        (color-brand-teal)  */
+  --evida-teal-primary:   #138A7D; /* primary action      (color-primary)     */
+  --evida-teal-text:      #1A555D; /* teal-tinted text    (color-text-teal)   */
+  --evida-heading:        #09332E; /* deep heading colour (color-text-dark)   */
+
+  /* --- Text --------------------------------------------------------------- */
+  --evida-text:           #2D2700;            /* body olive   (color-text-body)     */
+  --evida-text-muted:     rgba(45, 39, 0, 0.5); /* 50% olive  (color-body-tertiary)  */
+  --evida-gray:           #575757;            /* neutral grey (color-gray)          */
+  --evida-gray-light:     #DCD5A9;            /* warm grey    (color-gray-light)    */
+
+  /* --- Accent ------------------------------------------------------------- */
+  --evida-coral:          #FF5A5F; /* alert / tertiary    (color-tertiary)    */
+  --evida-yellow:         #FCE96F; /* secondary accent    (color-secondary)   */
+  --evida-yellow-soft:    #FEFAD8; /* soft yellow tint    (color-yellow)      */
+
+  /* --- Buttons ------------------------------------------------------------ */
+  --evida-btn-bg:         #FEF2A7; /* default button bg   (color-btn-bg)      */
+  --evida-btn-hover:      #FFFBE0; /* button hover bg     (color-btn-hover)   */
+  --evida-btn-primary:    #FEF6C5; /* primary button bg   (color-btn-primary) */
+
+  /* --- Surfaces & backgrounds (warm cream) -------------------------------- */
+  --evida-bg:             #FEFBE7; /* page background     (color-bg)          */
+  --evida-bg-light:       #FEFDF5; /* lighter background  (color-bg-primary)  */
+  --evida-surface:        #FDFBEF; /* card / component    (color-accent)      */
+  --evida-white:          #FFFFFF;
+
+  /* --- Borders ------------------------------------------------------------ */
+  --evida-border:         #DCD5A9; /* warm hairline (reuses gray-light)       */
+
+  /* ========================================================================
+   * Typography
+   * Display/headings: Geist (light, tight). Editorial accent: Literata serif.
+   * Body & UI & buttons: Inter. Weights skew light (400 default).
+   * All three load via Google Fonts on the website; the prototype loads them
+   * the same way (see colors_and_type.css @import / <link>).
+   * ====================================================================== */
+  --evida-font-display: 'Geist', system-ui, -apple-system, sans-serif;
+  --evida-font-serif:   'Literata', Georgia, serif;
+  --evida-font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Type scale (px values as rendered on the live site) */
+  --evida-text-small:   14px;
+  --evida-text-label:   16px;
+  --evida-text-body:    22px;
+  --evida-text-h2:      clamp(22px, 3vw, 34px);
+  --evida-text-h1:      48px;
+  --evida-text-display: 60px;
+
+  /* Weights */
+  --evida-weight-light:   300;
+  --evida-weight-regular: 400;
+  --evida-weight-medium:  500;
+
+  /* Heading treatment (from hero h1) */
+  --evida-heading-tracking: -0.035em;
+  --evida-heading-leading:  120%;
+
+  /* --- Spacing scale ------------------------------------------------------ */
+  --evida-space-xs:   8px;
+  --evida-space-sm:  16px;
+  --evida-space-md:  24px;
+  --evida-space-lg:  48px;
+  --evida-space-xl:  80px;
+  --evida-space-xxl: 120px;
+
+  /* --- Radii -------------------------------------------------------------- */
+  --evida-radius-sm:   8px;
+  --evida-radius-btn: 12px; /* buttons specifically */
+  --evida-radius-md:  16px;
+  --evida-radius-lg:  24px;
+  --evida-radius-full: 999px;
+
+  /* --- Shadows (very soft — the site is near-flat) ------------------------ */
+  --evida-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --evida-shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.10), 0 1px 3px rgba(0, 0, 0, 0.10);
+
+  /* --- Motion ------------------------------------------------------------- */
+  --evida-transition: 0.3s ease-in-out; /* site default (button bg transition) */
+}
