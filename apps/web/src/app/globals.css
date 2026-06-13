@@ -1,20 +1,25 @@
 @import "tailwindcss";
+/* Canonical Evida design tokens — single source of truth (packages/design-system).
+   Defines the --evida-* custom properties referenced below. */
+@import "../../../../packages/design-system/tokens.css";
 
+/* Map Tailwind theme colours onto the canonical tokens so utilities and the
+   design system can't drift. Fonts stay wired to the next/font CSS variables. */
 @theme inline {
-  --color-evida-teal: #216A74;
-  --color-evida-teal-dark: #1a545c;
-  --color-evida-coral: #FF5A5F;
-  --color-evida-dark: #2D2700;
-  --color-evida-cream: #FEFBE7;
-  --color-evida-cream-light: #FEFDF5;
-  --color-evida-gold: #FCED87;
-  --color-evida-grey: #8F8E81;
-  --color-evida-bg: #FEFDF5;
+  --color-evida-teal: var(--evida-teal);
+  --color-evida-teal-dark: var(--evida-teal-text);
+  --color-evida-coral: var(--evida-coral);
+  --color-evida-dark: var(--evida-text);
+  --color-evida-cream: var(--evida-bg);
+  --color-evida-cream-light: var(--evida-bg-light);
+  --color-evida-gold: var(--evida-yellow);
+  --color-evida-grey: var(--evida-gray);
+  --color-evida-bg: var(--evida-bg-light);
   --font-sans: var(--font-geist), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background-color: #FEFDF5;
-  color: #2D2700;
+  background-color: var(--evida-bg-light);
+  color: var(--evida-text);
   font-family: var(--font-geist), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
