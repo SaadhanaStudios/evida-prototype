@@ -1,0 +1,13 @@
+{
+  "name": "@evida/prototype",
+  "version": "2.6.0",
+  "private": true,
+  "description": "Evida patient app — interactive static HTML prototype (design spec for engineering handover)",
+  "scripts": {
+    "dev": "serve -p 3001 .",
+    "start": "serve -p 3001 ."
+  },
+  "devDependencies": {
+    "serve": "^14"
+  }
+}
