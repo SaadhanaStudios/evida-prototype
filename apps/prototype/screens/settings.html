@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+<title>Evida — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+
+  .section-card { padding: 20px; margin-bottom: 16px; }
+  .section-card h2 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--evida-fg); }
+
+  .membership-card { background: linear-gradient(135deg, var(--evida-navy), #243556); border-radius: var(--radius-lg); padding: 24px; color: white; margin-bottom: 16px; }
+  .membership-card .plan-name { font-size: 13px; opacity: 0.7; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .membership-card .plan-price { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+  .membership-card .plan-price .strike { font-size: 16px; font-weight: 400; text-decoration: line-through; opacity: 0.5; margin-right: 8px; }
+  .membership-card .plan-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.15); margin-top: 8px; }
+  .membership-card .plan-dates { font-size: 12px; opacity: 0.7; margin-top: 16px; }
+
+  .payment-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+  .payment-row + .payment-row { border-top: 1px solid var(--evida-border); }
+  .payment-row .payment-info { flex: 1; }
+  .payment-row .payment-info .payment-desc { font-size: 13px; font-weight: 500; }
+  .payment-row .payment-info .payment-date { font-size: 11px; color: var(--evida-muted); margin-top: 2px; }
+  .payment-row .payment-amount { font-weight: 700; font-size: 14px; }
+
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+  .settings-row + .settings-row { border-top: 1px solid var(--evida-border); }
+  .settings-row .settings-info { flex: 1; }
+  .settings-row .settings-info .settings-label { font-size: 13px; font-weight: 500; }
+  .settings-row .settings-info .settings-desc { font-size: 11px; color: var(--evida-muted); margin-top: 2px; }
+
+  .toggle { width: 44px; height: 24px; border-radius: 12px; background: var(--evida-border); cursor: pointer; position: relative; transition: background 200ms; flex-shrink: 0; }
+  .toggle.on { background: var(--color-primary); }
+  .toggle .knob { width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .toggle.on .knob { transform: translateX(20px); }
+
+  .btn-ghost { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms; font-family: var(--font-body); }
+  .btn-ghost:hover { background: var(--evida-bg); }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 11px; }
+
+  .data-consent-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-consent-table th { text-align: left; font-size: 11px; font-weight: 600; color: var(--evida-muted); padding-bottom: 8px; }
+  .data-consent-table td { padding: 10px 0; border-top: 1px solid var(--evida-border); }
+  .data-consent-table td:last-child { text-align: right; }
+
+  .link-row { padding: 8px 0; font-size: 13px; }
+  .link-row a { color: var(--color-link); text-decoration: none; }
+  .link-row a:hover { text-decoration: underline; }
+
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
+  @media (min-width: 1024px) {
+    .app-body { padding: 32px; }
+    .app-body-inner { max-width: 900px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" onclick="window.location.href='profile.html'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="page-title">Settings</span>
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge">3</span></div><div class="avatar" onclick="window.location.href='profile.html'" style="cursor:pointer">JC</div></div>
+  </header>
+  <nav class="sidebar" id="desktopSidebar"></nav>
+  <div class="app-body">
+    <div class="app-body-inner">
+      <h1 class="content-page-title">Settings</h1>
+
+      <!-- Membership -->
+      <div class="membership-card">
+        <div class="plan-name">Evida Membership</div>
+        <div class="plan-price"><span class="strike">&pound;320</span>&pound;160<span style="font-size:14px;font-weight:400;opacity:0.7">/yr</span></div>
+        <div style="font-size:12px;opacity:0.8">Pilot pricing — standard renewal &pound;320/yr</div>
+        <div class="plan-status">Active &middot; Renews 1 Jun 2027</div>
+        <div class="plan-dates">Started: 1 Jun 2026 &middot; Baseline: Blood test 3 Jun &middot; GP consult 10 Jun</div>
+      </div>
+
+      <!-- Payment history -->
+      <div class="evida-card-bordered section-card">
+        <h2>Payment history</h2>
+        <div class="payment-row">
+          <div class="payment-info">
+            <div class="payment-desc">Evida Membership &mdash; Year 1 (pilot)</div>
+            <div class="payment-date">Paid 1 Jun 2026 via Stripe &middot; Mastercard &middot;&middot;42</div>
+          </div>
+          <div class="payment-amount">&pound;160</div>
+        </div>
+        <div class="payment-row">
+          <div class="payment-info">
+            <div class="payment-desc">Evida Membership &mdash; Year 1 deposit</div>
+            <div class="payment-date">Paid 15 May 2026 via Stripe &middot; Visa &middot;&middot;89</div>
+          </div>
+          <div class="payment-amount">&pound;50</div>
+        </div>
+      </div>
+
+      <!-- Privacy & data sharing -->
+      <div class="evida-card-bordered section-card">
+        <h2>Privacy &amp; data sharing</h2>
+        <table class="data-consent-table">
+          <tr><th>Purpose</th><th>Shared with</th><th></th></tr>
+          <tr>
+            <td>Care team access</td>
+            <td>Your GP, health coach, Evida clinical team</td>
+            <td><div class="toggle on" onclick="toggleConsent(this,'care')"><div class="knob"></div></div></td>
+          </tr>
+          <tr>
+            <td>Research opt-in</td>
+            <td>Anonymised data for preventive-health research</td>
+            <td><div class="toggle" onclick="toggleConsent(this,'research')"><div class="knob"></div></div></td>
+          </tr>
+          <tr>
+            <td>Marketing communications</td>
+            <td>Product updates, offers, Evida news</td>
+            <td><div class="toggle" onclick="toggleConsent(this,'marketing')"><div class="knob"></div></div></td>
+          </tr>
+        </table>
+        <div class="link-row" style="margin-top:8px"><a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')">View privacy policy</a></div>
+      </div>
+
+      <!-- Security -->
+      <div class="evida-card-bordered section-card">
+        <h2>Security</h2>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Password</div>
+            <div class="settings-desc">Last changed 3 months ago</div>
+          </div>
+          <button class="btn-ghost btn-sm" onclick="showToast('Password reset link sent to your email')">Change</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Two-factor authentication</div>
+            <div class="settings-desc">Add an extra layer of security to your account</div>
+          </div>
+          <button class="btn-ghost btn-sm" onclick="showToast('2FA setup link sent to your email')">Enable</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Passkey</div>
+            <div class="settings-desc">Sign in with fingerprint, face, or device PIN</div>
+          </div>
+          <div class="toggle" onclick="togglePasskey(this)"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="evida-card-bordered section-card">
+        <h2>Notifications</h2>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--evida-muted);margin-bottom:8px">Channels</div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Email</div>
+            <div class="settings-desc">james.chen@example.com</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'email')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Push</div>
+            <div class="settings-desc">Browser and mobile notifications</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'push')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">SMS</div>
+            <div class="settings-desc">+44 7900 123456</div>
+          </div>
+          <div class="toggle" onclick="toggleNotifChannel(this,'sms')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Calendar (.ics) invites</div>
+            <div class="settings-desc">Auto-add appointments to your calendar</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'calendar')"><div class="knob"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--evida-muted);margin:16px 0 8px;border-top:1px solid var(--evida-border);padding-top:16px">Reminders &amp; updates</div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Appointment reminders (SMS, 1 hr before)</div>
+            <div class="settings-desc">Text reminder before blood test and GP consult</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'appt-sms')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Appointment reminders (email)</div>
+            <div class="settings-desc">24 hr reminder before each appointment</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'appt-email')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Pre-consult checklist reminders</div>
+            <div class="settings-desc">Weekly nudges to complete ID verification, questionnaire, and wearables</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'checklist-email')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Newsletter &amp; health tips</div>
+            <div class="settings-desc">Monthly insights, prevention research, and member updates</div>
+          </div>
+          <div class="toggle on" onclick="toggleNotifChannel(this,'newsletter')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Promotional offers</div>
+            <div class="settings-desc">Partner discounts and Evida product news</div>
+          </div>
+          <div class="toggle" onclick="toggleNotifChannel(this,'promo')"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="evida-card-bordered section-card">
+        <h2>About</h2>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Version</div>
+            <div class="settings-desc">Patient app v1.0.0 &mdash; Pilot build</div>
+          </div>
+        </div>
+        <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Terms of service opened')">Terms of service</a></div>
+        <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')">Privacy policy</a></div>
+        <div class="link-row"><a href="#" onclick="event.preventDefault();showToast('Cookie preferences opened')">Cookie preferences</a></div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="evida-card-bordered section-card" style="border-color:var(--evida-coral)">
+        <h2 style="color:var(--evida-coral)">Delete account</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:12px;line-height:1.5">Permanently removes your profile and login access. Per CQC regulations, your clinical records are retained for 8 years after account deletion. <a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')" style="color:var(--color-primary)">View our data privacy policy →</a></p>
+        <button class="btn-ghost btn-sm" style="color:var(--evida-coral);border-color:var(--evida-coral);width:100%;height:40px;font-size:13px" onclick="confirmDeleteAccount()">Delete my account</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item active" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script src="_uat.js"></script>
+<script src="_evi.js"></script>
+<script>
+function toggleConsent(el, purpose) {
+  el.classList.toggle('on');
+  var status = el.classList.contains('on') ? 'enabled' : 'disabled';
+  var names = { care: 'Care team data sharing', research: 'Research opt-in', marketing: 'Marketing' };
+  showToast(names[purpose] + ' ' + status);
+}
+
+function togglePasskey(el) {
+  el.classList.toggle('on');
+  showToast(el.classList.contains('on') ? 'Passkey enabled' : 'Passkey disabled');
+}
+
+function toggleNotifChannel(el, channel) {
+  var on = el.classList.toggle('on');
+  EvidaStore.prefs.setNotifChannel(channel, on);
+  var names = {
+    email: 'Email', push: 'Push notifications', sms: 'SMS', calendar: 'Calendar invites',
+    'appt-sms': 'Appointment SMS reminders', 'appt-email': 'Appointment email reminders',
+    'checklist-email': 'Checklist reminders', newsletter: 'Newsletter', promo: 'Promotional offers'
+  };
+  showToast((names[channel] || channel) + (on ? ' enabled' : ' disabled'));
+}
+
+function confirmDeleteAccount() {
+  if (confirm('Delete your Evida account?\n\nThis will remove your profile and login access immediately. Your clinical records will be retained for 8 years per CQC regulations.\n\nThis cannot be undone.')) {
+    showToast('Account deletion request submitted — you will receive a confirmation email within 24 hours');
+  }
+}
+
+// Restore notification channel states from store on load
+(function restoreNotifChannels() {
+  ['email', 'push', 'sms', 'calendar', 'appt-sms', 'appt-email', 'checklist-email', 'newsletter', 'promo'].forEach(function(ch) {
+    var on = EvidaStore.prefs.notifChannel(ch);
+    var toggles = document.querySelectorAll('.settings-row .toggle');
+    for (var i = 0; i < toggles.length; i++) {
+      var t = toggles[i];
+      var oc = t.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + ch + "'") !== -1 || oc.indexOf('"' + ch + '"') !== -1) {
+        t.classList.toggle('on', on);
+      }
+    }
+  });
+})();
+
+</script>
+</body>
+</html>

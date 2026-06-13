@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+<title>Evida — Book your Baseline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+  .app-body { padding: 0 0 32px; }
+
+  .progress-track { padding: 16px 16px 0; max-width: var(--max-w); margin: 0 auto; }
+  .progress-steps { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .progress-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; }
+  .progress-step .circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--evida-border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--evida-muted); background: var(--evida-surface); transition: all 200ms; }
+  .progress-step.active .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+  .progress-step.done .circle { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+  .progress-step .label { font-size: 10px; color: var(--evida-muted); text-align: center; line-height: 1.2; min-height: 28px; }
+  .progress-step.active .label { color: var(--color-primary); font-weight: 600; }
+  .progress-step.done .label { color: var(--evida-fg-secondary); }
+  .progress-bar-bg { height: 3px; background: var(--evida-border); border-radius: 2px; margin: 0 14px; position: relative; }
+  .progress-bar-fill { height: 100%; background: var(--color-primary); border-radius: 2px; transition: width 300ms ease-out; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .card-option { background: var(--evida-surface); border: 2px solid var(--evida-border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: border-color 150ms, box-shadow 150ms; margin-bottom: 12px; }
+  .card-option:hover { border-color: var(--color-primary); }
+  .card-option.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .card-option.disabled { opacity: 0.5; cursor: not-allowed; }
+  .card-option.disabled:hover { border-color: var(--evida-border); }
+  .card-option .top { display: flex; align-items: flex-start; gap: 12px; }
+  .card-option .radio-outline { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: border-color 150ms; }
+  .card-option.selected .radio-outline { border-color: var(--color-primary); }
+  .card-option.selected .radio-outline::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); }
+  .card-option .info { flex: 1; }
+  .card-option .title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .card-option .desc { font-size: 13px; color: var(--evida-fg-secondary); line-height: 1.4; }
+  .card-option .meta { display: flex; gap: 8px; margin-top: 6px; }
+  .card-option .pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-full); }
+  .card-option .pill-coming { background: var(--evida-amber-light); color: var(--color-warning-fg); }
+  .card-option .pill-price { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+  .card-option .pill-free { background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+
+  .location-card { background: var(--evida-surface); border: 1px solid var(--evida-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: border-color 150ms; }
+  .location-card:hover { border-color: var(--color-primary); }
+  .location-card.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .location-card .name { font-size: 15px; font-weight: 600; }
+  .location-card .addr { font-size: 13px; color: var(--evida-fg-secondary); margin-top: 2px; }
+  .location-card .dist { font-size: 12px; color: var(--evida-muted); }
+  .location-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .location-card .avail { font-size: 12px; padding: 4px 10px; border-radius: var(--radius-full); background: var(--evida-teal-light); color: var(--evida-teal-dark); }
+
+  .date-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin: 12px 0; }
+  .date-cell { background: var(--evida-surface); border: 1px solid var(--evida-border); border-radius: var(--radius-sm); padding: 8px 4px; text-align: center; cursor: pointer; transition: all 150ms; }
+  .date-cell:hover { border-color: var(--color-primary); }
+  .date-cell.selected { border-color: var(--color-primary); background: var(--evida-teal-light); }
+  .date-cell .day { font-size: 11px; color: var(--evida-muted); }
+  .date-cell .num { font-size: 18px; font-weight: 700; line-height: 1.3; }
+  .date-cell .month { font-size: 10px; color: var(--evida-muted); }
+  .date-cell.disabled { opacity: 0.35; cursor: not-allowed; }
+  .date-cell.disabled:hover { border-color: var(--evida-border); }
+  .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .time-cell { height: 40px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: all 150ms; background: var(--evida-surface); }
+  .time-cell:hover { border-color: var(--color-primary); }
+  .time-cell.selected { border-color: var(--color-primary); background: var(--evida-teal-light); font-weight: 600; }
+  .time-cell.disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .section-label { font-size: 13px; font-weight: 600; color: var(--evida-fg-secondary); margin-bottom: 8px; margin-top: 16px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .cart-card { padding: 16px; margin-bottom: 16px; }
+  .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--evida-border); font-size: 14px; }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item .label { color: var(--evida-fg-secondary); }
+  .cart-item .value { font-weight: 600; }
+  .cart-total { display: flex; justify-content: space-between; padding: 12px 0 0; font-size: 16px; font-weight: 700; border-top: 2px solid var(--evida-fg); margin-top: 4px; }
+  .cart-total .price-original { font-size: 14px; font-weight: 400; color: var(--evida-muted); text-decoration: line-through; }
+  .cart-total .price-discount { color: var(--color-success); font-size: 13px; font-weight: 600; margin-top: 2px; }
+
+  .hold-banner { display: none; align-items: center; gap: 8px; padding: 10px 14px; background: var(--evida-amber-light); border-radius: var(--radius-md); margin-bottom: 16px; font-size: 13px; color: var(--color-warning-fg); }
+  .hold-banner.visible { display: flex; }
+  .hold-banner .timer { font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .payment-card { padding: 16px; }
+  .payment-card .card-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--evida-border); border-radius: var(--radius-sm); margin-bottom: 12px; cursor: pointer; transition: border-color 150ms; }
+  .payment-card .card-row:hover { border-color: var(--color-primary); }
+  .payment-card .card-row.selected { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+  .payment-card .card-row .radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--evida-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .payment-card .card-row.selected .radio { border-color: var(--color-primary); }
+  .payment-card .card-row.selected .radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); }
+  .payment-card .card-row .method-label { font-size: 14px; font-weight: 500; }
+  .payment-method-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .conf-card { text-align: center; padding: 32px 16px; }
+  .conf-card .check { width: 72px; height: 72px; border-radius: 50%; background: var(--evida-teal-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .conf-card .check svg { width: 32px; height: 32px; stroke: var(--evida-teal); }
+  .conf-card .check.pulse { animation: checkPulse 0.4s ease-out; }
+  @keyframes checkPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+  .btn-loading { pointer-events: none; }
+  .btn-loading .btn-text { display: none; }
+  .btn-loading .btn-spinner { display: inline-block; }
+  .conf-card h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .conf-card p { color: var(--evida-fg-secondary); font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+  .conf-detail { background: var(--evida-bg); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; text-align: left; }
+  .conf-detail .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+  .conf-detail .row .l { color: var(--evida-muted); }
+  .conf-detail .row .r { font-weight: 600; }
+  .conf-detail .divider { height: 1px; background: var(--evida-border); margin: 8px 0; }
+
+  .app-header .header-actions { margin-left: auto; }
+  .error-banner { display: none; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-md); background: var(--color-danger-bg); color: var(--color-danger-fg); font-size: 13px; margin-bottom: 16px; line-height: 1.4; }
+  .error-banner.visible { display: flex; }
+  .error-banner .w-icon { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  /* Fasting/prep reminder banner */
+  .prep-reminder { display: none; background: var(--evida-teal-light); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px; }
+  .prep-reminder.visible { display: block; }
+  .prep-reminder .title { font-weight: 600; color: var(--evida-teal-dark); margin-bottom: 4px; }
+  .prep-reminder .desc { font-size: 13px; color: var(--evida-teal-dark); opacity: 0.8; }
+
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 0 0 48px; } }
+  @media (min-width: 1024px) {
+    :root { --max-w: 560px; }
+    .app-shell { display: flex !important; flex-direction: column !important; grid-template-columns: unset !important; padding-bottom: 0; }
+    .app-body { display: flex !important; padding: 0 24px 48px !important; grid-column: auto !important; grid-row: auto !important; }
+    .bottom-nav { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" id="backBtn" onclick="handleBack()">←</button>
+    <img class="logo" src="../build/logo.svg" alt="Evida">
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button></div>
+  </header>
+
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-steps" id="progressSteps"></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="app-body">
+    <div class="app-body-inner">
+      <div class="error-banner" id="bookingError">
+        <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
+        <span id="bookingErrorText"></span>
+      </div>
+
+      <!-- STEP 1: Choose package -->
+      <div class="step" id="step1" data-step="1">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Your membership</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Everything you need for 12 months of preventive health.</p>
+        <div class="card-option selected" id="pkgBaseline" onclick="selectPackage('baseline')">
+          <div class="top">
+            <div class="radio-outline"></div>
+            <div class="info">
+              <div class="title">Evida Membership</div>
+              <div class="desc">Full diagnostic blood panel (42 biomarkers), 45-min GP consultation, health coach session, personalised prevention plan, and 12 months of data insights.</div>
+              <div class="meta">
+                <span class="pill pill-price" style="background:var(--evida-navy);color:white">£320 / year</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
+      </div>
+
+      <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
+      <div class="step" id="step3" data-step="3">
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your blood test</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Choose a Randox clinic near you and pick a convenient time. <strong>Fasting is required</strong> — we'll remind you the evening before.</p>
+        <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
+          <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li>Allow 30 minutes — please arrive 5 minutes early</li>
+            <li>We test: full blood panel, height, weight, blood pressure</li>
+            <li>Results are sent to Evida — your GP reviews them with you in your consultation</li>
+          </ul>
+        </div>
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Choose a clinic</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:8px">Select your nearest Randox clinic and preferred time.</p>
+        <input class="evida-input" id="postcodeInput" placeholder="Filter by postcode (e.g. W1D, EC2N)" style="width:100%;height:44px;font-size:14px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px;box-sizing:border-box;margin-bottom:10px;text-transform:uppercase" oninput="filterClinics(this.value)">
+        <div id="clinicList"></div>
+        <div id="dateTimeSection" style="display:none">
+          <div class="section-label">Available dates</div>
+          <div class="date-grid" id="bloodDateGrid"></div>
+          <div class="section-label" id="timeLabel" style="display:none">Available times</div>
+          <div class="time-grid" id="bloodTimeGrid"></div>
+        </div>
+        <button type="button" class="btn btn-primary btn-form" id="step3Btn" onclick="goStep(4)">Book Blood Test</button>
+        <div style="text-align:center;margin-top:10px">
+          <a href="javascript:void(0)" onclick="skipBloodBooking()" style="font-size:13px;color:var(--evida-muted);text-decoration:none">Skip for now — book and pay later</a>
+        </div>
+      </div>
+
+      <!-- STEP 4: GP consult (gated) -->
+      <div class="step" id="step4" data-step="4">
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your GP consultation</h2>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Your 45-minute virtual appointment. The GP will review your results with you and create your personalised prevention plan.</p>
+        <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
+          <span class="text-body-small">Your blood test is <strong id="gpInfoBloodDate">—</strong>. Your GP consultation can be booked from <strong id="gpInfoMinDate">—</strong> onwards (allows 4–5 working days for results).</span>
+        </div>
+        <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin:12px 0;font-size:13px;color:var(--evida-teal-dark)">
+          <div style="font-weight:700;margin-bottom:6px">Your virtual GP consultation</div>
+          <ul style="margin:0;padding-left:18px;line-height:1.7">
+            <li>Up to 45 minutes · Virtual · With a GP (not a health coach)</li>
+            <li>Availability is limited — new dates are released every Monday</li>
+            <li>You will not receive your blood results beforehand — your GP reviews them with you during this session</li>
+          </ul>
+        </div>
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Book your GP consultation</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">45-min virtual consultation with a GP.</p>
+        <div class="section-label">Available dates</div>
+        <div class="date-grid" id="gpDateGrid"></div>
+        <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
+        <div class="time-grid" id="gpTimeGrid"></div>
+        <button type="button" class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
+      </div>
+
+      <!-- STEP 5: Review & Pay (merged) -->
+      <div class="step" id="step5" data-step="5">
+        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Review &amp; pay</p>
+        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Check your booking, then complete payment below.</p>
+        <div class="hold-banner visible" id="holdBanner">
+          <span>Slots held for <span class="timer" id="holdTimer">14:58</span></span>
+        </div>
+        <div class="evida-card cart-card">
+          <div class="cart-item" style="border-bottom:2px solid var(--evida-fg);padding-bottom:10px">
+            <span class="label" style="font-weight:700">Evida Membership (12 months)</span>
+            <span class="value" style="font-size:18px;font-weight:700">£320</span>
+          </div>
+          <div class="cart-item">
+            <span class="label">Blood test slot <button onclick="goStep(3)" style="background:none;border:none;color:var(--color-primary);font-size:11px;font-weight:600;cursor:pointer;padding:0 0 0 4px;font-family:inherit">Edit</button></span>
+            <span class="value" style="font-size:13px" id="cartBloodSlot">—</span>
+          </div>
+          <div class="cart-item">
+            <span class="label">GP consult slot <button onclick="goStep(4)" style="background:none;border:none;color:var(--color-primary);font-size:11px;font-weight:600;cursor:pointer;padding:0 0 0 4px;font-family:inherit">Edit</button></span>
+            <span class="value" style="font-size:13px" id="cartGpSlot">—</span>
+          </div>
+          <div class="cart-item" style="color:var(--evida-fg-secondary)"><span class="label">2× virtual GP credits</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
+          <div class="cart-item" style="color:var(--evida-fg-secondary)"><span class="label">6-month follow-up consult</span><span class="value" style="color:var(--color-success);font-weight:600">Included</span></div>
+          <div id="cartAddons" style="display:none">
+            <div class="cart-item" id="cartAddonRow"><span class="label" id="cartAddonLabel">Home nurse visit</span><span class="value" id="cartAddonPrice">£70</span></div>
+          </div>
+          <div id="cartDiscountRow" class="cart-item" style="display:none;color:var(--color-success)"><span class="label" id="cartDiscountLabel">Discount</span><span class="value" id="cartDiscountAmt"></span></div>
+          <div class="cart-total" style="border-top:2px solid var(--evida-fg)"><span>Total</span><span id="cartTotalValue">£320</span></div>
+        </div>
+        <div style="margin:12px 0">
+          <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px" for="discountCode">Have a discount code?</label>
+          <div style="display:flex;gap:8px">
+            <input class="evida-input" id="discountCode" placeholder="Enter code" style="flex:1;height:44px;font-size:14px;text-transform:uppercase;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px">
+            <button class="btn btn-secondary" onclick="applyDiscount()" style="width:auto;padding:0 20px;height:44px;font-size:13px">Apply</button>
+          </div>
+          <div id="discountFeedback" style="display:none;font-size:12px;font-weight:600;margin-top:6px"></div>
+        </div>
+        <p style="font-size:11px;font-weight:700;color:var(--evida-fg-secondary);letter-spacing:0.06em;text-transform:uppercase;margin:16px 0 10px">Payment details</p>
+        <div class="evida-card payment-card">
+          <div class="card-row selected" onclick="selectPayment(this)">
+            <div><div class="radio"></div></div>
+            <span class="method-label">Credit or debit card</span>
+            <span style="margin-left:auto;display:flex;gap:4px">
+              <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect x="0.5" y="0.5" width="23" height="15" rx="2" fill="#fff" stroke="#ddd"/><text x="5" y="11" font-size="8" fill="#003399" font-weight="bold">VISA</text></svg>
+              <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect x="0.5" y="0.5" width="23" height="15" rx="2" fill="#fff" stroke="#ddd"/><text x="3" y="11" font-size="7" fill="#FF5F00" font-weight="bold">MC</text></svg>
+            </span>
+          </div>
+          <div style="background:var(--evida-bg);border:1px solid var(--evida-border);border-radius:var(--radius-md);padding:16px;margin-top:12px">
+            <div class="form-group" style="margin-bottom:16px">
+              <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Card number</label>
+              <input class="evida-input" id="stripeCardNumber" style="width:100%;height:44px;font-size:16px;font-family:var(--font-mono);letter-spacing:0.5px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div class="form-group">
+                <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Expiry date</label>
+                <input class="evida-input" id="stripeExpiry" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="MM / YY" inputmode="numeric" autocomplete="cc-exp">
+              </div>
+              <div class="form-group">
+                <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">CVC</label>
+                <input class="evida-input" id="stripeCvc" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="CVC" inputmode="numeric" autocomplete="cc-csc">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Name on card</label>
+              <input class="evida-input" id="stripeName" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="James Chen" autocomplete="cc-name">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px;padding:10px;background:var(--evida-teal-light);border-radius:var(--radius-sm)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--evida-teal-dark)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:12px;color:var(--evida-teal-dark)">Encrypted and processed securely via Stripe.</span>
+        </div>
+        <div class="error-banner" id="paymentError" style="margin-top:8px">
+          <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
+          <span>Payment declined. Your slots are still held — please try again or use a different card.</span>
+        </div>
+        <p class="text-tiny" style="color:var(--evida-muted);margin:8px 0 80px">Slots will be released if payment is not completed within the hold period.</p>
+        <div style="text-align:center;padding-bottom:8px">
+          <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — bookings won't be confirmed</button>
+        </div>
+      </div>
+
+      <!-- STEP 7: Confirmation -->
+      <div class="step" id="step7" data-step="7">
+        <div class="conf-card">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h2 class="text-h2">Welcome to Evida!</h2>
+          <p class="text-body-small" style="margin-bottom:4px">Your membership is active — congratulations on taking the first step.</p>
+          <div class="conf-detail">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
+              <div>
+                <div style="font-size:11px;color:var(--evida-muted)">Blood test</div>
+                <div style="font-weight:600;font-size:13px" id="confBloodDateTime">7 Jun 2026, 10:30</div>
+                <div style="font-size:12px;color:var(--evida-muted)" id="confLocation">Randox — Oxford Circus</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addBloodTestToCalendar()" style="flex-shrink:0;margin-left:12px;font-size:11px;padding:4px 10px;height:auto">+ Calendar</button>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;padding:4px 0 8px;font-size:12px;color:var(--evida-fg-secondary);cursor:pointer;text-align:left">
+              <input type="checkbox" id="fastingReminderCheck" onchange="handleFastingCheck(this)" style="width:16px;height:16px;accent-color:var(--evida-teal);cursor:pointer;flex-shrink:0">
+              Add fasting reminder to calendar (6pm the evening before)
+            </label>
+            <div class="divider"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0">
+              <div>
+                <div style="font-size:11px;color:var(--evida-muted)">GP consultation</div>
+                <div style="font-weight:600;font-size:13px" id="confGpDateTime">12 Jun 2026, 14:00</div>
+                <div style="font-size:12px;color:var(--evida-muted)">45 min · virtual</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addGpToCalendar()" style="flex-shrink:0;margin-left:12px;font-size:11px;padding:4px 10px;height:auto">+ Calendar</button>
+            </div>
+            <div class="divider"></div>
+            <div class="row" id="confDiscountRow" style="display:none"><span class="l" style="color:var(--evida-teal-dark)">Discount applied (<span id="confDiscountCode"></span>)</span><span class="r" id="confDiscountAmt" style="color:var(--evida-teal-dark);font-weight:600">−£0</span></div>
+            <div class="row"><span class="l">Total paid</span><span class="r" id="confTotalPaid" style="font-weight:700;font-size:15px">£320</span></div>
+            <div class="row" style="margin-top:4px"><span class="l">Receipt</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
+          </div>
+          <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:16px">Continue to onboarding →</button>
+          <button class="btn btn-secondary btn-form" onclick="window.print()" style="margin-top:8px">Download invoice</button>
+          <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered address.</p>
+        </div>
+      </div>
+
+      <!-- Slot released state (recovery) -->
+      <div class="step" id="step-recovery">
+        <div class="conf-card">
+          <div style="color:var(--evida-amber);width:64px;height:64px;margin:0 auto 16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:64px;height:64px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h2>Your slot was released</h2>
+          <p>The hold period expired. Your selected time was not reserved. You can choose a new slot below.</p>
+          <button class="btn btn-primary btn-form" onclick="goStep(3)">Choose new slot</button>
+        </div>
+      </div>
+
+      <!-- Payment failure recovery -->
+      <div class="step" id="step-payment-failed">
+        <div class="conf-card">
+          <div style="width:64px;height:64px;margin:0 auto 16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--evida-coral)" stroke-width="1.5" style="width:64px;height:64px"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+          </div>
+          <h2>Payment unsuccessful</h2>
+          <p>Your slots are still held for <strong id="retryTimer">12:34</strong>. You can retry or choose different times.</p>
+          <button class="btn btn-primary btn-form" onclick="goStep(5)" style="margin-bottom:8px">Try paying again</button>
+          <button class="btn btn-secondary btn-form" onclick="goStep(3)">Choose different slots</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <!-- Nav overflow sheet -->
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<!-- Sticky pay bar — visible only on step 5 (Review & Pay) -->
+<div id="payStickyBar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--evida-surface);border-top:1px solid var(--evida-border);padding:12px 16px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,0.08)">
+  <div style="max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px">
+    <div style="flex-shrink:0">
+      <div style="font-size:11px;color:var(--evida-muted);line-height:1.2">Total due</div>
+      <div id="stickyTotal" style="font-weight:700;font-size:20px;line-height:1.2">£320</div>
+    </div>
+    <button class="btn btn-primary" id="payBtn" onclick="handlePayment()" style="flex:1;height:48px;font-size:15px;font-weight:700">
+      <span class="btn-text" id="payBtnText">Pay £320 — Activate membership</span>
+      <span class="btn-spinner"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Confetti canvas -->
+<canvas id="confettiCanvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:999;display:none"></canvas>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script src="_uat.js"></script>
+
+<script>
+// State
+const state = {
+  step: 1, package: 'baseline', addon: 'none',
+  clinic: null, bloodDate: null, bloodTime: null,
+  gpDate: null, gpTime: null, selectedPayment: 'card',
+  holdInterval: null, holdSeconds: 900,
+  discountCode: null, discountAmount: 0,
+};
+
+// Add-ons (internal step 2) are not in the MVP; signup flow also skips Plan
+// since the membership was already chosen at account creation. The progress
+// track only ever shows the steps the member will actually walk through.
+const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
+const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5] : [1, 3, 4, 5];
+
+function currentTotal() {
+  return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
+}
+
+const MEMBERSHIP_PRICE = 320;
+// Early members receive a code by email; applied at payment, never shown before
+const DISCOUNT_CODES = {
+  'EVIDA160': { amount: 160, label: 'Early member discount (50%)' },
+  'EARLY100': { amount: 100, label: 'Early member discount' },
+  'NHS50':    { amount: 160, label: 'NHS staff discount (50%)' }
+};
+const addonPrices = { none: 0, nurse: 70, hormone: 85, both: 140 };
+const addonLabels = { none: null, nurse: 'Home nurse blood draw', hormone: 'Hormone panel upgrade', both: 'Nurse visit + Hormone panel' };
+
+const clinics = [
+  { id: 'oxford', name: 'Randox — Oxford Circus', addr: 'Unit 4, 200 Oxford St, London W1D 1NU', dist: '0.4 mi', avail: 'Available' },
+  { id: 'holborn', name: 'Randox — Holborn', addr: '42 Kingsway, London WC2B 6EY', dist: '1.1 mi', avail: 'Available' },
+  { id: 'liverpool', name: 'Randox — Liverpool St', addr: '15 Bishopsgate, London EC2N 3AR', dist: '1.8 mi', avail: 'Limited' },
+];
+
+// Slot dates are generated relative to today so the prototype never goes stale.
+function isoLocal(d) {
+  var p = function(n) { return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function parseISO(s) { var b = s.split('-'); return new Date(+b[0], +b[1] - 1, +b[2]); }
+function addWorkingDays(d, n) {
+  var x = new Date(d), added = 0;
+  while (added < n) { x.setDate(x.getDate() + 1); var dow = x.getDay(); if (dow !== 0 && dow !== 6) added++; }
+  return x;
+}
+function slotEntry(d, times) {
+  return {
+    day: d.toLocaleDateString('en-GB', { weekday: 'short' }),
+    num: String(d.getDate()),
+    month: d.toLocaleDateString('en-GB', { month: 'short' }),
+    date: isoLocal(d), times: times
+  };
+}
+
+const bloodTimePatterns = [
+  ['09:00','09:30','10:30','11:00','11:30','13:00','14:00','15:00'],
+  ['09:00','10:00','11:00','14:00','15:00','16:00'],
+  ['09:30','10:30','11:30','13:00','14:30','15:30','16:30'],
+  ['10:00','11:00','14:00','15:00'],
+  ['09:00','10:00','11:00','14:00'],
+];
+const gpTimePatterns = [
+  ['09:00','10:00','11:00','13:00','14:00','15:00','16:00'],
+  ['09:00','10:30','11:00','13:30','14:00','15:30'],
+  ['10:00','11:00','13:00','14:00','15:00','16:00'],
+  ['09:00','09:30','10:30','11:30','13:00','14:30'],
+  ['10:00','11:00','14:00','15:00','16:00'],
+  ['09:30','10:30','13:00','14:00','15:00'],
+  ['09:00','11:00','13:30','15:00'],
+  ['10:00','11:30','14:00','16:00'],
+];
+
+// Blood draws: next 5 clinic days starting tomorrow (clinics closed Sundays)
+const bloodSlots = (function() {
+  var out = [], d = new Date();
+  while (out.length < 5) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0) out.push(slotEntry(new Date(d), bloodTimePatterns[out.length]));
+  }
+  return out;
+})();
+
+// GP consults: 8 weekdays starting 5 working days after the earliest blood slot,
+// wide enough to offer choices whichever blood date is picked
+const gpSlots = (function() {
+  var out = [], d = addWorkingDays(parseISO(bloodSlots[0].date), 5);
+  d.setDate(d.getDate() - 1); // loop pre-increments
+  while (out.length < 8) {
+    d.setDate(d.getDate() + 1);
+    var dow = d.getDay();
+    if (dow !== 0 && dow !== 6) out.push(slotEntry(new Date(d), gpTimePatterns[out.length]));
+  }
+  return out;
+})();
+
+// Earliest bookable GP date: 5 working days after the chosen blood test (lab turnaround)
+function gpMinDate() {
+  var base = state.bloodDate || bloodSlots[0].date;
+  return isoLocal(addWorkingDays(parseISO(base), 5));
+}
+
+// Index 1 (step 2) is intentionally null — add-ons step was removed; steps jump 1→3
+const stepLabels = ['Plan', null, 'Blood test', 'GP consult', 'Pay', null, null];
+
+function init() {
+  renderProgress();
+  renderClinics();
+  renderBloodDates();
+  renderGpDates();
+}
+
+function renderProgress() {
+  const container = document.getElementById('progressSteps');
+  container.innerHTML = VISIBLE_STEPS.map((s, i) => `
+    <div class="progress-step" data-idx="${i}">
+      <div class="circle">${i + 1}</div>
+      <div class="label">${stepLabels[s - 1]}</div>
+    </div>
+  `).join('');
+}
+
+function updateProgress(step) {
+  const idx = VISIBLE_STEPS.indexOf(step);
+  document.querySelectorAll('.progress-step').forEach((el, i) => {
+    el.className = 'progress-step' + (i === idx ? ' active' : i < idx ? ' done' : '');
+  });
+  document.getElementById('progressFill').style.width = (Math.max(idx, 0) / (VISIBLE_STEPS.length - 1) * 100) + '%';
+}
+
+function selectPackage(pkg) {
+  state.package = pkg;
+  document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkgBaseline').classList.add('selected');
+}
+function selectDiagnostic(type) {
+  state.diagnostic = type;
+  document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+  document.getElementById('diagClinic').classList.add('selected');
+}
+
+function renderClinics() {
+  const list = document.getElementById('clinicList');
+  list.innerHTML = clinics.map(c => `
+    <div class="location-card" data-id="${c.id}" onclick="selectClinic('${c.id}')">
+      <div class="name">${c.name}</div>
+      <div class="addr">${c.addr}</div>
+      <div class="bottom">
+        <span class="dist">${c.dist}</span>
+        <span class="avail" style="background:${c.avail === 'Limited' ? 'var(--evida-amber-light)' : 'var(--evida-teal-light)'};color:${c.avail === 'Limited' ? 'var(--color-warning-fg)' : 'var(--evida-teal-dark)'}">${c.avail}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function checkStep3Ready() {
+  // Demo: step always navigable so reviewers can click through
+}
+
+function selectClinic(id) {
+  state.clinic = id;
+  document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.location-card[data-id="${id}"]`).classList.add('selected');
+  document.getElementById('dateTimeSection').style.display = 'block';
+  checkStep3Ready();
+}
+
+function renderBloodDates() {
+  const grid = document.getElementById('bloodDateGrid');
+  grid.innerHTML = bloodSlots.map(d => `
+    <div class="date-cell" data-date="${d.date}" onclick="selectBloodDate('${d.date}')">
+      <div class="day">${d.day}</div>
+      <div class="num">${d.num}</div>
+      <div class="month">${d.month}</div>
+    </div>
+  `).join('');
+}
+
+function selectBloodDate(date) {
+  state.bloodDate = date;
+  document.querySelectorAll('#bloodDateGrid .date-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#bloodDateGrid .date-cell[data-date="${date}"]`).classList.add('selected');
+  const slot = bloodSlots.find(d => d.date === date);
+  const grid = document.getElementById('bloodTimeGrid');
+  if (slot) {
+    grid.innerHTML = slot.times.map(t => `<div class="time-cell" data-time="${t}" onclick="selectBloodTime('${t}')">${t}</div>`).join('');
+    document.getElementById('timeLabel').style.display = 'block';
+  }
+  state.bloodTime = null;
+  // Lab turnaround shifted — refresh which GP dates are bookable
+  if (state.gpDate && state.gpDate < gpMinDate()) {
+    state.gpDate = null;
+    state.gpTime = null;
+    document.getElementById('gpTimeGrid').innerHTML = '';
+    document.getElementById('gpTimeLabel').style.display = 'none';
+  }
+  renderGpDates();
+  checkStep3Ready();
+}
+
+function renderGpDates() {
+  const grid = document.getElementById('gpDateGrid');
+  const minGp = gpMinDate();
+  const minLabel = parseISO(minGp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+  grid.innerHTML = gpSlots.map(d => {
+    const disabled = d.date < minGp;
+    return `<div class="date-cell${disabled ? ' disabled' : ''}${d.date === state.gpDate ? ' selected' : ''}" data-date="${d.date}" onclick="if(!this.classList.contains('disabled')) selectGpDate('${d.date}')" ${disabled ? `title="Your results need 4–5 working days after your blood test. Please select from ${minLabel} onwards."` : ''}>
+      <div class="day">${d.day}</div>
+      <div class="num">${d.num}</div>
+      <div class="month">${d.month}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectBloodTime(time) {
+  state.bloodTime = time;
+  document.querySelectorAll('#bloodTimeGrid .time-cell').forEach(c => c.classList.remove('selected'));
+  var el = document.querySelector('#bloodTimeGrid .time-cell[data-time="' + time + '"]');
+  if (el) el.classList.add('selected');
+  checkStep3Ready();
+}
+
+function checkStep4Ready() {
+  // Demo: step always navigable so reviewers can click through
+}
+
+function selectGpDate(date) {
+  state.gpDate = date;
+  document.querySelectorAll('#gpDateGrid .date-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#gpDateGrid .date-cell[data-date="${date}"]`).classList.add('selected');
+  const slot = gpSlots.find(d => d.date === date);
+  const grid = document.getElementById('gpTimeGrid');
+  if (slot) {
+    grid.innerHTML = slot.times.map(t => `<div class="time-cell" data-time="${t}" onclick="selectGpTime('${t}')">${t}</div>`).join('');
+    document.getElementById('gpTimeLabel').style.display = 'block';
+  }
+  state.gpTime = null;
+  checkStep4Ready();
+}
+
+function selectGpTime(time) {
+  state.gpTime = time;
+  document.querySelectorAll('#gpTimeGrid .time-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`#gpTimeGrid .time-cell[data-time="${time}"]`).classList.add('selected');
+  checkStep4Ready();
+}
+
+function goStep(n) {
+  if (n === 4) {
+    // Auto-select first bookable GP slot so tester can click through
+    var minGp = gpMinDate();
+    var firstGp = gpSlots.find(function(s) { return s.date >= minGp; });
+    if (firstGp && !state.gpDate) {
+      selectGpDate(firstGp.date);
+      if (firstGp.times.length > 0) selectGpTime(firstGp.times[0]);
+    }
+    var longDate = function(iso) { return parseISO(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); };
+    document.getElementById('gpInfoBloodDate').textContent = longDate(state.bloodDate || bloodSlots[0].date);
+    document.getElementById('gpInfoMinDate').textContent = longDate(minGp);
+  }
+  if (n === 5) {
+    // Update sticky bar total
+    var tot = currentTotal();
+    document.getElementById('stickyTotal').textContent = '£' + tot;
+    document.getElementById('payBtnText').textContent = 'Pay £' + tot + ' — Activate membership';
+    document.getElementById('payStickyBar').style.display = 'block';
+  } else {
+    document.getElementById('payStickyBar').style.display = 'none';
+  }
+  if (n === 5) {
+    startHoldTimer();
+    // Show the actual selected slots in the cart
+    if (state.bloodDate && state.bloodTime) {
+      document.getElementById('cartBloodSlot').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
+    }
+    if (state.gpDate && state.gpTime) {
+      document.getElementById('cartGpSlot').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
+    }
+    // Update cart with addon info
+    if (state.addon && state.addon !== 'none') {
+      document.getElementById('cartAddons').style.display = 'block';
+      document.getElementById('cartAddonLabel').textContent = addonLabels[state.addon];
+      document.getElementById('cartAddonPrice').textContent = '£' + addonPrices[state.addon];
+      document.getElementById('cartTotalValue').textContent = '£' + (MEMBERSHIP_PRICE + addonPrices[state.addon]);
+    } else {
+      document.getElementById('cartAddons').style.display = 'none';
+      document.getElementById('cartTotalValue').textContent = '£' + MEMBERSHIP_PRICE;
+    }
+    if (IS_SIGNUP_FLOW && !state.discountAmount) {
+      document.getElementById('discountCode').value = 'EVIDA160';
+      applyDiscount();
+    }
+  }
+  if (n === 7) {
+    setTimeout(launchConfetti, 300);
+    document.getElementById('confBloodDateTime').textContent = formatDate(state.bloodDate) + ', ' + state.bloodTime;
+    document.getElementById('confLocation').textContent = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
+    document.getElementById('confGpDateTime').textContent = formatDate(state.gpDate) + ', ' + state.gpTime;
+    document.getElementById('confTotalPaid').textContent = '£' + currentTotal();
+    if (state.discountAmount > 0) {
+      document.getElementById('confDiscountRow').style.display = '';
+      document.getElementById('confDiscountCode').textContent = state.discountCode;
+      document.getElementById('confDiscountAmt').textContent = '−£' + state.discountAmount;
+    }
+    var receiptRef = 'EV-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('confReceiptRef').textContent = receiptRef;
+    var fastingCb = document.getElementById('fastingReminderCheck');
+    if (fastingCb) fastingCb.checked = false;
+  }
+  state.step = n;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('step' + n);
+  if (el) el.classList.add('active');
+  updateProgress(n);
+  document.getElementById('bookingError').classList.remove('visible');
+  // Reflect current step in URL so every state is shareable
+  var _p = new URLSearchParams(location.search);
+  _p.set('step', n);
+  history.replaceState({}, '', '?' + _p.toString());
+}
+
+function handleBack() {
+  if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
+  // Signup flow starts at step 3 — back from there returns to account creation
+  if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'login.html'; return; }
+  if (state.step === 3) { goStep(1); return; } // add-ons step removed from MVP
+  if (state.step > 1) { goStep(state.step - 1); return; }
+  window.location.href = 'dashboard.html';
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function startHoldTimer() {
+  state.holdSeconds = 900;
+  document.getElementById('holdBanner').classList.add('visible');
+  document.getElementById('holdTimer').textContent = formatTimer(state.holdSeconds);
+  clearInterval(state.holdInterval);
+  state.holdInterval = setInterval(() => {
+    state.holdSeconds--;
+    document.getElementById('holdTimer').textContent = formatTimer(state.holdSeconds);
+    if (state.holdSeconds <= 60 && state.holdSeconds > 0) {
+      document.getElementById('holdBanner').style.background = 'var(--color-danger-bg)';
+      document.getElementById('holdBanner').style.color = 'var(--color-danger-fg)';
+    }
+    if (state.holdSeconds <= 0) {
+      clearInterval(state.holdInterval);
+      releaseSlots();
+    }
+  }, 1000);
+}
+
+function formatTimer(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function releaseSlots() {
+  document.getElementById('holdBanner').classList.remove('visible');
+  EvidaStore.booking.clear();
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-recovery').classList.add('active');
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.card-row').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function handleSkipPayment() {
+  clearInterval(state.holdInterval);
+  window.location.href = 'dashboard.html?pending=payment';
+}
+
+function applyDiscount() {
+  var input = document.getElementById('discountCode');
+  var feedback = document.getElementById('discountFeedback');
+  var code = input.value.trim().toUpperCase();
+  if (!code) { feedback.style.display = 'none'; return; }
+  var d = DISCOUNT_CODES[code];
+  if (d) {
+    state.discountCode = code;
+    state.discountAmount = d.amount;
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--color-success)';
+    feedback.textContent = '✓ ' + d.label + ' — £' + d.amount + ' off';
+    var discountRow = document.getElementById('cartDiscountRow');
+    if (discountRow) {
+      document.getElementById('cartDiscountLabel').textContent = d.label;
+      document.getElementById('cartDiscountAmt').textContent = '−£' + d.amount;
+      discountRow.style.display = '';
+    }
+  } else {
+    state.discountCode = null;
+    state.discountAmount = 0;
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--evida-coral)';
+    feedback.textContent = '✗ Invalid code. Please check and try again.';
+    var discountRow = document.getElementById('cartDiscountRow');
+    if (discountRow) discountRow.style.display = 'none';
+  }
+  var _t = currentTotal();
+  document.getElementById('cartTotalValue').textContent = '£' + _t;
+  document.getElementById('stickyTotal').textContent = '£' + _t;
+  document.getElementById('payBtnText').textContent = 'Pay £' + _t + ' — Activate membership';
+}
+
+function handlePayment() {
+  const btn = document.getElementById('payBtn');
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+  document.getElementById('paymentError').classList.remove('visible');
+
+  setTimeout(() => {
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
+    // Failure is deterministic: armed via the gear-panel "Fail next payment" toggle
+    var failNext = false;
+    try { failNext = localStorage.getItem('evida:demo:fail-payment') === '1'; } catch(_) {}
+    if (failNext) {
+      try { localStorage.removeItem('evida:demo:fail-payment'); } catch(_) {}
+      document.getElementById('paymentError').classList.add('visible');
+      document.getElementById('retryTimer').textContent = formatTimer(state.holdSeconds);
+    } else {
+      clearInterval(state.holdInterval);
+      EvidaStore.booking.confirm({
+        clinic: (clinics.find(c => c.id === state.clinic) || clinics[0]).name,
+        bloodDate: state.bloodDate, bloodTime: state.bloodTime,
+        gpDate: state.gpDate, gpTime: state.gpTime
+      });
+      goStep(7);
+      setTimeout(function() { document.querySelector('.conf-card .check').classList.add('pulse'); }, 100);
+    }
+  }, 2000);
+}
+
+function skipBloodBooking() {
+  state.bloodDate = null; state.bloodTime = null; state.clinic = null;
+  goStep(5);
+}
+
+function addBloodTestToCalendar() {
+  var bloodDate = state.bloodDate || bloodSlots[0].date;
+  var bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  var clinic = (clinics.find(function(c) { return c.id === state.clinic; }) || clinics[0]).name;
+  var start = bloodDate.replace(/-/g,'') + 'T' + bloodTime.replace(':','') + '00';
+  var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT','DTSTART:'+start,'DURATION:PT1H',
+    'SUMMARY:Evida Baseline - Blood Test @ '+clinic,
+    'DESCRIPTION:Fasting blood test. Fast for 10-12 hours beforehand (water is fine).',
+    'LOCATION:'+clinic,'END:VEVENT','END:VCALENDAR'].join('\n');
+  var blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'evida-blood-test.ics'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Blood test added to calendar');
+}
+
+function addGpToCalendar() {
+  var gpDate = state.gpDate || gpSlots[0].date;
+  var gpTime = state.gpTime || gpSlots[0].times[0];
+  var start = gpDate.replace(/-/g,'') + 'T' + gpTime.replace(':','') + '00';
+  var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT','DTSTART:'+start,'DURATION:PT45M',
+    'SUMMARY:Evida Baseline - GP Consultation (Virtual)',
+    'DESCRIPTION:45-min virtual consult. Join via link in your Evida dashboard.',
+    'END:VEVENT','END:VCALENDAR'].join('\n');
+  var blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'evida-gp-consult.ics'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('GP consultation added to calendar');
+}
+
+function handleFastingCheck(cb) {
+  if (cb.checked) { addFastingReminder(); }
+  else { showToast('Fasting reminder removed'); }
+}
+
+// Add to calendar — prefilled with event details per §5
+function addToCalendar() {
+  const bloodDate = state.bloodDate || bloodSlots[0].date;
+  const bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  const gpDate = state.gpDate || gpSlots[0].date;
+  const gpTime = state.gpTime || gpSlots[0].times[0];
+  const clinic = clinics.find(c => c.id === state.clinic)?.name || 'Randox clinic';
+
+  const bloodStart = `${bloodDate.replace(/-/g,'')}T${bloodTime.replace(':','')}00`;
+  const gpStart = `${gpDate.replace(/-/g,'')}T${gpTime.replace(':','')}00`;
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Evida//Booking//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${bloodStart}`,
+    'DURATION:PT1H',
+    `SUMMARY:Evida Baseline - Blood Test @ ${clinic}`,
+    `DESCRIPTION:Fasting blood test. Fast for 10-12 hours beforehand (water is fine).`,
+    'LOCATION:' + clinic,
+    'END:VEVENT',
+    'BEGIN:VEVENT',
+    `DTSTART:${gpStart}`,
+    'DURATION:PT45M',
+    'SUMMARY:Evida Baseline - GP Consultation (Virtual)',
+    'DESCRIPTION:45-min virtual consult with Dr. Sarah Chen + health coach. Join via link in your dashboard.',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'evida-baseline.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Calendar file downloaded — open to add both appointments');
+}
+
+// Separate 6pm-the-evening-before fasting reminder, downloadable as its own event
+function addFastingReminder() {
+  const bloodDate = state.bloodDate || bloodSlots[0].date;
+  const bloodTime = state.bloodTime || bloodSlots[0].times[0];
+  const evening = parseISO(bloodDate);
+  evening.setDate(evening.getDate() - 1);
+  const stamp = isoLocal(evening).replace(/-/g, '') + 'T180000';
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Evida//FastingReminder//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${stamp}`,
+    `DTEND:${stamp}`,
+    'SUMMARY:Start fasting for your Evida blood test',
+    `DESCRIPTION:Your blood test is tomorrow at ${bloodTime}. Stop eating from now — water is fine. Fast for 10-12 hours before your appointment.`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'evida-fasting-reminder.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Fasting reminder added — 6pm the evening before your test');
+}
+
+function filterClinics(q) {
+  q = q.trim().toUpperCase();
+  document.querySelectorAll('#clinicList .location-card').forEach(function(card) {
+    card.style.display = (!q || card.textContent.toUpperCase().indexOf(q) >= 0) ? '' : 'none';
+  });
+}
+
+function launchConfetti() {
+  var canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var colors = ['#0D9488','#1E3A5F','#F59E0B','#10B981','#6366F1','#F97316'];
+  var pieces = Array.from({length: 110}, function() {
+    return { x: Math.random() * canvas.width, y: -10 - Math.random() * 80,
+      r: 4 + Math.random() * 5, color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 5, vy: 2.5 + Math.random() * 3.5,
+      angle: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.18 };
+  });
+  var frames = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(function(p) {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.6);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.angle += p.spin;
+    });
+    frames++;
+    if (frames < 130) { requestAnimationFrame(draw); }
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
+  }
+  draw();
+}
+
+init();
+
+// Pre-select first clinic + first blood slot so testers can click straight through
+function autoSelectDefaults() {
+  selectClinic(clinics[0].id);
+  selectBloodDate(bloodSlots[0].date);
+  selectBloodTime(bloodSlots[0].times[0]);
+}
+
+// Set the initial visible step — always done via JS so no step is hardcoded active in HTML
+var _flowParams = new URLSearchParams(location.search);
+var _resume = _flowParams.get('resume');
+if (IS_SIGNUP_FLOW && _resume === 'payment') {
+  // Returning to pay — restore held slots so review/confirmation render real details
+  autoSelectDefaults();
+  var _minGp = gpMinDate();
+  var _firstGp = gpSlots.find(function(s) { return s.date >= _minGp; });
+  if (_firstGp) { selectGpDate(_firstGp.date); selectGpTime(_firstGp.times[0]); }
+  startHoldTimer();
+  goStep(5);
+} else if (IS_SIGNUP_FLOW) {
+  // Signup flow: plan already chosen — skip straight to clinic booking
+  goStep(3);
+  autoSelectDefaults();
+  setTimeout(function() { showToast('Account created — now book your baseline.'); }, 600);
+} else {
+  // Direct / non-signup entry: show the plan selection screen
+  goStep(1);
+}
+</script>
+</body>
+</html>

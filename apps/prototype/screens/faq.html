@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+<title>Evida — Help & FAQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+
+  .search-box { position: relative; margin-bottom: 24px; }
+  .search-box input {
+    width: 100%; height: 46px; padding: 0 40px 0 42px;
+    border: 1.5px solid var(--evida-border); border-radius: var(--radius-lg);
+    font-family: var(--font-body); font-size: 14px; background: var(--evida-surface);
+    outline: none; transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  }
+  .search-box input:hover { border-color: var(--evida-muted); }
+  .search-box input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent); }
+  .search-box .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--evida-muted); display: flex; pointer-events: none; }
+  .search-box .clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--evida-bg); border: none; color: var(--evida-muted); cursor: pointer; display: none; width: 24px; height: 24px; border-radius: 50%; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
+  .search-box .clear-btn.visible { display: flex; }
+
+  .category-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .cat-tab { white-space: nowrap; padding: 8px 16px; border-radius: var(--radius-full); font-size: 12px; font-weight: 500; background: var(--evida-surface); border: 1px solid var(--evida-border); cursor: pointer; transition: all 150ms; color: var(--evida-fg-secondary); }
+  .cat-tab:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .cat-tab.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+  .faq-section { display: none; }
+  .faq-section.active { display: block; }
+
+  .faq-item { margin-bottom: 8px; overflow: hidden; transition: box-shadow 150ms; }
+  .faq-item:hover { box-shadow: var(--shadow-xs); }
+  .faq-question {
+    width: 100%; padding: 14px 16px; background: none; border: none;
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    font-family: var(--font-body); font-size: 14px; font-weight: 500;
+    color: var(--evida-fg); text-align: left;
+    transition: background var(--dur-fast) var(--ease-out);
+  }
+  .faq-question:hover { background: var(--evida-bg); }
+  .faq-question .chevron { margin-left: auto; color: var(--evida-muted); transition: transform var(--dur-base) var(--ease-out); flex-shrink: 0; display: flex; }
+  .faq-item.open .faq-question .chevron { transform: rotate(180deg); }
+  .faq-item.open .faq-question { color: var(--color-primary); font-weight: 600; }
+  .faq-answer {
+    max-height: 0; overflow: hidden; transition: max-height 300ms ease-out;
+    padding: 0 16px; font-size: 13px; line-height: 1.7; color: var(--evida-fg-secondary);
+  }
+  .faq-item.open .faq-answer { max-height: 500px; padding: 0 16px 16px; }
+  .faq-answer a { color: var(--color-primary); text-decoration: none; font-weight: 500; }
+  .faq-answer a:hover { text-decoration: underline; }
+
+  .no-results { text-align: center; padding: 40px 16px; display: none; }
+  .no-results .nr-letter { display: inline-flex; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--evida-bg); align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: var(--evida-muted); margin-bottom: 12px; }
+  .no-results h3 { font-size: 16px; margin-bottom: 4px; }
+  .no-results p { color: var(--evida-fg-secondary); line-height: 1.5; }
+
+  .contact-card { background: var(--evida-teal-light); padding: 24px; margin-top: 24px; text-align: center; border-radius: var(--radius-lg); border: 1px solid rgba(33,106,115,0.15); }
+  .contact-card h3 { color: var(--evida-teal-dark); margin-bottom: 6px; }
+  .contact-card p { color: var(--evida-teal-dark); opacity: 0.85; line-height: 1.6; margin-bottom: 16px; font-size: 13px; }
+
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
+  @media (min-width: 1024px) {
+    .app-body { padding: 32px; }
+    .app-body-inner { max-width: 900px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="page-title">Help &amp; FAQ</span>
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge">3</span></div><div class="avatar" onclick="window.location.href='profile.html'" style="cursor:pointer">JC</div></div>
+  </header>
+  <nav class="sidebar" id="desktopSidebar"></nav>
+  <div class="app-body">
+    <div class="app-body-inner">
+      <h1 class="content-page-title">Help &amp; FAQ</h1>
+
+      <div class="search-box">
+        <span class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" id="searchInput" placeholder="Search frequently asked questions…" oninput="filterFAQ()">
+        <button class="clear-btn" id="clearBtn" onclick="clearSearch()" aria-label="Clear search"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+
+      <div class="category-tabs" id="catTabs">
+        <button class="cat-tab active" onclick="switchCat('all',this)">All</button>
+        <button class="cat-tab" onclick="switchCat('getting-started',this)">Getting started</button>
+        <button class="cat-tab" onclick="switchCat('membership',this)">Membership & pricing</button>
+        <button class="cat-tab" onclick="switchCat('appointments',this)">Appointments</button>
+        <button class="cat-tab" onclick="switchCat('wearables',this)">Wearables & data</button>
+        <button class="cat-tab" onclick="switchCat('technical',this)">Technical</button>
+      </div>
+
+      <!-- Getting started -->
+      <div class="faq-section active" id="cat-all">
+        <div class="evida-card-bordered faq-item" data-cat="getting-started">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What is Evida?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Evida is a UK preventive-health membership. We combine blood tests, wearable data, and GP-led consultations to create a personalised prevention plan. The Evida Protocol — <strong>Track, Tailor, Act</strong> — guides every member from baseline assessment through ongoing engagement. We're clinician-led, data-powered, and AI-assisted, but never replace your NHS GP.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="getting-started">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            How do I get started?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Create an account, then book your Baseline: a Randox blood test at a clinic near you, followed by a 45-min virtual GP consultation. After your consult, you'll receive a personalised prevention plan with clinician-endorsed actions. You can connect wearables and upload records at any point.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="getting-started">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What is the Evida Protocol?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">The Evida Protocol is our three-step model: <strong>Track</strong> — measure your baseline through blood tests, wearables, and a health questionnaire. <strong>Tailor</strong> — a GP and health coach design a personalised prevention plan based on your results. <strong>Act</strong> — follow your plan, track progress, and check in with your care team.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="getting-started">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Do I need a referral from my GP?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">No referral needed. Evida is a private membership — you can join directly. We'll share relevant health data with your NHS GP if you choose to authorise it, but there's no requirement.</div>
+        </div>
+      </div>
+
+      <!-- Membership & pricing -->
+      <div class="faq-section" id="cat-membership">
+        <div class="evida-card-bordered faq-item" data-cat="membership">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            How much does membership cost?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Membership is £320 per year. For our pilot launch, the price is <strong>£160</strong> — a 50% discount for early members. This includes your Baseline blood test, GP consultation, personalised plan, ongoing dashboard access, and two follow-up 15-min consults within 12 months.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="membership">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What's included in the membership?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Your membership includes: a comprehensive Randox blood test (42 biomarkers), a 45-min virtual GP consultation with a health coach, a personalised prevention plan with two reports, ongoing dashboard with wearable and biomarker tracking, two 15-min follow-up consults within 12 months, and access to Ask Evi — our non-diagnostic health assistant.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="membership">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Can I cancel my membership?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">You can cancel at any time. If you cancel within 14 days of joining and before your consultation, you'll receive a full refund. After your consultation, membership is non-refundable but you keep access to your reports and plan. Appointment cancellations require 3 to 7 days' notice to account for fixed partner clinical fees — see our rescheduling policy below for details.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="appointments">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What is your rescheduling and cancellation policy?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">We require 3 to 7 days' notice for appointment cancellations or rescheduling. This window covers fixed clinical fees charged by our partner clinics and GPs. Cancellations made within 3 days of the appointment may incur a fee of up to 50% of the appointment cost. To reschedule or cancel, go to your Appointments tab, select the appointment, and choose the option. For urgent assistance, contact our care team.</div>
+        </div>
+
+      </div>
+
+      <!-- Appointments -->
+      <div class="faq-section" id="cat-appointments">
+        <div class="evida-card-bordered faq-item" data-cat="appointments">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            How do I book my Baseline?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Go to your dashboard and select "Membership Baseline" or "Book Baseline". You'll choose a Randox clinic location, pick a blood-test slot, then the system shows you the earliest available GP consultation slot (4–5 working days later — your results need ~72 hours to process). Review your cart, pay, and you're confirmed.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="appointments">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Why can't I book my GP consult on the same day as my blood test?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Your blood test results take up to 72 hours to process at the lab. Your GP needs your results before the consultation to give you a meaningful analysis and personalised plan. The system automatically blocks dates that are too early and explains why.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="appointments">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What happens if I need to reschedule?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">You can reschedule up to 24 hours before your appointment. The blood test and GP consult are linked, so rescheduling one may affect the other — the system will show you available combinations. For urgent cancellations, contact our care team.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="appointments">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What is a slot hold and why does it expire?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">When you select your slots and reach the cart, those time slots are held for 15 minutes while you complete payment. If the timer runs out, the slots are released and you'll need to pick new ones. This ensures fair access for all members.</div>
+        </div>
+      </div>
+
+      <!-- Wearables & data -->
+      <div class="faq-section" id="cat-wearables">
+        <div class="evida-card-bordered faq-item" data-cat="wearables">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Which wearables does Evida support?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Evida supports Apple Watch (Series 4+), Garmin (all recent models), Oura Ring (Gen 3), Whoop (Strap 4.0), and Fitbit (all recent models). We use Terra as our secure health-data integration partner. Connect from the Wearables page in your dashboard.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="wearables">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Is my health data secure?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Yes. Your health data is encrypted end-to-end. Terra uses industry-standard OAuth 2.0 for device connections — Evida never sees your wearable login credentials. Data is shared only with your consent and visible to you and your care team. You can disconnect any device at any time.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="wearables">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            Do I need a wearable to use Evida?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Not at all. Wearables enhance your experience by populating your dashboard with activity, sleep, and heart-rate data, but they're completely optional. You can manually track activities and still get full value from your blood test results, GP consultation, and prevention plan.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="wearables">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            How often is my wearable data synced?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Data syncs automatically whenever your wearable is near your phone. Typically within minutes of recording an activity. You can also trigger a manual sync from the Wearables page. Your Insights dashboard updates in near-real time with the latest data.</div>
+        </div>
+      </div>
+
+      <!-- Technical -->
+      <div class="faq-section" id="cat-technical">
+        <div class="evida-card-bordered faq-item" data-cat="technical">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            What browsers does Evida support?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Evida works best on the latest versions of Chrome, Safari, Firefox, and Edge. For the best mobile experience, we recommend using Safari on iOS or Chrome on Android. You can also add Evida to your home screen for app-like access.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="technical">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            How do I update my personal details?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">Go to your Profile section (tap your avatar in the top-right corner) to update your name, email, phone number, address, and password. Changes to your name or DOB may require re-verification.</div>
+        </div>
+
+        <div class="evida-card-bordered faq-item" data-cat="technical">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+
+            I'm having trouble with payment — what should I do?
+            <span class="chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer">If your payment fails, your cart (with selected slots) will be held for 15 minutes. Check your card details and try again. If the issue persists, try a different card or contact your bank. For ongoing issues, reach out to our support team and we'll help.</div>
+        </div>
+      </div>
+
+      <div class="no-results" id="noResults">
+        <span class="nr-letter">?</span>
+        <h3 class="text-h4">No results found</h3>
+        <p class="text-body-small">Try a different search term, or browse the categories above.</p>
+      </div>
+
+      <div class="evida-card contact-card">
+        <h3 class="text-h4">Still need help?</h3>
+        <p class="text-body-small">Our care team is here to help with any questions about your membership, appointments, or account.</p>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Contacting support…')">Contact support</button>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
+      <div class="sheet-item active" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script>
+let currentCat = 'all';
+
+function toggleFAQ(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  item.closest('.faq-section').querySelectorAll('.faq-item.open').forEach(el => {
+    if (el !== item) el.classList.remove('open');
+  });
+  item.classList.toggle('open', !wasOpen);
+}
+
+function switchCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.faq-section').forEach(s => s.classList.remove('active'));
+  if (cat === 'all') {
+    document.getElementById('cat-all').classList.add('active');
+  } else {
+    document.getElementById('cat-' + cat).classList.add('active');
+  }
+  applyFilter();
+}
+
+function filterFAQ() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  document.getElementById('clearBtn').classList.toggle('visible', !!q);
+  applyFilter(q);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  applyFilter('');
+}
+
+function applyFilter(searchTerm) {
+  const q = searchTerm !== undefined ? searchTerm : document.getElementById('searchInput').value.toLowerCase().trim();
+  const allItems = document.querySelectorAll('.faq-item');
+  let visible = 0;
+
+  allItems.forEach(item => {
+    const questionText = item.querySelector('.faq-question').textContent.toLowerCase();
+    const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
+    const catMatch = currentCat === 'all' || item.dataset.cat === currentCat;
+    const searchMatch = !q || questionText.includes(q) || answerText.includes(q);
+
+    if (catMatch && searchMatch) {
+      item.style.display = '';
+      visible++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+
+  document.getElementById('noResults').style.display = visible === 0 && currentCat === 'all' ? 'block' : 'none';
+}
+
+</script>
+<script src="_uat.js"></script>
+<script src="_evi.js"></script>
+</body>
+</html>

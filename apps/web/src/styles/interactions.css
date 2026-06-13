@@ -1,0 +1,249 @@
+/* ===== Evida interaction overrides =====
+ * CSS replacements for entrance animations, card hovers, nav, tabs, FAQ.
+ */
+
+/* ---- Track Tailor Act: hover expand ---- */
+.loop-container .card-2,
+.loop-container .cardd2,
+.loop-container .card-3 {
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  cursor: pointer;
+  overflow: hidden;
+}
+.loop-container .card-2:hover,
+.loop-container .cardd2:hover,
+.loop-container .card-3:hover {
+  width: 100% !important;
+}
+
+/* Hidden content inside cards: fade/slide in on card hover */
+.card-2 .card-infographic,
+.cardd2 .card-infographic,
+.card-3 .card-infographic,
+.card-2 .card-paragraph,
+.cardd2 .card-paragraph,
+.card-3 .card-paragraph {
+  transition: opacity 0.35s 0.15s ease, transform 0.35s 0.15s ease !important;
+  pointer-events: none;
+}
+
+.card-2:hover .card-infographic,
+.cardd2:hover .card-infographic,
+.card-3:hover .card-infographic {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0) !important;
+}
+
+.card-2:hover .card-paragraph,
+.cardd2:hover .card-paragraph,
+.card-3:hover .card-paragraph {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0) !important;
+  display: block !important;
+}
+
+/* ---- FAQ accordion ---- */
+.div-faq-item__answer-div {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+.div-faq-item__answer-div.is-open {
+  max-height: 500px;
+  opacity: 1;
+}
+.span-faq-item__toggle {
+  transition: transform 0.3s ease;
+}
+.span-faq-item__toggle.is-open {
+  transform: rotate(180deg);
+}
+
+/* ---- Tabs ---- */
+.w-tab-pane {
+  display: none;
+}
+.w-tab-pane.w--tab-active {
+  display: block;
+}
+
+/* ---- Mobile navbar (Webflow overlay pattern) ---- */
+.nav-navbar.w-nav {
+  position: relative;
+}
+
+.nav-navbar .w-nav-overlay {
+  z-index: 1000;
+}
+
+.nav-wrapper {
+  min-width: 100% !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+}
+
+@media screen and (max-width: 1025px) {
+  .nav-wrapper {
+    min-width: 90% !important;
+    max-width: 90% !important;
+    width: 90% !important;
+  }
+}
+
+@media screen and (max-width: 569px) {
+  .navbar__logo-svg {
+    width: 100px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .w-nav-overlay {
+    width: 90% !important;
+    left: 5% !important;
+    right: auto !important;
+    background-color: transparent;
+  }
+
+  .w-nav-overlay [data-nav-menu-open] {
+    top: 5px !important;
+  }
+
+  .w-nav-menu {
+    flex-direction: column !important;
+    gap: 20px;
+    padding: 20px !important;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+  }
+
+  .nav-link-3:nth-child(-n + 2) {
+    margin-bottom: 18px;
+  }
+
+  .w-nav-menu::after {
+    content: "Get Started";
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    margin-top: 18px;
+    background-color: #216a74;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .w-nav-menu::after:hover {
+    background-color: #1a545c;
+  }
+}
+
+.w-nav-button.w--open,
+.w-nav-button {
+  background-color: transparent !important;
+}
+
+@media screen and (max-width: 991px) {
+  .nav-navbar.w--nav-menu-open .nav-wrapper {
+    overflow: visible !important;
+  }
+
+  .nav-navbar .w-nav-overlay [data-nav-menu-open] {
+    display: flex !important;
+    overflow: visible !important;
+  }
+}
+
+/* ---- Navbar theme (scroll-based logo/link colours) ---- */
+.nav-navbar path[fill="white"] {
+  transition: fill 0.3s ease;
+  fill: #216a74;
+}
+
+.nav-navbar.nav--on-dark path[fill="white"] {
+  fill: #ffffff !important;
+}
+
+.nav-navbar.nav--on-light path[fill="white"] {
+  fill: #216a74 !important;
+}
+
+.nav-navbar .nav-link-3 {
+  transition: color 0.3s ease;
+  color: #2d2700 !important;
+}
+
+.nav-navbar.nav--on-dark .nav-link-3 {
+  color: #ffffff !important;
+}
+
+.nav-navbar.nav--on-light .nav-link-3 {
+  color: #2d2700 !important;
+}
+
+.nav-navbar .nav-burger path {
+  transition: stroke 0.3s ease;
+  stroke: #2d2700 !important;
+}
+
+.nav-navbar.nav--on-dark .nav-burger path {
+  stroke: #ffffff !important;
+}
+
+.nav-navbar.nav--on-light .nav-burger path {
+  stroke: #2d2700 !important;
+}
+
+/* ---- Modal overlay ---- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+}
+
+.modal-overlay.is-open {
+  display: flex !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box {
+  transform: scale(0.95) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.modal-overlay.is-open .modal-box {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-close,
+.modal-close * {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+body.modal-open {
+  overflow: hidden;
+}

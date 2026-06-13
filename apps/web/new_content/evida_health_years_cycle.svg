@@ -1,0 +1,86 @@
+<svg width="1400" height="1400" viewBox="0 0 1400 1400" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">Evida health years cycle</title>
+<desc id="desc">A circular six step health journey showing medical insights, GP, integrated digital data, report, physical proactive action and you around the message Extend YOUR healthy years.</desc>
+<style>
+  .bg{fill:#F7F4EA}.teal{stroke:#0C5658}.tealFill{fill:#0C5658}.mint{fill:#E7ECE2}.coral{stroke:#F47E6D}.coralFill{fill:#F47E6D}.cream{fill:#F0EEE4}.body{font-family:Inter, Arial, sans-serif; fill:#123B3E}.serif{font-family:Georgia, 'Times New Roman', serif; fill:#0C5658}.small{font-size:25px}.label{font-size:43px}.copy{font-size:25px}.num{font-size:24px; fill:#fff; font-weight:700}.headline{font-size:78px}.headlineAccent{font-size:82px; fill:#159A9B; font-weight:700}.fine{font-size:24px; font-style:italic}.arrow{stroke:#0C5658; stroke-width:6; stroke-linecap:round; fill:none}.icon{stroke:#0C5658; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; fill:none}.divider{stroke:#F47E6D; stroke-width:3; stroke-linecap:round}
+</style>
+<defs>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#0C5658" flood-opacity="0.08"/></filter>
+  <marker id="arrowHead" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto"><path d="M2 2 L12 7 L2 12" stroke="#0C5658" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect class="bg" width="1400" height="1400"/>
+<circle cx="700" cy="710" r="310" fill="#F9F7EF" opacity="0.75"/>
+
+<!-- arrows -->
+<path class="arrow" marker-end="url(#arrowHead)" d="M420 275 C500 185 600 145 700 150"/>
+<path class="arrow" marker-end="url(#arrowHead)" d="M850 150 C980 170 1080 245 1135 355"/>
+<path class="arrow" marker-end="url(#arrowHead)" d="M1170 520 C1195 640 1180 735 1125 825"/>
+<path class="arrow" marker-end="url(#arrowHead)" d="M1015 930 C900 1030 775 1055 650 1020"/>
+<path class="arrow" marker-end="url(#arrowHead)" d="M520 980 C420 940 350 850 320 745"/>
+<path class="arrow" marker-end="url(#arrowHead)" d="M315 600 C295 500 320 395 385 315"/>
+
+<!-- center headline -->
+<text x="700" y="610" text-anchor="middle" class="serif headline">Extend</text>
+<text x="700" y="705" text-anchor="middle" class="serif headlineAccent">YOUR</text>
+<text x="700" y="795" text-anchor="middle" class="serif headline">healthy years</text>
+<path class="divider" d="M560 850 C645 835 755 835 840 850"/>
+
+<!-- node groups -->
+<g transform="translate(295 315)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <path class="icon" d="M-34 -48 H22 L48 -22 V48 H-34 Z M22 -48 V-22 H48"/>
+  <path class="icon" d="M-12 22 V42 M6 8 V42 M24 -6 V42"/><circle class="coralFill" cx="39" cy="29" r="13"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">1</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">Medical</text><text x="0" y="205" text-anchor="middle" class="serif label">Insights</text>
+  <path class="divider" d="M-36 232 H36"/>
+  <text x="0" y="270" text-anchor="middle" class="body copy"><tspan x="0" dy="0">Deeper insights from</tspan><tspan x="0" dy="38">your medical data</tspan><tspan x="0" dy="38">and progress.</tspan></text>
+</g>
+
+<g transform="translate(700 160)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <path class="icon" d="M-38 -44 V0 C-38 34 -6 38 0 38 C6 38 38 34 38 0 V-44 M-38 -44 C-48 -44 -48 -30 -38 -30 M38 -44 C48 -44 48 -30 38 -30 M0 38 V58 C0 82 50 82 50 45"/><circle class="icon" cx="55" cy="32" r="16"/><circle class="coralFill" cx="55" cy="32" r="7"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">2</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">GP</text>
+  <text x="0" y="205" text-anchor="middle" class="body small"><tspan x="0" dy="0">45 minute consult,</tspan><tspan x="0" dy="34">6 month follow up.</tspan></text>
+  <path class="divider" d="M-34 260 H34"/>
+  <rect x="-150" y="282" rx="32" ry="32" width="300" height="70" class="cream"/>
+  <text x="0" y="313" text-anchor="middle" class="serif fine"><tspan x="0" dy="0">Focused on you,</tspan><tspan x="0" dy="31">guided by expertise.</tspan></text>
+</g>
+
+<g transform="translate(1100 315)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <ellipse class="icon" cx="-14" cy="-38" rx="44" ry="18"/><path class="icon" d="M-58 -38 V42 C-58 52 -38 62 -14 62 C10 62 30 52 30 42 V-38 M-58 -5 C-58 5 -38 15 -14 15 C10 15 30 5 30 -5 M-58 33 C-58 43 -38 53 -14 53 C10 53 30 43 30 33"/><rect class="coralFill" x="46" y="-35" width="18" height="18" rx="4"/><rect class="coralFill" x="46" y="-2" width="18" height="18" rx="4"/><rect class="coralFill" x="46" y="31" width="18" height="18" rx="4"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">3</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">Integrated /</text><text x="0" y="205" text-anchor="middle" class="serif label">Digital Data</text>
+  <path class="divider" d="M-36 232 H36"/>
+  <text x="0" y="270" text-anchor="middle" class="body copy"><tspan x="0" dy="0">All your health data,</tspan><tspan x="0" dy="38">connected securely</tspan><tspan x="0" dy="38">in one place.</tspan></text>
+</g>
+
+<g transform="translate(1100 780)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <path class="icon" d="M-38 -52 H20 L46 -26 V52 H-38 Z M20 -52 V-26 H46 M-15 -18 H16 M-15 28 H28"/><circle class="icon" cx="-7" cy="11" r="24"/><path class="icon" d="M-7 11 V-13 A24 24 0 0 1 17 11 Z" fill="#0C5658"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">4</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">Report</text><path class="divider" d="M-34 182 H34"/>
+  <text x="0" y="225" text-anchor="middle" class="body copy"><tspan x="0" dy="0">Clear, actionable</tspan><tspan x="0" dy="38">insights about</tspan><tspan x="0" dy="38">your health.</tspan></text>
+</g>
+
+<g transform="translate(700 970)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <path class="icon" d="M-55 25 H50 C65 25 68 7 53 1 C34 -6 22 -21 13 -43 C9 -54 -5 -48 -3 -36 C0 -19 -19 -8 -35 -1 C-50 6 -61 14 -55 25 Z M-34 -1 L-8 25 M-70 52 H70"/><path class="coral" stroke-width="5" d="M-62 70 H-32"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">5</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">Physical /</text><text x="0" y="205" text-anchor="middle" class="serif label">Proactive Action</text><path class="divider" d="M-34 232 H34"/>
+  <text x="0" y="270" text-anchor="middle" class="body copy"><tspan x="0" dy="0">Personalised steps</tspan><tspan x="0" dy="38">and lifestyle guidance</tspan><tspan x="0" dy="38">to improve.</tspan></text>
+</g>
+
+<g transform="translate(295 780)">
+  <circle r="92" class="mint" filter="url(#softShadow)"/>
+  <circle class="icon" cx="0" cy="-28" r="31"/><path class="icon" d="M-58 60 C-46 15 -20 3 0 3 C20 3 46 15 58 60 Z"/><path d="M0 43 C-18 31 -13 7 0 17 C13 7 18 31 0 43 Z" fill="#F47E6D"/><circle class="tealFill" cx="0" cy="88" r="29"/><text x="0" y="97" text-anchor="middle" class="num">6</text>
+  <text x="0" y="155" text-anchor="middle" class="serif label">YOU</text><path class="divider" d="M-34 182 H34"/>
+  <text x="0" y="225" text-anchor="middle" class="body copy"><tspan x="0" dy="0">Healthier, stronger</tspan><tspan x="0" dy="38">and empowered</tspan><tspan x="0" dy="38">every day.</tspan></text>
+</g>
+
+<!-- footer -->
+<g transform="translate(700 1285)">
+  <rect x="-420" y="-55" rx="35" ry="35" width="840" height="95" class="cream" filter="url(#softShadow)"/>
+  <circle class="tealFill" cx="-345" cy="-8" r="42"/>
+  <path d="M-345 -33 C-337 -16 -327 -8 -310 -8 C-327 -8 -337 0 -345 17 C-353 0 -363 -8 -380 -8 C-363 -8 -353 -16 -345 -33 Z" stroke="#fff" stroke-width="4" fill="none"/>
+  <line x1="-275" y1="-36" x2="-275" y2="24" stroke="#D2CDC0" stroke-width="2"/>
+  <text x="-225" y="-10" class="body copy">A continuous cycle of insight, action and support</text>
+  <text x="-225" y="25" class="serif fine">for a longer, healthier you.</text>
+</g>
+</svg>

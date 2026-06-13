@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+<title>Evida — Physical Health Check Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_app-shell.css">
+<link rel="icon" type="image/png" href="../build/icon.png">
+<style>
+  :root { --header-h: 56px; --nav-h: 64px; --max-w: 480px; }
+  .ecg-box { padding: 12px; background: var(--evida-bg); border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; }
+  @media (min-width: 600px) { :root { --header-h: 64px; } .app-body { padding: 24px; } }
+  @media (min-width: 1024px) { .app-body { padding: 32px; } .app-body-inner { max-width: 900px; } }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <button class="back-btn" onclick="if(history.length>1){history.back()}else{window.location.href='documents.html'}">←</button>
+    <img class="logo" src="../build/logo.svg" alt="Evida">
+    <div class="header-actions"><button class="notif-bell" onclick="toggleDarkMode()" aria-label="Toggle dark mode" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="notif-bell" role="button" tabindex="0" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge">3</span></div><div class="avatar" onclick="window.location.href='profile.html'">JC</div></div>
+  </header>
+  <nav class="sidebar" id="desktopSidebar"></nav>
+  <div class="app-body">
+    <div class="app-body-inner">
+
+      <!-- Document header -->
+      <div class="doc-header">
+        <div class="dh-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+        <div class="dh-info">
+          <h1>Physical Health Check Report</h1>
+          <div class="dh-meta">Dr. Sarah Chen · 12 June 2026 · PDF · 2.4 MB</div>
+          <div class="dh-badges"><span class="badge" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);font-size:11px;padding:2px 10px;border-radius:var(--radius-full);font-weight:600">Reviewed</span><span class="badge" style="background:var(--color-success-bg);color:var(--color-success-fg);font-size:11px;padding:2px 10px;border-radius:var(--radius-full);font-weight:600">Normal</span></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="doc-actions">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Downloading PDF…')">Download</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Sent to printer')">Print</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Share link copied')">Share</button>
+      </div>
+
+      <!-- Vital signs -->
+      <div class="doc-section">
+        <h2>Vital signs</h2>
+        <div class="vital-grid">
+          <div class="vital-card"><div class="vc-label">Blood pressure</div><div class="vc-value">118/76</div><div class="vc-range">mmHg</div><span class="vc-flag flag-green">Normal</span></div>
+          <div class="vital-card"><div class="vc-label">Heart rate</div><div class="vc-value">68</div><div class="vc-range">bpm (resting)</div><span class="vc-flag flag-green">Normal</span></div>
+          <div class="vital-card"><div class="vc-label">BMI</div><div class="vc-value">24.2</div><div class="vc-range">kg/m²</div><span class="vc-flag flag-green">Healthy</span></div>
+          <div class="vital-card"><div class="vc-label">O₂ saturation</div><div class="vc-value">98%</div><div class="vc-range">SpO₂</div><span class="vc-flag flag-green">Normal</span></div>
+        </div>
+      </div>
+
+      <!-- Blood panel summary -->
+      <div class="doc-section">
+        <h2>Blood panel summary <span class="badge">8 of 42 markers shown</span></h2>
+        <table class="biomarker-table">
+          <thead><tr><th>Marker</th><th>Value</th><th>Range</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="bt-name">HbA1c</td><td class="bt-value">34</td><td class="bt-range">&lt; 42 mmol/mol</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Total cholesterol</td><td class="bt-value">4.8</td><td class="bt-range">&lt; 5.0 mmol/L</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">LDL cholesterol</td><td class="bt-value">3.1</td><td class="bt-range">&lt; 3.0 mmol/L</td><td><span class="bt-flag flag-amber">Borderline</span></td></tr>
+            <tr><td class="bt-name">HDL cholesterol</td><td class="bt-value">1.4</td><td class="bt-range">&gt; 1.2 mmol/L</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Triglycerides</td><td class="bt-value">1.7</td><td class="bt-range">&lt; 2.3 mmol/L</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Vitamin D</td><td class="bt-value">38</td><td class="bt-range">50–150 nmol/L</td><td><span class="bt-flag flag-amber">Low</span></td></tr>
+            <tr><td class="bt-name">Ferritin</td><td class="bt-value">82</td><td class="bt-range">30–400 µg/L</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">hs-CRP</td><td class="bt-value">1.2</td><td class="bt-range">&lt; 3.0 mg/L</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ECG summary -->
+      <div class="doc-section">
+        <h2>ECG</h2>
+        <div class="ecg-box">
+          <strong>Interpretation:</strong> Normal sinus rhythm, rate 68 bpm. Normal PR interval, QRS duration, and QT interval. No ST-segment or T-wave abnormalities. No ectopic activity.
+        </div>
+      </div>
+
+      <!-- Urinalysis -->
+      <div class="doc-section">
+        <h2>Urinalysis</h2>
+        <table class="biomarker-table">
+          <thead><tr><th>Parameter</th><th>Result</th><th>Range</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="bt-name">pH</td><td class="bt-value">6.0</td><td class="bt-range">5.0–8.0</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Protein</td><td class="bt-value">Negative</td><td class="bt-range">Negative</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Glucose</td><td class="bt-value">Negative</td><td class="bt-range">Negative</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+            <tr><td class="bt-name">Blood</td><td class="bt-value">Negative</td><td class="bt-range">Negative</td><td><span class="bt-flag flag-green">Normal</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="doc-section">
+        <h2>Recommendations</h2>
+        <div class="rec-card">
+          <div class="rc-num">1</div>
+          <div class="rc-text"><strong>Vitamin D supplementation</strong> — Your vitamin D level (38 nmol/L) is below the optimal range. Consider 1,000 IU vitamin D₃ daily, ideally with a meal containing fat. Recheck in 3 months.</div>
+        </div>
+        <div class="rec-card">
+          <div class="rc-num">2</div>
+          <div class="rc-text"><strong>Dietary review for LDL management</strong> — LDL cholesterol (3.1 mmol/L) is marginally elevated. Increase soluble fibre (oats, legumes, psyllium) and replace saturated fats with unsaturated sources (olive oil, avocado, nuts).</div>
+        </div>
+        <div class="rec-card">
+          <div class="rc-num">3</div>
+          <div class="rc-text"><strong>Maintain current activity level</strong> — Your cardiovascular fitness markers are excellent. Continue 150+ minutes of moderate aerobic activity per week.</div>
+        </div>
+      </div>
+
+      <div class="doc-footer">
+        Report generated by Evida Clinical Platform · Reviewed by Dr. Sarah Chen, GP · 12 June 2026
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg><span class="label">Dashboard</span></button>
+    <button class="nav-item" data-href="insights" onclick="window.location.href='insights.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12.5" width="3" height="5" rx="1"/><rect x="8.5" y="8.5" width="3" height="9" rx="1"/><rect x="14" y="4.5" width="3" height="13" rx="1"/></svg><span class="label">Data &amp; Insights</span></button>
+    <button class="nav-item" data-href="wearables" onclick="window.location.href='wearables.html'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="19" x2="15" y2="19"/></svg><span class="label">Wearables</span></button>
+    <button class="nav-item" data-href="dashboard" onclick="window.location.href='dashboard.html#appointments'"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8h15" stroke="currentColor" stroke-width="1.5"/><path d="M6 1.5v3M14 1.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="label">Appointments</span></button>
+    <button class="nav-item" onclick="toggleNavSheet()"><svg class="nav-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="15" r="1.5" fill="currentColor"/></svg><span class="label">More</span></button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay" onclick="closeNavSheet()"></div>
+  <div class="nav-sheet" id="navSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-label">More</div>
+    <div class="sheet-list">
+      <div class="sheet-item" onclick="window.location.href='documents.html'"><span class="sll">Documents</span></div>
+      <div class="sheet-item" onclick="window.location.href='ask-evi.html'"><span class="sll">Ask Evi</span></div>
+      <div class="sheet-item" onclick="window.location.href='messages.html'"><span class="sll">Messages</span></div>
+      <div class="sheet-item" onclick="window.location.href='contact.html'"><span class="sll">Contact us</span></div>
+      <div class="sheet-item" onclick="window.location.href='faq.html'"><span class="sll">FAQ</span></div>
+      <div class="sheet-item" onclick="window.location.href='profile.html'"><span class="sll">Profile</span></div>
+      <div class="sheet-item" onclick="window.location.href='settings.html'"><span class="sll">Settings</span></div>
+      
+    </div>
+    <button class="sheet-close" onclick="closeNavSheet()">Close</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="store.js"></script>
+<script src="_nav-helpers.js"></script>
+<script src="_uat.js"></script>
+<script src="_evi.js"></script>
+</body>
+</html>

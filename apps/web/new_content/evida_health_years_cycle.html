@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Evida health years cycle</title>
+<style>
+  :root{
+    --cream:#F7F4EA;
+    --panel:#F0EEE4;
+    --mint:#E7ECE2;
+    --teal:#0C5658;
+    --teal-bright:#159A9B;
+    --coral:#F47E6D;
+    --text:#123B3E;
+  }
+  body{margin:0;background:var(--cream);font-family:Inter,Arial,sans-serif;color:var(--text)}
+  .evida-cycle{max-width:980px;margin:0 auto;padding:56px 24px 44px;background:var(--cream);position:relative;overflow:hidden}
+  .cycle{position:relative;aspect-ratio:1/1.05;min-height:760px}
+  .centre{position:absolute;inset:35% 24% auto;text-align:center;font-family:Georgia,serif;color:var(--teal);font-size:clamp(42px,6vw,72px);line-height:1.05}
+  .centre strong{display:block;color:var(--teal-bright);font-weight:700;letter-spacing:.02em}.centre:after{content:"";display:block;width:42%;height:3px;background:var(--coral);border-radius:99px;margin:28px auto 0}
+  .node{position:absolute;width:220px;text-align:center}.bubble{width:118px;height:118px;margin:0 auto;border-radius:50%;background:var(--mint);display:grid;place-items:center;box-shadow:0 12px 28px rgba(12,86,88,.08);position:relative}.number{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;background:var(--teal);color:white;display:grid;place-items:center;font-weight:700}.node h3{font-family:Georgia,serif;color:var(--teal);font-size:32px;line-height:1.05;margin:30px 0 10px}.node h3:after{content:"";display:block;width:46px;height:2px;background:var(--coral);border-radius:99px;margin:14px auto 0}.node p{font-size:17px;line-height:1.35;margin:0}.gp-note{display:inline-block;margin-top:18px;padding:12px 24px;border-radius:24px;background:var(--panel);font-family:Georgia,serif;font-style:italic;color:var(--teal);font-size:17px;box-shadow:0 8px 20px rgba(12,86,88,.05)}
+  .n1{left:7%;top:15%}.n2{left:50%;top:0;transform:translateX(-50%)}.n3{right:7%;top:15%}.n4{right:7%;top:56%}.n5{left:50%;top:72%;transform:translateX(-50%)}.n6{left:7%;top:56%}
+  svg.icon{width:68px;height:68px;stroke:var(--teal);stroke-width:2.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.accent{fill:var(--coral);stroke:none}.arrows{position:absolute;inset:0;pointer-events:none}.arrows path{stroke:var(--teal);stroke-width:4;fill:none;stroke-linecap:round}.footer{margin:28px auto 0;max-width:720px;background:var(--panel);border-radius:28px;padding:22px 36px;display:flex;gap:26px;align-items:center;box-shadow:0 12px 28px rgba(12,86,88,.06)}.spark{width:54px;height:54px;border-radius:50%;background:var(--teal);display:grid;place-items:center;color:white;font-size:28px;flex:none}.footer p{margin:0;font-size:19px;line-height:1.35}.footer em{font-family:Georgia,serif;color:var(--teal)}
+  @media(max-width:760px){.cycle{min-height:0;aspect-ratio:auto;display:grid;gap:22px}.centre,.node{position:static;transform:none!important;width:auto}.centre{order:-1;margin-bottom:20px}.arrows{display:none}.node{display:grid;grid-template-columns:96px 1fr;text-align:left;gap:18px;align-items:center}.bubble{width:88px;height:88px;margin:0}.node h3{font-size:26px;margin:0 0 8px}.node h3:after{margin:10px 0 0}.footer{padding:20px;align-items:flex-start}.gp-note{font-size:16px}}
+</style>
+</head>
+<body>
+<section class="evida-cycle" aria-label="Evida health years cycle">
+  <div class="cycle">
+    <svg class="arrows" viewBox="0 0 980 1040" aria-hidden="true">
+      <defs><marker id="head" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L9 5 L1 9" stroke="#0C5658" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <path marker-end="url(#head)" d="M310 170 C390 80 510 55 610 90"/><path marker-end="url(#head)" d="M700 105 C800 125 875 200 910 305"/><path marker-end="url(#head)" d="M900 430 C925 535 900 625 830 705"/><path marker-end="url(#head)" d="M730 800 C615 880 505 885 395 820"/><path marker-end="url(#head)" d="M300 755 C210 705 165 620 155 520"/><path marker-end="url(#head)" d="M150 415 C135 310 185 220 270 175"/>
+    </svg>
+    <div class="centre">Extend<strong>YOUR</strong>healthy years</div>
+
+    <article class="node n1"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><path d="M18 10h34l14 14v46H18zM52 10v14h14"/><path d="M29 50v10M40 42v18M51 34v26"/><circle class="accent" cx="62" cy="54" r="8"/></svg><span class="number">1</span></div><h3>Medical<br>Insights</h3><p>Deeper insights from your medical data and progress.</p></article>
+    <article class="node n2"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><path d="M20 10v28c0 21 40 21 40 0V10M40 59v8c0 14 28 14 28-5"/><circle cx="68" cy="48" r="9"/><circle class="accent" cx="68" cy="48" r="4"/></svg><span class="number">2</span></div><h3>GP</h3><p>45 minute consult,<br>6 month follow up.</p><div class="gp-note">Focused on you,<br>guided by expertise.</div></article>
+    <article class="node n3"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><ellipse cx="32" cy="18" rx="24" ry="10"/><path d="M8 18v42c0 6 11 11 24 11s24-5 24-11V18M8 40c0 6 11 11 24 11s24-5 24-11"/><rect class="accent" x="62" y="22" width="10" height="10" rx="2"/><rect class="accent" x="62" y="40" width="10" height="10" rx="2"/><rect class="accent" x="62" y="58" width="10" height="10" rx="2"/></svg><span class="number">3</span></div><h3>Integrated /<br>Digital Data</h3><p>All your health data, connected securely in one place.</p></article>
+    <article class="node n4"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><path d="M18 8h34l14 14v50H18zM52 8v14h14M30 55h24"/><circle cx="38" cy="39" r="14"/><path d="M38 39V25a14 14 0 0114 14z" fill="#0C5658"/></svg><span class="number">4</span></div><h3>Report</h3><p>Clear, actionable insights about your health.</p></article>
+    <article class="node n5"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><path d="M12 48h52c8 0 10-10 2-13-12-4-22-12-28-26-3-7-11-4-10 4 1 9-11 17-22 22-8 4-11 9-6 13zM22 35l17 13M10 64h60"/><path d="M10 72h18" stroke="#F47E6D" stroke-width="4"/></svg><span class="number">5</span></div><h3>Physical /<br>Proactive Action</h3><p>Personalised steps and lifestyle guidance to improve.</p></article>
+    <article class="node n6"><div class="bubble"><svg class="icon" viewBox="0 0 80 80"><circle cx="40" cy="24" r="18"/><path d="M8 72c7-26 22-34 32-34s25 8 32 34z"/><path class="accent" d="M40 59c-10-7-7-21 0-15 7-6 10 8 0 15z"/></svg><span class="number">6</span></div><h3>YOU</h3><p>Healthier, stronger and empowered every day.</p></article>
+  </div>
+  <div class="footer"><div class="spark">✧</div><p>A continuous cycle of insight, action and support<br><em>for a longer, healthier you.</em></p></div>
+</section>
+</body>
+</html>

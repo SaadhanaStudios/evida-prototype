@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-evida-teal: #216A74;
+  --color-evida-teal-dark: #1a545c;
+  --color-evida-coral: #FF5A5F;
+  --color-evida-dark: #2D2700;
+  --color-evida-cream: #FEFBE7;
+  --color-evida-cream-light: #FEFDF5;
+  --color-evida-gold: #FCED87;
+  --color-evida-grey: #8F8E81;
+  --color-evida-bg: #FEFDF5;
+  --font-sans: var(--font-geist), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: #FEFDF5;
+  color: #2D2700;
+  font-family: var(--font-geist), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}

@@ -1,3 +1,18 @@
+# deps
+node_modules/
+.pnp
+.pnp.js
+
+# build outputs
+.next/
+out/
+dist/
+
+# turbo
+.turbo/
+
+# misc
 .DS_Store
 *.docx
 .claude/
+test-results/

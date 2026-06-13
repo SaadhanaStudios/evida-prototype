@@ -1,0 +1,120 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="20%" r="85%">
+      <stop offset="0%" stop-color="#FFFDF5"/>
+      <stop offset="100%" stop-color="#F6F1E5"/>
+    </radialGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0F4D4E"/>
+      <stop offset="1" stop-color="#1F8D8D"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0F4D4E" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      .serif { font-family: Georgia, 'Times New Roman', serif; }
+      .sans { font-family: Inter, Arial, sans-serif; }
+      .eyebrow { font-size: 28px; letter-spacing: 12px; fill: #E77765; font-weight: 700; }
+      .title { font-size: 66px; fill: #0F4D4E; }
+      .subtitle { font-size: 28px; fill: #173D3A; }
+      .card-title { font-size: 44px; fill: #0F4D4E; }
+      .body { font-size: 25px; fill: #123B3A; }
+      .footer { font-size: 24px; fill: #123B3A; }
+      .italic { font-style: italic; fill: #1F7B75; }
+      .line { stroke: #DAD3C2; stroke-width: 1.5; }
+      .coral { stroke: #E77765; stroke-width: 3; stroke-linecap: round; }
+      .icon { stroke: #0F4D4E; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+
+  <text x="800" y="68" text-anchor="middle" class="sans eyebrow">OUR ECOSYSTEM</text>
+  <text x="800" y="150" text-anchor="middle" class="serif title">Adding healthy years to your life</text>
+  <line x1="690" y1="196" x2="760" y2="196" stroke="#D6CDBA" stroke-width="2"/>
+  <text x="800" y="205" text-anchor="middle" font-size="34" fill="#E77765">✦</text>
+  <line x1="840" y1="196" x2="910" y2="196" stroke="#D6CDBA" stroke-width="2"/>
+  <text x="800" y="250" text-anchor="middle" class="sans subtitle">What we combine, what we discover, and how we act.</text>
+
+  <!-- Cards -->
+  <g filter="url(#shadow)">
+    <rect x="145" y="295" width="390" height="545" rx="22" fill="#F8F5EC" opacity="0.92"/>
+    <rect x="605" y="295" width="390" height="545" rx="22" fill="#F8F5EC" opacity="0.92"/>
+    <rect x="1065" y="295" width="390" height="545" rx="22" fill="#F8F5EC" opacity="0.92"/>
+  </g>
+
+  <!-- Icon circles -->
+  <circle cx="340" cy="395" r="72" fill="#E7EDE3"/>
+  <circle cx="800" cy="395" r="72" fill="#E7EDE3"/>
+  <circle cx="1260" cy="395" r="72" fill="#E7EDE3"/>
+
+  <!-- Data icon -->
+  <path class="icon" d="M312 355h44l22 22v58h-66z"/>
+  <path class="icon" d="M356 355v22h22"/>
+  <path class="icon" d="M326 398h26M326 418h15"/>
+  <path d="M348 430v-22M363 430v-34M378 430v-49" stroke="#E77765" stroke-width="5" stroke-linecap="round"/>
+  <path d="M388 431c14-26 40-25 48-1 5 17-5 34-25 38-22-5-30-20-23-37z" fill="#E77765" opacity="0.9"/>
+
+  <!-- Insights icon -->
+  <path class="icon" d="M770 422c-18-15-27-35-20-58 8-27 34-43 62-37 25 5 43 29 40 55-2 20-14 34-29 43"/>
+  <path class="icon" d="M789 378c1-17 23-18 26-3 15-7 27 11 16 24-7 9-18 9-30 9-15 0-27-3-27-16 0-8 6-13 15-14z"/>
+  <path d="M760 340l-10-18M802 332v-22M844 342l14-18" stroke="#E77765" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Action icon -->
+  <path class="icon" d="M1228 424c0-25 64-25 64 0M1244 369a25 25 0 1 0 0.1 0M1284 385a20 20 0 1 0 0.1 0"/>
+  <circle cx="1310" cy="424" r="24" fill="#E77765"/>
+  <path d="M1310 412v24M1298 424h24" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Titles -->
+  <text x="340" y="520" text-anchor="middle" class="serif card-title">Data</text>
+  <line x1="316" y1="548" x2="364" y2="548" class="coral"/>
+  <text x="800" y="520" text-anchor="middle" class="serif card-title">Insights</text>
+  <line x1="776" y1="548" x2="824" y2="548" class="coral"/>
+  <text x="1260" y="520" text-anchor="middle" class="serif card-title">Action</text>
+  <line x1="1236" y1="548" x2="1284" y2="548" class="coral"/>
+
+  <!-- Bullets function -->
+  <g class="sans body">
+    <!-- Data bullets -->
+    <circle cx="210" cy="600" r="17" fill="#D8E6DE"/><path d="M202 599l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="607">Biomarker check</text>
+    <line x1="260" y1="637" x2="490" y2="637" class="line"/>
+    <circle cx="210" cy="672" r="17" fill="#D8E6DE"/><path d="M202 671l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="679">Wearable data</text>
+    <line x1="260" y1="709" x2="490" y2="709" class="line"/>
+    <circle cx="210" cy="744" r="17" fill="#D8E6DE"/><path d="M202 743l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="260" y="751">Medical history</text>
+
+    <!-- Insights bullets -->
+    <circle cx="670" cy="600" r="17" fill="#D8E6DE"/><path d="M662 599l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="720" y="607">45 min consult</text>
+    <line x1="720" y1="637" x2="950" y2="637" class="line"/>
+    <circle cx="670" cy="672" r="17" fill="#D8E6DE"/><path d="M662 671l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="720" y="679">Physical health</text>
+    <line x1="720" y1="709" x2="950" y2="709" class="line"/>
+    <circle cx="670" cy="744" r="17" fill="#D8E6DE"/><path d="M662 743l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="720" y="751">Lifestyle review</text>
+    <line x1="720" y1="781" x2="950" y2="781" class="line"/>
+    <circle cx="670" cy="816" r="17" fill="#D8E6DE"/><path d="M662 815l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="720" y="823">6 month follow-up</text>
+
+    <!-- Action bullets -->
+    <circle cx="1110" cy="600" r="17" fill="#D8E6DE"/><path d="M1102 599l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1160" y="607">Health concierge</text>
+    <line x1="1160" y1="637" x2="1410" y2="637" class="line"/>
+    <circle cx="1110" cy="672" r="17" fill="#D8E6DE"/><path d="M1102 671l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1160" y="679">Access to partner network</text>
+    <line x1="1160" y1="709" x2="1410" y2="709" class="line"/>
+    <circle cx="1110" cy="744" r="17" fill="#D8E6DE"/><path d="M1102 743l6 7 12-14" stroke="#0F4D4E" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1160" y="739">GP on-demand for</text>
+    <text x="1160" y="770">continuity of care</text>
+  </g>
+
+  <!-- Footer -->
+  <rect x="145" y="870" width="1310" height="110" rx="22" fill="#EEF1EA" opacity="0.9" filter="url(#shadow)"/>
+  <circle cx="370" cy="925" r="42" fill="url(#teal)"/>
+  <text x="370" y="941" text-anchor="middle" font-size="50" fill="white">✧</text>
+  <line x1="445" y1="895" x2="445" y2="955" stroke="#D6CDBA" stroke-width="2"/>
+  <text x="485" y="920" class="sans footer">Data, insights and action work together in our ecosystem</text>
+  <text x="485" y="952" class="serif footer italic">to add healthy years to your life.</text>
+</svg>
