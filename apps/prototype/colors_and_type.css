@@ -151,6 +151,22 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace; /* data only */
 }
 
+/* ---- Base heading elements ----
+   Real <h1>–<h6> adopt the display face (Geist) + the site's lighter, tightly
+   tracked treatment automatically — no per-element class needed. Inline
+   font-size / font-weight / color on individual headings still win where set,
+   so dark-surface headings (sidebar, status bar) keep their own colour. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Opt-in helpers for the editorial brand voice. */
+.text-serif   { font-family: var(--font-serif); font-weight: 400; }  /* Literata accent */
+.text-heading { color: var(--evida-heading); }                       /* deep teal-green */
+
 /* ---- Type Scale Utility Classes ---- */
 .text-hero {
   font-family: var(--font-display);

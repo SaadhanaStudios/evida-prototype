@@ -98,7 +98,12 @@ All three load via Google Fonts. Headings sit in teal/heading colours, are tight
 
 **`apps/web`** — `@import` `tokens.css` at the top of `src/app/globals.css`, then point the existing `@theme inline` colours at the `--evida-*` vars so Tailwind utilities and the canonical tokens share one set of values.
 
-**`apps/prototype`** — link `tokens.css` before `colors_and_type.css` on each screen (or `@import` it at the top of `colors_and_type.css`), and replace the old hard-coded palette/type values with `var(--evida-*)` references.
+**`apps/prototype`** — `colors_and_type.css` `@import`s a synced mirror (`./tokens.css`, refreshed via `npm run sync-tokens`) plus the Geist/Inter/Literata web fonts, then maps the prototype's semantic token names (`--evida-fg`, `--evida-muted`, `--evida-navy`, etc.) onto the canon. A local mirror is required because the prototype deploys with root `apps/prototype/` and can't reach `packages/` at runtime; it's a derived copy, so the canon stays the single source.
+
+Prototype class vocabulary (in `_app-shell.css` / `colors_and_type.css`):
+- **Buttons:** `.btn` + `.btn-primary` (pale-yellow CTA), `.btn-teal` (teal/white CTA), `.btn-secondary` (outline), `.btn-ghost` (text); sizes `.btn-sm` / `.btn-lg` / `.btn-form`.
+- **Headings:** base `<h1>–<h6>` adopt the display face (Geist) + lighter tracking automatically; inline weight/colour still win on dark surfaces.
+- **Utilities:** `.text-serif` (Literata editorial accent), `.text-heading` (deep teal-green), the `.text-h1…h4` / `.text-data-*` scale, and token-driven `.status-pill` / `.stat-card` / `.flag-*` chips.
 
 ---
 
