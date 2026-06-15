@@ -23,6 +23,9 @@
   .progress-step .label { font-size: 10px; color: var(--evida-muted); text-align: center; line-height: 1.2; min-height: 28px; }
   .progress-step.active .label { color: var(--color-primary); font-weight: 600; }
   .progress-step.done .label { color: var(--evida-fg-secondary); }
+  .progress-step.done { cursor: pointer; }
+  .progress-step.done .circle { transition: transform 150ms, background 200ms; }
+  .progress-step.done:hover .circle { transform: scale(1.08); }
   .progress-bar-bg { height: 3px; background: var(--evida-border); border-radius: 2px; margin: 0 14px; position: relative; }
   .progress-bar-fill { height: 100%; background: var(--color-primary); border-radius: 2px; transition: width 300ms ease-out; }
 
@@ -152,25 +155,6 @@
         <span id="bookingErrorText"></span>
       </div>
 
-      <!-- STEP 1: Choose package -->
-      <div class="step" id="step1" data-step="1">
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Your membership</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">Everything you need for 12 months of preventive health.</p>
-        <div class="card-option selected" id="pkgBaseline" onclick="selectPackage('baseline')">
-          <div class="top">
-            <div class="radio-outline"></div>
-            <div class="info">
-              <div class="title">Evida Membership</div>
-              <div class="desc">Full diagnostic blood panel (42 biomarkers), 45-min GP consultation, health coach session, personalised prevention plan, and 12 months of data insights.</div>
-              <div class="meta">
-                <span class="pill pill-price" style="background:var(--evida-navy);color:white">£320 / year</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-primary btn-form" onclick="goStep(3)">Continue</button>
-      </div>
-
       <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
       <div class="step" id="step3" data-step="3">
         <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your blood test</h2>
@@ -201,8 +185,7 @@
 
       <!-- STEP 4: GP consult (gated) -->
       <div class="step" id="step4" data-step="4">
-        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your GP consultation</h2>
-        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Your 45-minute virtual appointment. The GP will review your results with you and create your personalised prevention plan.</p>
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:12px">Book your GP consultation</h2>
         <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px">
           <span class="text-body-small">Your blood test is <strong id="gpInfoBloodDate">—</strong>. Your GP consultation can be booked from <strong id="gpInfoMinDate">—</strong> onwards (allows 4–5 working days for results).</span>
         </div>
@@ -214,9 +197,7 @@
             <li>You will not receive your blood results beforehand — your GP reviews them with you during this session</li>
           </ul>
         </div>
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Book your GP consultation</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:16px">45-min virtual consultation with a GP.</p>
-        <div class="section-label">Available dates</div>
+        <div class="section-label" style="margin-top:16px">Available dates</div>
         <div class="date-grid" id="gpDateGrid"></div>
         <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
         <div class="time-grid" id="gpTimeGrid"></div>
@@ -340,7 +321,7 @@
             <div class="row" style="margin-top:4px"><span class="l">Receipt</span><span class="r" id="confReceiptRef" style="font-family:var(--font-mono);font-size:13px;font-weight:600">EV-XXXXXX</span></div>
           </div>
           <button class="btn btn-primary btn-form" id="confDashboardBtn" onclick="window.location.href='onboarding.html'" style="margin-top:16px">Continue to onboarding →</button>
-          <button class="btn btn-secondary btn-form" onclick="window.print()" style="margin-top:8px">Download invoice</button>
+          <button class="btn btn-secondary btn-form" onclick="downloadInvoice()" style="margin-top:8px">Download invoice (PDF)</button>
           <p style="font-size:12px;color:var(--evida-muted);margin-top:12px">A confirmation email has been sent to your registered address.</p>
         </div>
       </div>
@@ -437,7 +418,7 @@ const state = {
 // since the membership was already chosen at account creation. The progress
 // track only ever shows the steps the member will actually walk through.
 const IS_SIGNUP_FLOW = new URLSearchParams(location.search).get('flow') === 'signup';
-const VISIBLE_STEPS = IS_SIGNUP_FLOW ? [3, 4, 5] : [1, 3, 4, 5];
+const VISIBLE_STEPS = [3, 4, 5];
 
 function currentTotal() {
   return Math.max(0, MEMBERSHIP_PRICE - state.discountAmount) + addonPrices[state.addon];
@@ -539,7 +520,7 @@ function init() {
 function renderProgress() {
   const container = document.getElementById('progressSteps');
   container.innerHTML = VISIBLE_STEPS.map((s, i) => `
-    <div class="progress-step" data-idx="${i}">
+    <div class="progress-step" data-idx="${i}" onclick="progressNav(${s})">
       <div class="circle">${i + 1}</div>
       <div class="label">${stepLabels[s - 1]}</div>
     </div>
@@ -552,6 +533,13 @@ function updateProgress(step) {
     el.className = 'progress-step' + (i === idx ? ' active' : i < idx ? ' done' : '');
   });
   document.getElementById('progressFill').style.width = (Math.max(idx, 0) / (VISIBLE_STEPS.length - 1) * 100) + '%';
+}
+
+// Let the member step back to any completed stage by tapping the progress bar.
+function progressNav(s) {
+  var target = VISIBLE_STEPS.indexOf(s);
+  var current = VISIBLE_STEPS.indexOf(state.step);
+  if (target > -1 && target < current) goStep(s);
 }
 
 function selectPackage(pkg) {
@@ -747,16 +735,80 @@ function goStep(n) {
 
 function handleBack() {
   if (state.step === 7) { window.location.href = 'dashboard.html'; return; }
-  // Signup flow starts at step 3 — back from there returns to account creation
-  if (IS_SIGNUP_FLOW && state.step === 3) { window.location.href = 'login.html'; return; }
-  if (state.step === 3) { goStep(1); return; } // add-ons step removed from MVP
-  if (state.step > 1) { goStep(state.step - 1); return; }
+  // First visible step (blood test) — leave the flow
+  if (state.step === 3) {
+    window.location.href = IS_SIGNUP_FLOW ? 'login.html' : 'dashboard.html';
+    return;
+  }
+  // Otherwise step back one stop along the visible path (5 → 4 → 3)
+  var idx = VISIBLE_STEPS.indexOf(state.step);
+  if (idx > 0) { goStep(VISIBLE_STEPS[idx - 1]); return; }
   window.location.href = 'dashboard.html';
 }
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// Build a clean, branded invoice and open it in a print/Save-as-PDF view.
+function downloadInvoice() {
+  var ref = (document.getElementById('confReceiptRef') || {}).textContent || 'EV-000000';
+  var total = (document.getElementById('confTotalPaid') || {}).textContent || ('£' + currentTotal());
+  var bloodDT = (document.getElementById('confBloodDateTime') || {}).textContent || '—';
+  var bloodLoc = (document.getElementById('confLocation') || {}).textContent || 'Randox clinic';
+  var gpDT = (document.getElementById('confGpDateTime') || {}).textContent || '—';
+  var today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  var discountRow = '';
+  if (state.discountAmount > 0) {
+    discountRow = '<tr><td>Discount applied (' + (state.discountCode || '') + ')</td>' +
+      '<td class="r" style="color:#138A7D">−£' + state.discountAmount + '.00</td></tr>';
+  }
+  var inv = '<!doctype html><html><head><meta charset="utf-8"><title>Evida Invoice ' + ref + '</title>' +
+    '<style>' +
+    '@page{margin:18mm}' +
+    '*{box-sizing:border-box}' +
+    'body{font-family:Inter,-apple-system,system-ui,sans-serif;color:#2D2700;margin:0;padding:40px;max-width:720px}' +
+    '.head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #216A74;padding-bottom:20px;margin-bottom:28px}' +
+    '.brand{font-size:28px;font-weight:700;color:#216A74;letter-spacing:-.02em;line-height:1}' +
+    '.brand small{display:block;font-size:10px;font-weight:600;color:#8F8E81;letter-spacing:.14em;text-transform:uppercase;margin-top:6px}' +
+    '.doc h1{margin:0;font-size:22px;letter-spacing:.1em;color:#09332E;text-align:right}' +
+    '.paid{display:inline-block;margin-top:8px;background:#E0F5E9;color:#1A7D4E;font-size:11px;font-weight:700;padding:3px 12px;border-radius:999px;letter-spacing:.04em}' +
+    '.meta{display:flex;gap:48px;margin-bottom:28px}' +
+    '.meta .k{color:#8F8E81;font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}' +
+    '.meta .v{font-weight:600;font-size:14px}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:20px}' +
+    'th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#8F8E81;border-bottom:1px solid #DCD5A9;padding:0 0 10px}' +
+    'th.r,td.r{text-align:right;white-space:nowrap}' +
+    'td{padding:13px 0;border-bottom:1px solid #F0ECD8;vertical-align:top;font-size:14px}' +
+    'td .sub{color:#8F8E81;font-size:12px;margin-top:3px;line-height:1.4}' +
+    '.total td{border-top:2px solid #2D2700;border-bottom:none;font-weight:700;font-size:17px;padding-top:15px;color:#09332E}' +
+    '.pay{font-size:13px;color:#2D2700;margin-top:4px}' +
+    '.foot{margin-top:40px;padding-top:18px;border-top:1px solid #DCD5A9;font-size:11px;color:#8F8E81;line-height:1.8}' +
+    '</style></head><body>' +
+    '<div class="head"><div class="brand">Evida<small>Preventive health</small></div>' +
+    '<div class="doc"><h1>INVOICE</h1><div style="text-align:right"><span class="paid">PAID</span></div></div></div>' +
+    '<div class="meta">' +
+    '<div><div class="k">Invoice no.</div><div class="v">' + ref + '</div></div>' +
+    '<div><div class="k">Date</div><div class="v">' + today + '</div></div>' +
+    '<div><div class="k">Billed to</div><div class="v">James Chen</div></div></div>' +
+    '<table><thead><tr><th>Description</th><th class="r">Amount</th></tr></thead><tbody>' +
+    '<tr><td><strong>Evida Membership</strong><div class="sub">12 months · 42-biomarker diagnostic panel, 45-min GP consultation, health-coach session, personalised prevention plan &amp; data insights</div></td><td class="r">£320.00</td></tr>' +
+    '<tr><td>Blood test appointment<div class="sub">' + bloodDT + ' · ' + bloodLoc + '</div></td><td class="r">Included</td></tr>' +
+    '<tr><td>GP consultation<div class="sub">' + gpDT + ' · 45 min · virtual</div></td><td class="r">Included</td></tr>' +
+    discountRow +
+    '<tr class="total"><td>Total paid</td><td class="r">' + total + '</td></tr>' +
+    '</tbody></table>' +
+    '<div class="pay">Paid by card · processed securely via Stripe</div>' +
+    '<div class="foot">Evida Health Ltd · Registered in England &amp; Wales · This document is a receipt for your records.<br>' +
+    'Questions about your invoice? Email support@evida.uk</div>' +
+    '</body></html>';
+  var w = window.open('', '_blank');
+  if (!w) { showToast('Allow pop-ups to download your invoice'); return; }
+  w.document.write(inv);
+  w.document.close();
+  w.focus();
+  setTimeout(function() { w.print(); }, 400);
 }
 
 function startHoldTimer() {
@@ -1039,8 +1091,9 @@ if (IS_SIGNUP_FLOW && _resume === 'payment') {
   autoSelectDefaults();
   setTimeout(function() { showToast('Account created — now book your baseline.'); }, 600);
 } else {
-  // Direct / non-signup entry: show the plan selection screen
-  goStep(1);
+  // Direct / non-signup entry: plan removed — go straight to blood-test booking
+  goStep(3);
+  autoSelectDefaults();
 }
 </script>
 </body>
