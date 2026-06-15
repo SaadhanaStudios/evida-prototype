@@ -202,6 +202,7 @@
         <div class="section-label" id="gpTimeLabel" style="display:none">Available times</div>
         <div class="time-grid" id="gpTimeGrid"></div>
         <button type="button" class="btn btn-primary btn-form" id="step4Btn" onclick="goStep(5)">Book Virtual GP</button>
+        <button type="button" class="btn btn-outline btn-form" onclick="goStep(3)" style="margin-top:10px">← Back to blood test</button>
       </div>
 
       <!-- STEP 5: Review & Pay (merged) -->
@@ -279,8 +280,9 @@
           <svg class="w-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
           <span>Payment declined. Your slots are still held — please try again or use a different card.</span>
         </div>
-        <p class="text-tiny" style="color:var(--evida-muted);margin:8px 0 80px">Slots will be released if payment is not completed within the hold period.</p>
-        <div style="text-align:center;padding-bottom:8px">
+        <p class="text-tiny" style="color:var(--evida-muted);margin:8px 0 14px">Slots will be released if payment is not completed within the hold period.</p>
+        <button type="button" class="btn btn-outline btn-form" onclick="goStep(4)">← Back to GP consultation</button>
+        <div style="text-align:center;padding:14px 0 90px">
           <button class="btn btn-ghost" onclick="handleSkipPayment()" style="width:auto;font-size:13px;color:var(--evida-fg-secondary)">I'll pay later — bookings won't be confirmed</button>
         </div>
       </div>
