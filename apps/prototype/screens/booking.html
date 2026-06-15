@@ -254,21 +254,21 @@
           <div style="background:var(--evida-bg);border:1px solid var(--evida-border);border-radius:var(--radius-md);padding:16px;margin-top:12px">
             <div class="form-group" style="margin-bottom:16px">
               <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Card number</label>
-              <input class="evida-input" id="stripeCardNumber" style="width:100%;height:44px;font-size:16px;font-family:var(--font-mono);letter-spacing:0.5px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number">
+              <input class="evida-input" id="stripeCardNumber" value="4242 4242 4242 4242" style="width:100%;height:44px;font-size:16px;font-family:var(--font-mono);letter-spacing:0.5px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
               <div class="form-group">
                 <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Expiry date</label>
-                <input class="evida-input" id="stripeExpiry" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="MM / YY" inputmode="numeric" autocomplete="cc-exp">
+                <input class="evida-input" id="stripeExpiry" value="04 / 27" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="MM / YY" inputmode="numeric" autocomplete="cc-exp">
               </div>
               <div class="form-group">
                 <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">CVC</label>
-                <input class="evida-input" id="stripeCvc" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="CVC" inputmode="numeric" autocomplete="cc-csc">
+                <input class="evida-input" id="stripeCvc" value="123" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="CVC" inputmode="numeric" autocomplete="cc-csc">
               </div>
             </div>
             <div class="form-group">
               <label style="font-size:12px;font-weight:600;color:var(--evida-fg-secondary);display:block;margin-bottom:4px">Name on card</label>
-              <input class="evida-input" id="stripeName" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="James Chen" autocomplete="cc-name">
+              <input class="evida-input" id="stripeName" value="James Chen" style="width:100%;height:44px;font-size:16px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px" placeholder="James Chen" autocomplete="cc-name">
             </div>
           </div>
         </div>
@@ -702,7 +702,7 @@ function goStep(n) {
       document.getElementById('cartAddons').style.display = 'none';
       document.getElementById('cartTotalValue').textContent = '£' + MEMBERSHIP_PRICE;
     }
-    if (IS_SIGNUP_FLOW && !state.discountAmount) {
+    if (!state.discountAmount) {
       document.getElementById('discountCode').value = 'EVIDA160';
       applyDiscount();
     }
