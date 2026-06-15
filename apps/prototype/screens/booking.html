@@ -157,8 +157,10 @@
 
       <!-- STEP 3: Clinic location + date/time (add-ons step removed — not in MVP) -->
       <div class="step" id="step3" data-step="3">
-        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">Book your blood test</h2>
-        <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:16px">Choose a Randox clinic near you and pick a convenient time. <strong>Fasting is required</strong> — we'll remind you the evening before.</p>
+        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:12px">Book your blood test</h2>
+        <div class="evida-card" style="background:var(--evida-teal-light);color:var(--evida-teal-dark);padding:14px;margin-bottom:12px">
+          <span class="text-body-small">Choose a Randox clinic near you and pick a convenient time. <strong>Fasting is required</strong> — we'll remind you the evening before.</span>
+        </div>
         <div style="background:var(--evida-teal-light);border-radius:var(--radius-md);padding:14px;margin-bottom:16px;font-size:13px;color:var(--evida-teal-dark)">
           <div style="font-weight:700;margin-bottom:6px">What happens at your Randox appointment</div>
           <ul style="margin:0;padding-left:18px;line-height:1.7">
@@ -167,8 +169,6 @@
             <li>Results are sent to Evida — your GP reviews them with you in your consultation</li>
           </ul>
         </div>
-        <p class="text-body-small" style="font-weight:600;margin-bottom:4px">Choose a clinic</p>
-        <p class="text-body-small" style="color:var(--evida-fg-secondary);margin-bottom:8px">Select your nearest Randox clinic and preferred time.</p>
         <input class="evida-input" id="postcodeInput" placeholder="Filter by postcode (e.g. W1D, EC2N)" style="width:100%;height:44px;font-size:14px;background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-sm);padding:0 12px;box-sizing:border-box;margin-bottom:10px;text-transform:uppercase" oninput="filterClinics(this.value)">
         <div id="clinicList"></div>
         <div id="dateTimeSection" style="display:none">
