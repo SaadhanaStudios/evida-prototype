@@ -57,8 +57,7 @@
   .tour-card .btn-row .btn-spacer { flex: 1; min-width: 12px; }
   .tour-card .btn-row .btn-right { display: flex; gap: 8px; align-items: center; }
 
-  .btn-ghost { background: none; color: var(--color-primary); border: none; height: auto; padding: 8px 8px; width: auto; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 150ms; white-space: nowrap; }
-  .btn-ghost:hover { opacity: 0.7; }
+  /* .btn-ghost comes from the shared _app-shell system. */
   .btn-ghost.muted { color: var(--evida-fg-secondary); }
   .btn-back { background: none; border: none; color: var(--evida-fg-secondary); font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 8px 4px; transition: color 150ms; white-space: nowrap; }
   .btn-back:hover { color: var(--evida-fg); }
@@ -243,7 +242,7 @@
               <input type="file" id="idFile" accept="image/*,.pdf" style="display:none" onchange="handleIdUpload(event)">
             </div>
             <div style="display:flex;gap:8px">
-              <button class="btn btn-secondary" onclick="closeVerification()" style="flex:0;width:auto;padding:0 16px;font-size:12px;height:40px">Cancel</button>
+              <button class="btn btn-outline" onclick="closeVerification()" style="flex:0;width:auto;padding:0 16px;font-size:12px;height:40px">Cancel</button>
               <button class="btn btn-primary" id="verifySubmitBtn" onclick="completeVerification()" style="flex:1">Save verification</button>
             </div>
           </div>

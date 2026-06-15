@@ -82,9 +82,16 @@ All three load via Google Fonts. Headings sit in teal/heading colours, are tight
 
 ## 5. Components
 
-### Buttons
-- **Default:** `--evida-btn-bg` (pale yellow) background, `--evida-teal-text` label, `--evida-radius-btn` (12px), padding `12px 20px`, Inter 16px, `transition: background-color var(--evida-transition)`. Hover → `--evida-btn-hover`.
-- **Teal variant:** `--evida-teal` background, white text. Hover reverts text to teal.
+### Buttons — emphasis hierarchy
+All share `--evida-radius-btn` (12px) and one transition. Note: in the app
+surface (prototype) the hierarchy is **teal-primary**; on the marketing site the
+hero CTA is the pale-yellow button — same tokens, different emphasis per surface.
+
+- **Primary** — `--evida-teal` bg, white text. Hover → `--evida-teal-dark`. Main CTA.
+- **Secondary** — `--evida-btn-bg` (pale yellow) bg, `--evida-teal-text` label. Hover **deepens** to `--evida-yellow` (teal text stays legible — never washes out). Prominent secondary actions (Print, Download, Share…).
+- **Outline** — transparent, `--evida-border`, foreground text. Hover → cream bg. Dismissive/low-emphasis (Cancel, Back, Close, Skip).
+- **Ghost** — text-only, teal. Inline link actions.
+- **Danger** — `--evida-coral` solid, or danger-ghost (coral text) for destructive actions.
 
 ### Cards / surfaces
 - `--evida-surface` background, `--evida-radius-md`–`lg` (16–24px), `--evida-shadow-sm`. Flat and soft, generous padding.
@@ -101,7 +108,7 @@ All three load via Google Fonts. Headings sit in teal/heading colours, are tight
 **`apps/prototype`** — `colors_and_type.css` `@import`s a synced mirror (`./tokens.css`, refreshed via `npm run sync-tokens`) plus the Geist/Inter/Literata web fonts, then maps the prototype's semantic token names (`--evida-fg`, `--evida-muted`, `--evida-navy`, etc.) onto the canon. A local mirror is required because the prototype deploys with root `apps/prototype/` and can't reach `packages/` at runtime; it's a derived copy, so the canon stays the single source.
 
 Prototype class vocabulary (in `_app-shell.css` / `colors_and_type.css`):
-- **Buttons:** `.btn` + `.btn-primary` (pale-yellow CTA), `.btn-teal` (teal/white CTA), `.btn-secondary` (outline), `.btn-ghost` (text); sizes `.btn-sm` / `.btn-lg` / `.btn-form`.
+- **Buttons (emphasis hierarchy, one source of truth in `_app-shell.css` — no per-screen re-skins):** `.btn` + `.btn-primary` (teal CTA), `.btn-secondary` (pale-yellow, hover deepens to `--evida-yellow` with teal text staying legible), `.btn-outline` (dismissive: Cancel/Back/Close/Skip), `.btn-ghost` (inline text link), `.btn-danger` / `.btn-danger-ghost` (destructive); sizes `.btn-sm` / `.btn-lg` / `.btn-form`.
 - **Headings:** base `<h1>–<h6>` adopt the display face (Geist) + lighter tracking automatically; inline weight/colour still win on dark surfaces.
 - **Utilities:** `.text-serif` (Literata editorial accent), `.text-heading` (deep teal-green), the `.text-h1…h4` / `.text-data-*` scale, and token-driven `.status-pill` / `.stat-card` / `.flag-*` chips.
 

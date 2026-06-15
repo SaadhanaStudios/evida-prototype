@@ -47,10 +47,7 @@
   .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--evida-border); }
   .app-header .header-actions { margin-left: auto; }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-primary:hover:not(:disabled) { background: var(--color-primary-hover); }
-  .btn-secondary:hover:not(:disabled) { background: var(--evida-bg); }
-  .btn-ghost { background: transparent; color: var(--color-primary); border: none; height: auto; padding: 8px 0; width: auto; }
-  .btn-ghost:hover { text-decoration: underline; }
+  /* Buttons use the shared _app-shell system (primary/secondary/outline/ghost). */
   .btn-loading { pointer-events: none; }
   .btn-loading .btn-text { display: none; }
   .btn-loading .btn-spinner { display: inline-block; }
@@ -436,7 +433,7 @@
       <!-- populated by JS -->
     </div>
     <div class="modal-legal-footer">
-      <button class="btn btn-secondary" onclick="closeLegalModal()">Close</button>
+      <button class="btn btn-outline" onclick="closeLegalModal()">Close</button>
     </div>
   </div>
 </div>

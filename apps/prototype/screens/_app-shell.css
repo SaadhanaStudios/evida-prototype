@@ -96,12 +96,19 @@ a, button, [role="button"], input, select, textarea { -webkit-tap-highlight-colo
 .btn:active { transform: translateY(1px); opacity: 0.9; }
 .btn:disabled,
 .btn[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-.btn-primary { background: var(--evida-btn-bg); color: var(--evida-teal-text); }
-.btn-primary:hover:not(:disabled) { background: var(--evida-btn-hover); box-shadow: var(--shadow-sm); }
-.btn-teal { background: var(--evida-teal); color: #fff; }
-.btn-teal:hover:not(:disabled) { background: var(--evida-teal-dark); box-shadow: var(--shadow-sm); }
-.btn-secondary { background: transparent; color: var(--evida-fg); border: 1px solid var(--evida-border); }
-.btn-secondary:hover:not(:disabled) { background: var(--evida-bg); border-color: var(--evida-muted); }
+/* Button variants — one source of truth. Emphasis: primary (teal) >
+   secondary (yellow) > outline (dismissive) > ghost (text). Danger for
+   destructive. Screens must use these — no local re-skins. */
+.btn-primary { background: var(--evida-teal); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--evida-teal-dark); box-shadow: var(--shadow-sm); }
+.btn-secondary { background: var(--evida-btn-bg); color: var(--evida-teal-text); }
+.btn-secondary:hover:not(:disabled) { background: var(--evida-yellow); box-shadow: var(--shadow-sm); }
+.btn-outline { background: transparent; color: var(--evida-fg); border: 1px solid var(--evida-border); }
+.btn-outline:hover:not(:disabled) { background: var(--evida-bg); border-color: var(--evida-muted); }
+.btn-danger { background: var(--evida-coral); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #E0484D; box-shadow: var(--shadow-sm); }
+.btn-danger-ghost { background: transparent; color: var(--evida-coral); border: 1px solid transparent; }
+.btn-danger-ghost:hover:not(:disabled) { background: var(--color-danger-bg); }
 .btn-sm { height: 36px; padding: 0 16px; font-size: 13px; }
 .btn-ghost { background: none; color: var(--color-primary); border: none; padding: 0; height: auto; font-size: 14px; font-family: var(--font-display); }
 .btn-ghost:hover { text-decoration: underline; }

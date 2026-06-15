@@ -43,8 +43,6 @@
   .info-box svg { flex-shrink: 0; margin-top: 1px; }
 
   .step-nav { display: flex; gap: 10px; margin-top: 24px; }
-  .step-nav .btn-back { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg-secondary); }
-  .step-nav .btn-back:hover { border-color: var(--evida-muted); color: var(--evida-fg); }
 </style>
 </head>
 <body>
@@ -89,7 +87,7 @@
         </div>
 
         <div class="step-nav">
-          <button class="btn btn-secondary btn-back" onclick="window.location.href='onboarding.html'">Cancel</button>
+          <button class="btn btn-outline" onclick="window.location.href='onboarding.html'">Cancel</button>
           <button class="btn btn-primary" style="flex:1" onclick="goStep(2)">Continue</button>
         </div>
       </div>
@@ -109,7 +107,7 @@
         </div>
 
         <div class="step-nav">
-          <button class="btn btn-secondary btn-back" onclick="goStep(1)">Back</button>
+          <button class="btn btn-outline" onclick="goStep(1)">Back</button>
           <button class="btn btn-primary" style="flex:1" onclick="goStep(3)">Continue</button>
         </div>
       </div>
@@ -150,7 +148,7 @@
         </div>
 
         <div class="step-nav">
-          <button class="btn btn-secondary btn-back" onclick="goStep(2)">Back</button>
+          <button class="btn btn-outline" onclick="goStep(2)">Back</button>
           <button class="btn btn-primary" style="flex:1" id="submitBtn" onclick="submitQuestionnaire()">Submit</button>
         </div>
       </div>

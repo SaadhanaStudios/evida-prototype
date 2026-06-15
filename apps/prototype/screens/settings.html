@@ -41,8 +41,7 @@
   .toggle .knob { width: 20px; height: 20px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
   .toggle.on .knob { transform: translateX(20px); }
 
-  .btn-ghost { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms; font-family: var(--font-body); }
-  .btn-ghost:hover { background: var(--evida-bg); }
+  /* Buttons use the shared _app-shell system; only the dense small size kept. */
   .btn-sm { height: 32px; padding: 0 12px; font-size: 11px; }
 
   .data-consent-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -133,14 +132,14 @@
             <div class="settings-label">Password</div>
             <div class="settings-desc">Last changed 3 months ago</div>
           </div>
-          <button class="btn-ghost btn-sm" onclick="showToast('Password reset link sent to your email')">Change</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('Password reset link sent to your email')">Change</button>
         </div>
         <div class="settings-row">
           <div class="settings-info">
             <div class="settings-label">Two-factor authentication</div>
             <div class="settings-desc">Add an extra layer of security to your account</div>
           </div>
-          <button class="btn-ghost btn-sm" onclick="showToast('2FA setup link sent to your email')">Enable</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('2FA setup link sent to your email')">Enable</button>
         </div>
         <div class="settings-row">
           <div class="settings-info">
@@ -239,7 +238,7 @@
       <div class="evida-card-bordered section-card" style="border-color:var(--evida-coral)">
         <h2 style="color:var(--evida-coral)">Delete account</h2>
         <p style="font-size:13px;color:var(--evida-fg-secondary);margin-bottom:12px;line-height:1.5">Permanently removes your profile and login access. Per CQC regulations, your clinical records are retained for 8 years after account deletion. <a href="#" onclick="event.preventDefault();showToast('Privacy policy opened')" style="color:var(--color-primary)">View our data privacy policy →</a></p>
-        <button class="btn-ghost btn-sm" style="color:var(--evida-coral);border-color:var(--evida-coral);width:100%;height:40px;font-size:13px" onclick="confirmDeleteAccount()">Delete my account</button>
+        <button class="btn btn-outline btn-sm" style="color:var(--evida-coral);border-color:var(--evida-coral);width:100%;height:40px;font-size:13px" onclick="confirmDeleteAccount()">Delete my account</button>
       </div>
 
     </div>

@@ -35,13 +35,8 @@
   .profile-actions .action-row + .action-row { border-top: 1px solid var(--evida-border); }
   .profile-actions .action-row .action-label { font-size: 14px; font-weight: 500; }
   .profile-actions .action-row .action-desc { font-size: 12px; color: var(--evida-muted); margin-top: 2px; }
-  .btn-ghost { background: none; border: 1px solid var(--evida-border); color: var(--evida-fg); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 150ms; font-family: var(--font-body); }
-  .btn-ghost:hover { background: var(--evida-bg); }
-  .btn-primary { background: var(--color-primary); color: white; height: 40px; padding: 0 20px; border-radius: var(--radius-md); border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: background 150ms; }
-  .btn-primary:hover { background: var(--color-primary-hover); }
+  /* Buttons use the shared _app-shell system; only the dense small size kept. */
   .btn-sm { height: 32px; padding: 0 12px; font-size: 11px; }
-  .btn-danger-ghost { background: none; border: 1px solid transparent; color: var(--evida-coral); height: 36px; padding: 0 16px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: background 150ms; }
-  .btn-danger-ghost:hover { background: #FDE8E8; }
 
   .id-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; }
   .id-status.pending { background: var(--evida-amber-light); color: #8A5A2A; }
@@ -133,7 +128,7 @@
           <label>Address</label>
           <input class="input" value="12 Harley Street, London W1G 9PQ" id="addressInput">
         </div>
-        <button class="btn-primary" onclick="saveProfile()" style="margin-top:8px;width:100%">Save changes</button>
+        <button class="btn btn-primary" onclick="saveProfile()" style="margin-top:8px;width:100%">Save changes</button>
       </div>
 
       <!-- Combined photo + ID verification (—3.2.3) -->
@@ -162,7 +157,7 @@
         <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
         <input type="file" id="idFileInput" accept="image/*,.pdf" style="display:none" onchange="handleIDUpload(event)">
         <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn-ghost btn-sm" id="retakeBtn" style="display:none" onclick="retakeID()">Upload new files</button>
+          <button class="btn btn-outline btn-sm" id="retakeBtn" style="display:none" onclick="retakeID()">Upload new files</button>
           <span class="text-tiny" style="color:var(--evida-muted)">Accepted: JPG, PNG, PDF. Max 10MB each.</span>
         </div>
       </div>
@@ -219,7 +214,7 @@
             </select>
           </div>
         </div>
-        <button class="btn-primary" onclick="saveQuestionnaire()" style="width:100%">Save questionnaire</button>
+        <button class="btn btn-primary" onclick="saveQuestionnaire()" style="width:100%">Save questionnaire</button>
         <div class="hq-timestamp" id="hqTimestamp">Last updated: 8 Jun 2026</div>
       </div>
 
@@ -227,7 +222,7 @@
       <div class="evida-card-bordered section-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <h2 style="margin-bottom:0">Connected devices</h2>
-          <button class="btn-ghost btn-sm" onclick="window.location.href='wearables.html'">Manage</button>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='wearables.html'">Manage</button>
         </div>
         <div id="deviceSummaryList">
           <div class="device-summary-item">
@@ -245,7 +240,7 @@
             </div>
           </div>
         </div>
-        <button class="btn-ghost btn-sm" onclick="window.location.href='wearables.html'" style="margin-top:8px">+ Connect another device</button>
+        <button class="btn btn-outline btn-sm" onclick="window.location.href='wearables.html'" style="margin-top:8px">+ Connect another device</button>
       </div>
 
       <!-- Account actions -->
@@ -257,27 +252,27 @@
               <div class="action-label">Change password</div>
               <div class="action-desc">Last changed 3 months ago</div>
             </div>
-            <button class="btn-ghost btn-sm" onclick="showToast('Password reset link sent to your email')">Reset</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('Password reset link sent to your email')">Reset</button>
           </div>
           <div class="action-row">
             <div>
               <div class="action-label">Download my data</div>
               <div class="action-desc">Export your health data, reports, and plan as a PDF</div>
             </div>
-            <button class="btn-ghost btn-sm" onclick="showToast('Data export started — you will receive an email within 24 hours')">Export</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('Data export started — you will receive an email within 24 hours')">Export</button>
           </div>
           <div class="action-row">
             <div>
               <div class="action-label">Manage settings</div>
               <div class="action-desc">Membership, payment, privacy, security</div>
             </div>
-            <button class="btn-ghost btn-sm" onclick="window.location.href='settings.html'">Settings</button>
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='settings.html'">Settings</button>
           </div>
           <div class="action-row" style="border-bottom:none">
             <div>
               <div class="action-label" style="color:var(--evida-coral)">Sign out</div>
             </div>
-            <button class="btn-danger-ghost btn-sm" onclick="if(confirm('Sign out of your Evida account?')){window.location.href='login.html'}">Sign out</button>
+            <button class="btn btn-danger-ghost btn-sm" onclick="if(confirm('Sign out of your Evida account?')){window.location.href='login.html'}">Sign out</button>
           </div>
         </div>
       </div>
