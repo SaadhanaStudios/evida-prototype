@@ -527,36 +527,36 @@ function toggleChecklist() {
   chevron.classList.toggle('open');
 }
 function updateChecklist() {
-  const allChecks = document.querySelectorAll(‘#chBody .check’);
+  const allChecks = document.querySelectorAll('#chBody .check');
   // Wearables (4th item) is optional — denominator is 3
   const required = Array.from(allChecks).slice(0, 3);
-  const done = required.filter(c => c.classList.contains(‘done’)).length;
+  const done = required.filter(c => c.classList.contains('done')).length;
   const pct = Math.round((done / 3) * 100);
 
   // Circular progress ring: circumference 2π×14 ≈ 87.96
-  const ring = document.getElementById(‘chProgressRing’);
+  const ring = document.getElementById('chProgressRing');
   if (ring) ring.style.strokeDashoffset = 87.96 * (1 - pct / 100);
-  const label = document.getElementById(‘chProgressLabel’);
-  if (label) label.textContent = done + ‘/3’;
-  const prog = document.getElementById(‘chProgress’);
-  if (prog) prog.setAttribute(‘aria-label’, done + ‘ of 3 tasks done’);
+  const label = document.getElementById('chProgressLabel');
+  if (label) label.textContent = done + '/3';
+  const prog = document.getElementById('chProgress');
+  if (prog) prog.setAttribute('aria-label', done + ' of 3 tasks done');
 
   // Sub-label under checklist title
-  const sub = document.getElementById(‘chSub’);
+  const sub = document.getElementById('chSub');
   if (sub) {
-    if (done === 3) sub.textContent = ‘All done — you\’re ready for your consultation’;
-    else sub.textContent = (3 - done) + ‘ task’ + (3 - done !== 1 ? ‘s’ : ‘’) + ‘ remaining’;
+    if (done === 3) sub.textContent = 'All done — you\'re ready for your consultation';
+    else sub.textContent = (3 - done) + ' task' + (3 - done !== 1 ? 's' : '') + ' remaining';
   }
 
-  // Post-consult the badge says "results ready" — don’t clobber it
+  // Post-consult the badge says "results ready" — don't clobber it
   var postConsult = false;
   try { postConsult = EvidaStore.consultations.hadConsultation(); } catch(_) {}
-  const badge = document.getElementById(‘sbBadge’);
+  const badge = document.getElementById('sbBadge');
   if (badge && !postConsult) {
     if (done === 3) {
-      badge.style.display = ‘none’;
+      badge.style.display = 'none';
     } else {
-      badge.textContent = done === 0 ? ‘Getting started’ : done + ‘/3 tasks done’;
+      badge.textContent = done === 0 ? 'Getting started' : done + '/3 tasks done';
     }
   }
 }
