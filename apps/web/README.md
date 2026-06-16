@@ -35,7 +35,6 @@ Open [http://localhost:3000](http://localhost:3000) to see the site.
 | `npm run build`  | Build for production         |
 | `npm run start`  | Start production server      |
 | `npm run lint`   | Run ESLint                   |
-| `npm run convert`| Run asset conversion script  |
 
 ## Deployment
 

@@ -4,13 +4,10 @@
   "private": true,
   "scripts": {
     "sync-app": "node scripts/sync-prototype.mjs",
-    "predev": "npm run sync-app",
-    "prebuild": "npm run sync-app",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "convert": "python3 scripts/convert.py"
+    "lint": "eslint"
   },
   "dependencies": {
     "gsap": "^3.15.0",
