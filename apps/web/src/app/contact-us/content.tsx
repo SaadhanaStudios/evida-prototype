@@ -48,8 +48,8 @@ const PAGE_HTML = `
       </div>
 
       <div style="background:#09332e; border-radius:12px; padding:24px 28px;">
-        <span style="font-family:Inter,sans-serif; font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#ff5a5f; display:block; margin-bottom:8px;">Pilot — now open</span>
-        <p style="font-family:Geist,sans-serif; font-size:15px; color:rgba(255,255,255,0.8); margin:0 0 16px; line-height:1.6;">Limited places for our London pilot, launching June 2026. Join now and be among the first through.</p>
+        <span style="font-family:Inter,sans-serif; font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#ff5a5f; display:block; margin-bottom:8px;">Now live</span>
+        <p style="font-family:Geist,sans-serif; font-size:15px; color:rgba(255,255,255,0.8); margin:0 0 16px; line-height:1.6;">Our London pilot is now live — join now and be among the first through.</p>
         <a href="/membership" style="font-family:Inter,sans-serif; font-size:13px; font-weight:500; color:#fef2a7; text-decoration:none; letter-spacing:0.01em;">See what's included →</a>
       </div>
     </div>
