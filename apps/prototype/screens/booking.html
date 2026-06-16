@@ -918,8 +918,12 @@ function handlePayment() {
 }
 
 function skipBloodBooking() {
+  // "Book and pay later" — the member is deferring the whole booking, so send
+  // them into onboarding (the setup checklist keeps "Book your Baseline"
+  // pending) rather than on to payment.
+  clearInterval(state.holdInterval);
   state.bloodDate = null; state.bloodTime = null; state.clinic = null;
-  goStep(5);
+  window.location.href = 'onboarding.html';
 }
 
 function addBloodTestToCalendar() {
