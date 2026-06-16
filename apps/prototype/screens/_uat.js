@@ -133,6 +133,11 @@
       '<span class="dp-btn-desc">Shows the declined-card state once</span>' +
     '</button>' +
     '<div class="dp-divider"></div>' +
+    '<button class="dp-btn" id="dpViewSite">' +
+      '<span class="dp-btn-label">View website ↗</span>' +
+      '<span class="dp-btn-desc">Open the Evida marketing site</span>' +
+    '</button>' +
+    '<div class="dp-divider"></div>' +
     '<button class="dp-reset">↩ Reset to zero</button>';
   document.body.appendChild(panel);
 
@@ -202,6 +207,13 @@
     renderFailState(); // stays open so the armed state is visible
   });
   renderFailState();
+
+  /* View website — leaves the patient app for the marketing site */
+  var siteBtn = panel.querySelector('#dpViewSite');
+  if (siteBtn) siteBtn.addEventListener('click', function () {
+    closePanel();
+    window.location.href = '/';
+  });
 
   /* Reset button */
   panel.querySelector('.dp-reset').addEventListener('click', function () {
