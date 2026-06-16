@@ -188,19 +188,19 @@ AND tapping it pre-fills the signup form with their previous data
 | 3 | Blood test | Clinic selected | Tap location card | Card highlighted, date/time section appears below |
 | 3 | Blood test | Date selected | Tap date | Date highlighted, available times shown |
 | 3 | Blood test | Time selected | Tap time | Time highlighted, "Book Blood Test" button active |
-| 3 | Blood test | Skip | Tap "Skip for now" | Redirects to step 5 (pay without blood test booked) |
+| 3 | Blood test | Skip | Tap "Skip for now" | Redirects to onboarding.html (defer entire booking) |
 | 4 | GP consult | Default (gated) | `?step=4` | Info card showing blood test date + 4–5 day gap, date grid (disabled before min date) |
 | 4 | GP consult | Date selected | Tap eligible date | Date highlighted, times shown |
 | 4 | GP consult | Booked | Both date + time picked | "Book Virtual GP" active |
 | 5 | Review & Pay | Default | `?step=5` | Cart: £320 membership, blood slot (edit), GP slot (edit), 2× GP credits, 6-mo follow-up |
 | 5 | Review & Pay | Discount applied | Enter code + "Apply" | Cart updates discount row, total recalculates |
 | 5 | Review & Pay | Slot hold active | Step 5 entered | Amber hold banner: "Slots held for 14:58" countdown |
-| 5 | Review & Pay | Payment in progress | Tap "Pay £X — Activate membership" | Button shows spinner, disabled |
-| 5 | Review & Pay | Payment failed | Stripe simulation rejects | Error banner "Payment declined", retry timer shows (same hold countdown) |
-| 5 | Review & Pay | Skip payment | Tap "I'll pay later" | Redirects to onboarding with `?pending=1` |
+| 5 | Review & Pay | Payment in progress | Tap "Pay £X — Activate membership" | Button shows spinner, disabled, 2-second delay simulating processing |
+| 5 | Review & Pay | Payment failed | `evida:demo:fail-payment` flag is set | Error banner "Payment declined — slots still held", retry timer remaining, one-shot flag consumed |
+| 5 | Review & Pay | Skip payment | Tap "I'll pay later" | Redirects to `dashboard.html?pending=payment` |
 | 7 | Confirmation | Success | Payment succeeds | Welcome message, blood test + GP consult detail cards, "Add to calendar" buttons, receipt ref, "Continue to onboarding →" |
 | — | Slot released | Hold expired | Timer reaches 0:00 | "Your slot was released" — choose new slot button → step 3 |
-| — | Payment failed recovery | Payment declined | `?step=payment-failed` | "Payment unsuccessful — slots still held for X:XX", retry or choose new slots |
+| — | Payment failed recovery | Payment declined | `evida:demo:fail-payment` flag triggered | "Payment unsuccessful — slots still held for X:XX", retry or choose new slots |
 
 **Key behaviours:**
 - **Clinics:** 3 Randox clinics (Oxford Circus, Holborn, Liverpool St) with postcode filter
@@ -208,7 +208,7 @@ AND tapping it pre-fills the signup form with their previous data
 - **Fasting reminder:** Pre-filled banner about fasting requirement; checkbox on confirmation to add calendar reminder
 - **Discount codes:** Pre-filled `EVIDA160` at step 5 — applies −£160 (50%) automatically in prototype
 - **Slot hold timer:** 15 minutes (900 seconds), shown on sticky pay bar and hold banner
-- **Payment simulation:** Random ~20% failure in UAT mode; `fail-payment` flag guarantees failure
+- **Payment simulation:** Deterministic — succeeds by default; set `evida:demo:fail-payment` flag to trigger failure (one-shot, consumed on use). The `_uat.js` gear panel provides a "Fail next payment" toggle.
 - **Confetti:** 300ms after confirmation screen, confetti canvas animation fires
 - **Invoice download:** Generates branded HTML invoice in print/Save-as-PDF view
 - **Receipt reference:** `EV-XXXXXX` (6 random digits)
@@ -217,9 +217,10 @@ AND tapping it pre-fills the signup form with their previous data
 **Edge cases:**
 - GP consultation gated: Must be 4–5 working days after blood test (dates before min date are disabled with tooltip)
 - Changing blood date after GP date selected: GP date resets if it falls before new min date
-- Skip blood test: No blood slot selected, GP consult step goes straight to review
+- Skip blood test: `skipBloodBooking()` redirects to `onboarding.html` (defers entire booking)
 - Back from confirmation → step previous; back from step 3 → login (signup flow) or dashboard (existing)
 - Pre-filled discount `EVIDA160` always applied in prototype but suggests where the real offer lives
+- GP auto-select: Step 4 auto-selects first bookable date/time in prototype for demo convenience; production would require explicit member selection
 
 **Acceptance Criteria:**
 
@@ -493,7 +494,7 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 |--------|------------|----------------|
 | Entry | `?flow=signup` | No param |
 | Back from step 3 | → login.html | → dashboard.html |
-| Pre-filled data | None | Existing booking details (if any) |
+| Pre-filled data | Auto-selected defaults (first clinic, first blood slot) | Auto-selected defaults (same as new member; prototype does not restore previous booking) |
 | Cart shows | "Evida Membership (12 months)" | Same — second year |
 
 ---
@@ -518,7 +519,7 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 | `faq.html` | 2 | expanded category, search results |
 | `contact.html` | 2 | topic selector, message form |
 | `documents.html` | 2 | document list (with 5 doc viewers) |
-| `questionnaire.html` | 3 | step1 (conditions/medications/family), step2 (lifestyle), step3 (allergies/goals) |
+| `questionnaire.html` | 3 | step1 (conditions/medications), step2 (family history/allergies), step3 (lifestyle) |
 | `search.html` | 1 | search results |
 
 ---
@@ -545,7 +546,7 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 | 16 | Dark mode persistence | `_nav-helpers.js` | `prefs.darkMode()` stored as `'1'`/`'0'` under legacy key `evida_dark_mode` |
 | 17 | No consultation → post-consult | `post-consult.html` | Empty state shown; hidden demo link to simulate completion for testing |
 | 18 | No wearable connected → insights | `insights.html`, `dashboard.html` | "No devices connected — connect one" message |
-| 19 | Ask Evi disclaimer | `ask-evi.html` | Banner: "non-diagnostic", "not medical advice", seek-care pathway |
+| 19 | Ask Evi disclaimer | `ask-evi.html` | Inline notice: "General health information only — not medical advice" (`ask-evi.html:119`) |
 | 20 | Contact form submit | `contact.html` | Shows toast confirmation (simulated, no backend) |
 | 21 | Document viewer fallback | `documents.html` / doc-* viewers | Static demo content, no real backend data |
 | 22 | Profile form always editable | `profile.html` | No lock/save state for ID verification submission |
@@ -604,13 +605,14 @@ interface Onboarding {
 }
 
 interface Questionnaire {
-  conditions: string[]
-  medications: string[]
-  familyHistory: string[]
-  lifestyle: { smoking: string, alcohol: string, exercise: string, diet: string }
-  allergies: string[]
-  goals: string[]
-  completedAt: string  // ISO
+  conditions: string
+  medications: string
+  familyHistory: string
+  allergies: string
+  smoking: string     // 'never' | 'ex' | 'occasional' | 'daily'
+  alcohol: string     // 'none' | 'light' | 'moderate' | 'heavy'
+  exercise: string    // 'sedentary' | 'light' | 'moderate' | 'active'
+  completedAt: string // ISO
 }
 
 interface Account {
@@ -650,26 +652,29 @@ interface Preferences {
 
 ### UAT Harness (`_uat.js`)
 
-4 demo buttons on the `index.html` prototype shell that seed `EvidaStore`:
+A gear-button panel in the bottom-left corner of every screen exposes 7 controls. The first 4 seed `EvidaStore` journey states; 3 are utility buttons.
 
 | Button | Seed state | Expected app behaviour |
 |--------|-----------|----------------------|
-| **Pre-booking** | Clears all EvidaStore keys | Dashboard shows pre-booking state (hero CTA, no appointments, empty checklist, empty stat cards) |
-| **Post-consult** | Sets booking confirmed, consult completed, demo questionnaire + 1 wearable | Dashboard shows post-consult state (checklist hidden, "Your results are ready" badge, completed appointments, populated stats); post-consult.html shows all 4 tabs |
-| **Full member** | Sets booking confirmed (blood + GP slots) but no consult | Dashboard shows post-booking/pre-consult state (checklist with 0/3, appointment rows with upcoming dates, "Results pending") |
-| **I want to fail payment** | Sets `evida:demo:fail-payment` flag | Booking step 5 will always fail payment (overrides random 20%) → shows payment-failed recovery screen |
+| **New user** | `EvidaStore.clearAll()` → `login.html` | Fresh account — no booking. Login screen shown. |
+| **Baseline booked** | `seedBooked()` (booking confirmed, future dates) → `dashboard.html` | Dashboard shows post-booking/pre-consult state (checklist with 0/3, appointment rows with upcoming dates, "Results pending") |
+| **Pre-consult complete** | `seedBooked()` + questionnaire + ID verification + 1 wearable → `dashboard.html` | All onboarding tasks done (100%), awaiting consultation. Dashboard shows completed checklist, connected device. |
+| **Post-consult** | `seedBooked(past)` + questionnaire + ID verification + 1 wearable + `markCompleted()` → `post-consult.html` | Dashboard shows post-consult state (checklist hidden, "Your results are ready" badge, completed appointments, populated stats); post-consult.html shows all 4 tabs |
+| **Fail next payment** | Sets `evida:demo:fail-payment` flag (one-shot, consumed by `booking.html`) | Booking step 5 will always fail payment → shows payment-failed recovery screen |
+| **View website ↗** | `window.location.href = '/'` | Leaves the patient app for the marketing site |
+| **↩ Reset to zero** | `EvidaStore.clearAll()` → `login.html` | Wipes all state, returns to login |
 
 ### Testing Flows
 
 | Test scenario | Steps | Expected result |
 |--------------|-------|----------------|
-| New member full flow | 1. Open index.html 2. Tap "Login" 3. Create account 4. Complete booking 5. Complete onboarding | Dashboard shows post-booking/pre-consult state |
-| Returning member | 1. Run "Full member" demo 2. Navigate to dashboard | Dashboard shows bookings, checklist, appointments |
+| New member full flow | 1. Open any screen 2. Tap demo gear → "New user" 3. Create account 4. Complete booking 5. Complete onboarding | Dashboard shows post-booking/pre-consult state |
+| Returning member | 1. Run "Baseline booked" demo 2. Navigate to dashboard | Dashboard shows bookings, checklist, appointments |
 | Post-consult view | 1. Run "Post-consult" demo 2. Go to dashboard 2. Tap badge or navigate to post-consult.html | Health report with all 4 tabs populated |
-| Payment failure recovery | 1. Run "Full member" 2. Run "Fail payment" 3. Go to booking?step=5 4. Tap Pay | Payment fails → recovery screen → retry or new slots |
-| Pre-booking state | 1. Run "Pre-booking" 2. Navigate to dashboard | Empty booking hero, no checklist, no appointments |
+| Payment failure recovery | 1. Run "Baseline booked" 2. Run "Fail next payment" 3. Go to booking?step=5 4. Tap Pay | Payment fails → recovery screen → retry or new slots |
+| Pre-booking state | 1. Run "New user" 2. Navigate to dashboard | Empty booking hero, no checklist, no appointments |
 | Locked account | 1. Navigate to login 2. Sign in with `locked@evida.co.uk` | Error banner "This account has been temporarily locked" |
-| Pending membership | 1. Run "Full member" 2. Navigate to booking?flow=signup 3. Skip payment 4. Complete onboarding | Dashboard shows pending payment banner |
+| Pending membership | 1. Run "Baseline booked" 2. Navigate to booking?flow=signup 3. Skip payment 4. Complete onboarding | Dashboard shows pending payment banner |
 
 ---
 
