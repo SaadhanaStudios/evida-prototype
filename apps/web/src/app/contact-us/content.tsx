@@ -26,7 +26,7 @@ const PAGE_HTML = `
   <div style="max-width:1280px; margin:0 auto; width:100%;">
     <p style="color:#ff5a5f; font-family:Inter,sans-serif; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 16px;">Contact</p>
     <h1 style="color:white; font-family:Geist,sans-serif; font-size:clamp(40px,5.5vw,72px); font-weight:400; line-height:1.05; margin:0 0 20px; letter-spacing:-0.01em;">Get in touch.</h1>
-    <p style="color:rgba(255,255,255,0.55); font-family:Inter,sans-serif; font-size:18px; line-height:1.6; margin:0; max-width:520px;">Whether you want to join the pilot, have a question about Evida, or explore a partnership — we'd love to hear from you.</p>
+    <p style="color:rgba(255,255,255,0.55); font-family:Inter,sans-serif; font-size:18px; line-height:1.6; margin:0; max-width:520px;">Whether you want to get started, have a question about Evida, or explore a partnership — we'd love to hear from you.</p>
   </div>
 </section>
 
@@ -49,7 +49,7 @@ const PAGE_HTML = `
 
       <div style="background:#09332e; border-radius:12px; padding:24px 28px;">
         <span style="font-family:Inter,sans-serif; font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#ff5a5f; display:block; margin-bottom:8px;">Now live</span>
-        <p style="font-family:Geist,sans-serif; font-size:15px; color:rgba(255,255,255,0.8); margin:0 0 16px; line-height:1.6;">Our London pilot is now live — join now and be among the first through.</p>
+        <p style="font-family:Geist,sans-serif; font-size:15px; color:rgba(255,255,255,0.8); margin:0 0 16px; line-height:1.6;">Our pilot is now live — get started and be among the first through.</p>
         <a href="/membership" style="font-family:Inter,sans-serif; font-size:13px; font-weight:500; color:#fef2a7; text-decoration:none; letter-spacing:0.01em;">See what's included →</a>
       </div>
     </div>

@@ -15,14 +15,14 @@ const VERSIONS: Record<VersionKey, {
     label: 'V1',
     tagline: 'More than a health check',
     'hero-headline': '<span class="subtitle-0">More than a </span><br><span class="subtitle-1">health check.</span>',
-    'hero-subtext': 'Comprehensive blood tests, your wearable data, and<br>45 minutes with a doctor who has time to listen.',
+    'hero-subtext': 'Comprehensive blood tests, your wearable data, and<br>45 minutes with a GP who has time to listen.',
     'hero-cta': 'Get Started',
   },
   v2: {
     label: 'V2',
     tagline: 'Smarter prevention',
     'hero-headline': '<span class="subtitle-0">Smarter prevention, </span><span class="subtitle-1">built around you.</span>',
-    'hero-subtext': 'Comprehensive blood tests, your wearable data, and<br>45 minutes with a doctor who has time to listen.',
+    'hero-subtext': 'Comprehensive blood tests, your wearable data, and<br>45 minutes with a GP who has time to listen.',
     'hero-cta': 'Get Started',
   },
   v3: {
