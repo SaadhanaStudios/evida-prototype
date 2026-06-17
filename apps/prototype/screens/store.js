@@ -53,8 +53,10 @@
     consultationsLast:     'evida:consultations:last',
     darkMode:              'evida_dark_mode',     // legacy underscore key — preserved
     medicalQuestionnaire:  'evida:medical:questionnaire',
+    membershipStatus:      'evida:membership:status',
     notifChannels:         'evida:prefs:notif:channels',
     notifCount:            'evida_notif_count',   // legacy underscore key — preserved
+    notifRead:             'evida:prefs:notif:read',
     onboardingCompleted:   'evida:onboarding:completed',
     onboardingSetupTasks:  'evida:onboarding:setup:tasks',
     onboardingTour:        'evida:onboarding:tour',
@@ -205,8 +207,14 @@
      notifCount: int (default 3); darkMode: boolean stored as '1'/'0'
      ------------------------------------------------------------------------ */
   var prefs = {
-    notifCount: function () { return parseInt(readRaw(KEYS.notifCount, '3'), 10) || 0; },
+    notifCount: function () {
+      if (readRaw(KEYS.notifRead, null) === '1') return 0;
+      return parseInt(readRaw(KEYS.notifCount, '3'), 10) || 0;
+    },
     setNotifCount: function (n) { return writeRaw(KEYS.notifCount, String(n)); },
+    /** Mark every notification read — zeroes the unread badge. */
+    markNotifsRead: function () { return writeRaw(KEYS.notifRead, '1'); },
+    notifsRead: function () { return readRaw(KEYS.notifRead, null) === '1'; },
     darkMode: function () { return readRaw(KEYS.darkMode, null) === '1'; },
     setDarkMode: function (on) { return writeRaw(KEYS.darkMode, on ? '1' : '0'); },
     /** @param {string} channel @returns {boolean} */
@@ -262,12 +270,53 @@
   };
 
   /* ---------------------------------------------------------------------------
-     idVerification — has the member uploaded their photo ID?
+     idVerification — photo-ID review lifecycle.
+     Three states gate clinical service delivery distinctly:
+       'pending'  — nothing submitted yet (default)
+       'uploaded' — member has submitted their ID; awaiting clinical review.
+                    This completes the member's onboarding action.
+       'verified' — Evida's clinical team has reviewed & approved the ID.
+                    Required before the first GP consultation can proceed.
+     Legacy value 'true' (pre-lifecycle prototype sessions) reads as 'verified'.
      ------------------------------------------------------------------------ */
   var idVerification = {
-    isVerified: function () { return readRaw(KEYS.idVerified, null) === 'true'; },
-    setVerified: function () { return writeRaw(KEYS.idVerified, 'true'); },
+    /** @returns {'pending'|'uploaded'|'verified'} */
+    status: function () {
+      var v = readRaw(KEYS.idVerified, null);
+      if (v === 'verified' || v === 'true') return 'verified';
+      if (v === 'uploaded') return 'uploaded';
+      return 'pending';
+    },
+    /** @returns {boolean} member has submitted ID (uploaded OR verified) — use for checklist/task completion */
+    isUploaded: function () { var s = this.status(); return s === 'uploaded' || s === 'verified'; },
+    /** @returns {boolean} clinical team has reviewed & approved — use to gate clinical services */
+    isVerified: function () { return this.status() === 'verified'; },
+    /** Member submitted their ID for review. */
+    markUploaded: function () { return writeRaw(KEYS.idVerified, 'uploaded'); },
+    /** Clinical team reviewed & approved the ID. */
+    markVerified: function () { return writeRaw(KEYS.idVerified, 'verified'); },
+    /** @deprecated kept for back-compat — prefer markUploaded()/markVerified() */
+    setVerified: function () { return this.markVerified(); },
     clear: function () { return removeRaw(KEYS.idVerified); }
+  };
+
+  /* ---------------------------------------------------------------------------
+     membership — subscription lifecycle (distinct from account deletion)
+       'active'     — paid and running (default)
+       'cancelling' — cancelled after the 14-day window; access runs to the
+                      end of the paid term, then lapses
+       'cancelled'  — cancelled inside the 14-day cooling-off window; refunded
+                      and ended immediately
+     ------------------------------------------------------------------------ */
+  var membership = {
+    /** @returns {'active'|'cancelling'|'cancelled'} */
+    status: function () { return readRaw(KEYS.membershipStatus, 'active') || 'active'; },
+    /** @returns {boolean} membership still grants access */
+    isActive: function () { return this.status() !== 'cancelled'; },
+    /** @param {boolean} endOfTerm true = runs to term end ('cancelling'); false = immediate refund ('cancelled') */
+    cancel: function (endOfTerm) { return writeRaw(KEYS.membershipStatus, endOfTerm ? 'cancelling' : 'cancelled'); },
+    reactivate: function () { return writeRaw(KEYS.membershipStatus, 'active'); },
+    clear: function () { return removeRaw(KEYS.membershipStatus); }
   };
 
   global.EvidaStore = {
@@ -281,6 +330,7 @@
     profile: profile,
     prefs: prefs,
     idVerification: idVerification,
+    membership: membership,
     /** Reset to a truly fresh user: remove every Evida key, including the
         legacy underscore keys (evida_notif_count, evida_dark_mode) and any
         leftover UAT/demo tooling keys. */

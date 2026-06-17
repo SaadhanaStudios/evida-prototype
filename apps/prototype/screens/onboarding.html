@@ -360,7 +360,7 @@ var onbIdUploaded = false;
     if (EvidaStore.booking.isConfirmed())          ensure('booking');
     if (EvidaStore.wearables.list().length > 0)    ensure('wearables');
     if (EvidaStore.questionnaire.isCompleted())    ensure('questionnaire');
-    if (EvidaStore.idVerification.isVerified())    ensure('verify');
+    if (EvidaStore.idVerification.isUploaded())    ensure('verify');  // counts once submitted; clinical review (isVerified) happens after
 
     function markCard(taskId) {
       if (taskId === 'verify') {

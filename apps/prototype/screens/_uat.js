@@ -5,7 +5,9 @@
     medications:   'Lisinopril 10mg daily',
     familyHistory: 'Father: type 2 diabetes, coronary artery disease',
     allergies:     'Penicillin (rash)',
-    smoking: 'never', alcohol: 'light', exercise: 'moderate'
+    smoking: 'never', alcohol: 'light', exercise: 'moderate',
+    diet: 'omnivore',
+    goals: 'Lower cardiovascular risk, improve energy, build a sustainable exercise habit'
   };
   var DEMO_WEARABLE = { id: 'apple-watch', name: 'Apple Watch Series 9', brand: 'Apple' };
   var DEMO_ACCOUNT  = { name: 'James Chen', email: 'james.chen@gmail.com' };
@@ -59,7 +61,7 @@
       action: function () {
         seedBooked();
         EvidaStore.questionnaire.save(DEMO_QUESTIONNAIRE);
-        EvidaStore.idVerification.setVerified();
+        EvidaStore.idVerification.markUploaded();  // submitted, awaiting clinical review
         EvidaStore.wearables.connect(Object.assign({}, DEMO_WEARABLE, { connectedAt: new Date().toISOString() }));
         window.location.href = 'dashboard.html';
       }
@@ -70,7 +72,7 @@
       action: function () {
         seedBooked(true);
         EvidaStore.questionnaire.save(DEMO_QUESTIONNAIRE);
-        EvidaStore.idVerification.setVerified();
+        EvidaStore.idVerification.markVerified();  // reviewed & approved before the consult
         EvidaStore.wearables.connect(Object.assign({}, DEMO_WEARABLE, { connectedAt: new Date().toISOString() }));
         EvidaStore.consultations.markCompleted();
         window.location.href = 'post-consult.html';

@@ -61,10 +61,10 @@
       <!-- Progress bar -->
       <div class="progress-wrap" style="margin: -16px -16px 16px; padding: 8px 16px 12px;">
         <div class="progress-label">
-          <span id="stepLabel">Step 1 of 3</span>
-          <span id="stepPct">33%</span>
+          <span id="stepLabel">Step 1 of 4</span>
+          <span id="stepPct">25%</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
       </div>
 
       <!-- Step 1: Medical history -->
@@ -149,6 +149,45 @@
 
         <div class="step-nav">
           <button class="btn btn-outline" onclick="goStep(2)">Back</button>
+          <button class="btn btn-primary" style="flex:1" onclick="goStep(4)">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Goals & diet -->
+      <div class="q-step" id="step4">
+        <h2 class="step-heading">Your goals &amp; diet</h2>
+        <p class="step-sub">This is what we build your prevention plan around — tell us what you want to achieve and how you eat.</p>
+
+        <div class="field-group">
+          <label>What are your main health goals?</label>
+          <div class="radio-group" style="gap:8px">
+            <label class="radio-opt" onclick="toggleGoal(this,'cardio',event)"><input type="checkbox" value="cardio" style="width:18px;height:18px;accent-color:var(--color-primary);flex-shrink:0"><span>Lower cardiovascular risk</span></label>
+            <label class="radio-opt" onclick="toggleGoal(this,'weight',event)"><input type="checkbox" value="weight" style="width:18px;height:18px;accent-color:var(--color-primary);flex-shrink:0"><span>Manage weight</span></label>
+            <label class="radio-opt" onclick="toggleGoal(this,'energy',event)"><input type="checkbox" value="energy" style="width:18px;height:18px;accent-color:var(--color-primary);flex-shrink:0"><span>Improve energy &amp; sleep</span></label>
+            <label class="radio-opt" onclick="toggleGoal(this,'fitness',event)"><input type="checkbox" value="fitness" style="width:18px;height:18px;accent-color:var(--color-primary);flex-shrink:0"><span>Build fitness / strength</span></label>
+            <label class="radio-opt" onclick="toggleGoal(this,'longevity',event)"><input type="checkbox" value="longevity" style="width:18px;height:18px;accent-color:var(--color-primary);flex-shrink:0"><span>Healthy longevity</span></label>
+          </div>
+          <div class="hint">Select any that apply. You can refine these with your GP.</div>
+        </div>
+
+        <div class="field-group">
+          <label for="q_goalNotes">Anything specific you'd like to focus on? <span style="font-weight:400;color:var(--evida-muted)">(optional)</span></label>
+          <textarea id="q_goalNotes" placeholder="e.g. My father had a heart attack at 60 — I want to get ahead of my own risk." style="min-height:64px"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>Diet pattern</label>
+          <div class="radio-group" id="q_diet">
+            <label class="radio-opt" onclick="selectRadio('q_diet', 'omnivore')"><input type="radio" name="diet" value="omnivore"><span>Omnivore (eat most things)</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_diet', 'flexitarian')"><input type="radio" name="diet" value="flexitarian"><span>Mostly plant-based / flexitarian</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_diet', 'vegetarian')"><input type="radio" name="diet" value="vegetarian"><span>Vegetarian</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_diet', 'vegan')"><input type="radio" name="diet" value="vegan"><span>Vegan</span></label>
+            <label class="radio-opt" onclick="selectRadio('q_diet', 'other')"><input type="radio" name="diet" value="other"><span>Other / specialised</span></label>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn btn-outline" onclick="goStep(3)">Back</button>
           <button class="btn btn-primary" style="flex:1" id="submitBtn" onclick="submitQuestionnaire()">Submit</button>
         </div>
       </div>
@@ -186,7 +225,8 @@
 <script src="_nav-helpers.js"></script>
 <script>
 var currentStep = 1;
-var TOTAL_STEPS = 3;
+var TOTAL_STEPS = 4;
+var selectedGoals = [];
 
 function goStep(n) {
   document.getElementById('step' + currentStep).classList.remove('active');
@@ -221,6 +261,16 @@ function getRadioValue(name) {
   return el ? el.value : '';
 }
 
+function toggleGoal(optEl, value, ev) {
+  if (ev) ev.preventDefault();  // manage the checkbox ourselves so label + box clicks stay in sync
+  var box = optEl.querySelector('input[type="checkbox"]');
+  var i = selectedGoals.indexOf(value);
+  var on = i === -1;
+  if (on) selectedGoals.push(value); else selectedGoals.splice(i, 1);
+  box.checked = on;
+  optEl.classList.toggle('selected', on);
+}
+
 function handleBack() {
   if (currentStep > 1) {
     goStep(currentStep - 1);
@@ -233,9 +283,15 @@ function submitQuestionnaire() {
   var smoking  = getRadioValue('smoking');
   var alcohol  = getRadioValue('alcohol');
   var exercise = getRadioValue('exercise');
+  var diet     = getRadioValue('diet');
 
   if (!smoking || !alcohol || !exercise) {
-    showToast('Please answer all questions on this page');
+    showToast('Please answer all the lifestyle questions');
+    goStep(3);
+    return;
+  }
+  if (!diet) {
+    showToast('Please choose your diet pattern');
     return;
   }
 
@@ -250,7 +306,10 @@ function submitQuestionnaire() {
     allergies:     document.getElementById('q_allergies').value.trim() || 'None',
     smoking:       smoking,
     alcohol:       alcohol,
-    exercise:      exercise
+    exercise:      exercise,
+    diet:          diet,
+    goals:         selectedGoals.slice(),
+    goalNotes:     document.getElementById('q_goalNotes').value.trim()
   });
 
   EvidaStore.onboarding.completeTask('questionnaire');
@@ -271,6 +330,15 @@ function submitQuestionnaire() {
   if (existing.smoking)       selectRadio('q_smoking',  existing.smoking);
   if (existing.alcohol)       selectRadio('q_alcohol',  existing.alcohol);
   if (existing.exercise)      selectRadio('q_exercise', existing.exercise);
+  if (existing.diet)          selectRadio('q_diet',     existing.diet);
+  if (existing.goalNotes)     document.getElementById('q_goalNotes').value = existing.goalNotes;
+  if (Array.isArray(existing.goals)) {
+    selectedGoals = existing.goals.slice();
+    selectedGoals.forEach(function(g) {
+      var box = document.querySelector('#step4 input[type="checkbox"][value="' + g + '"]');
+      if (box) { box.checked = true; box.closest('.radio-opt').classList.add('selected'); }
+    });
+  }
 })();
 </script>
 </body>

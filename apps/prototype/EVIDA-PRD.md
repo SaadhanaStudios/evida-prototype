@@ -1,10 +1,12 @@
 # Evida Member App — Product Requirements Document (Prototype)
 
-> **Version:** 1.0 (Prototype)  
+> **Version:** 1.1 (Prototype)  
 > **Audience:** Engineering, Design, QA, Product  
 > **Scope:** `apps/prototype/screens/` — member-facing app only (not marketing website)  
 > **Language:** UK English (personalised, colour, mmol/L, behaviour)  
 > **Brand:** "Member" (not user/patient), "Evida Protocol", "Biomarker", "Prevention Plan", "Check-in"
+
+> **v1.1 changelog (PM gap-analysis pass):** Added forgot-password and reset-link-sent flows; sign-out → login (§4.3); notification panel (§4.4); health goals + diet capture (questionnaire step 4); cancel-membership journey (§4.5); granular ID-verification lifecycle (pending → uploaded → verified); messages empty state; loading-state documentation; error-state register (§7.2); central URL-parameter registry (§6.2). Corrected the payment-failure edge case (deterministic, not random).
 
 ---
 
@@ -272,7 +274,7 @@ AND confetti animation plays after 300ms
 | 1 | Welcome | Tour default | "Welcome to Evida" — 3 feature cards (Dashboard, Blood Test, GP Consult), "Next →" CTA, "Skip tour" link |
 | 2 | Protocol | From step 1 | "The Evida Protocol" — Track/Tailor/Act explanation, "← Back" + "Next →", "Skip tour" |
 | 3 | Setup | From step 2 or skip | Progress summary (0/5 tasks), 5 setup task cards: Book Baseline, Connect Wearable, Upload Records, Health Questionnaire, Verify Identity |
-| 3 | Setup | Inline ID verification | Tapping "Verify →" opens inline section: file upload for profile photo (optional) + photo ID (required), "Save verification" button |
+| 3 | Setup | Inline ID verification | Tapping "Verify →" opens inline section: file upload for profile photo (optional) + photo ID (required). Uploading sets ID status to **uploaded** (`markUploaded()`) — the member's part is done; the task counts as complete on `isUploaded()`, even before clinical review. See §3.6 for the full lifecycle. |
 | 3 | Setup | All 5 tasks done | Celebration: "All tasks complete! Taking you to your dashboard" toast → redirect to dashboard |
 | 3 | Setup | Pending membership | `?pending=1` param — amber banner: "Membership pending — complete payment to unlock..." |
 
@@ -336,8 +338,8 @@ AND they are redirected to dashboard.html
 **Universal elements (all states):**
 - Search bar (redirects to Ask Evi after 700ms)
 - Status bar (personalised greeting from `EvidaStore.account.saved()`, avatar initials)
-- 4 bottom nav items: Dashboard | Data & Insights | Ask Evi | Appointments
-- "More" sheet: Wearables, Documents, Messages, FAQ, Profile, Settings
+- 4 bottom nav items (varies slightly by screen): Dashboard | Data & Insights | Wearables/Ask Evi | Appointments
+- "More" sheet (bottom-nav overflow): a bottom sheet of secondary destinations. **Contents are screen-specific** — the sheet lists whatever is *not* already in that screen's bottom nav. On `dashboard.html`: Wearables, Documents, Messages, FAQ, Profile, Settings (6). On most content screens (e.g. `profile.html`, `settings.html`): Documents, Ask Evi, Messages, Contact us, FAQ, Profile, Settings (7). Sheet icons and the active item are injected by `initNavSheet()` in `_nav-helpers.js`.
 - Inline alerts: onboarding reminder, ID verification reminder, celebration banner
 - Dark mode toggle in header
 
@@ -381,6 +383,24 @@ AND document dates reflect the consultation date
 
 ---
 
+### 3.6 ID Verification Lifecycle
+
+Photo-ID verification gates clinical service delivery and has **three states** (not a boolean). Backed by `EvidaStore.idVerification`:
+
+| Status | Set by | Member sees (profile.html) | Counts toward checklist? | Gates clinical service? |
+|--------|--------|----------------------------|--------------------------|-------------------------|
+| `pending` | default | Badge "Pending" (amber), empty upload box | No | — |
+| `uploaded` | `markUploaded()` on file upload | Badge "Uploaded — pending review", box ✓ | **Yes** (`isUploaded()`) — member's action is complete | Not yet approved |
+| `verified` | `markVerified()` — clinical-team review (simulated by the "Post-consult" demo seed) | Badge "Verified" | Yes | **Approved** — required before the first GP consult |
+
+**Why the distinction matters:** the onboarding checklist and dashboard reminders should stop nagging once the member has *submitted* their ID (`uploaded`), but clinical-service gating (e.g. proceeding to the GP consult) requires the clinical team to have *reviewed and approved* it (`verified`). The prototype previously conflated these by flipping straight to verified on upload; it now models both.
+
+- Checklist / reminder logic (`dashboard.html`, `onboarding.html`) uses `isUploaded()`.
+- The legacy stored value `'true'` (older sessions) reads as `verified` for back-compatibility.
+- `setVerified()` is retained as a deprecated alias for `markVerified()`.
+
+---
+
 ## 4. Journey 2: Returning Member
 
 ### Overview
@@ -402,13 +422,21 @@ Sign In → Dashboard (post-consult state) → Explore app (Post-Consult, Insigh
 | State | Trigger | Key elements |
 |-------|---------|--------------|
 | Default | Tap "Sign in" from landing | Email + Password fields, "Forgot password?" link, "Sign in" button |
+| Signin loading | Tap "Sign in" with valid input | Button shows spinner, disabled, 800ms simulated auth |
 | Locked account | Email = `locked@evida.co.uk` | Error banner: "This account has been temporarily locked" |
+| Signed out | `?signedout=1` (set by sign-out) | Teal banner: "You've been signed out. Sign back in any time — your data is safe." (see §4.3) |
 | Demo pre-fill | Page load (prototype) | Email `james.chen@gmail.com`, Password `MyHealth2026!` pre-filled |
 | Resume payment | `?resume=payment` | Immediately redirects to `booking.html?flow=signup&resume=payment` |
+| **Forgot password** | Tap "Forgot password?" | `screen-forgot-password`: email field + "Send reset link" CTA, "Back to sign in" link |
+| **Forgot loading** | Tap "Send reset link" | Button spinner, disabled, 800ms |
+| **Reset link sent** | Valid email submitted | `screen-reset-link-sent`: confirmation showing the email, "expires in 60 minutes", "Send again", "Back to sign in" |
 
 **Key behaviours:**
 - Successful sign-in: 800ms loading spinner, then redirect to `dashboard.html`
-- "Forgot password?" shows toast (simulated)
+- "Forgot password?" → `showScreen('screen-forgot-password')` (a real screen, URL `?s=forgot-password`), not a toast
+- Forgot-password email is pre-filled in the prototype; submitting validates a basic `@` check, then shows `screen-reset-link-sent`
+- Reset flow is front-end only (no email is sent); the confirmation uses neutral "if an account exists" wording so it never confirms whether an email is registered
+- Back button and "Back to sign in" links return both forgot-password screens to `screen-signin`
 
 **Acceptance Criteria:**
 
@@ -427,6 +455,14 @@ GIVEN valid credentials
 WHEN the member taps "Sign in"
 THEN a loading spinner is shown for 800ms
 AND they are redirected to dashboard.html
+
+GIVEN a member who has forgotten their password
+WHEN they tap "Forgot password?"
+THEN a dedicated reset screen is shown with an email field
+AND submitting a valid email shows a "Check your email" confirmation
+AND the confirmation states the link expires in 60 minutes
+AND the confirmation does not reveal whether the email is registered
+AND "Back to sign in" returns to the sign-in screen
 ```
 
 ---
@@ -480,6 +516,91 @@ AND the Reminders tab shows 5 toggle-able reminders with dates derived from the 
 
 ---
 
+### 4.3 Sign Out & Re-authentication
+
+**Trigger:** "Sign out" button (`profile.html` → Account section). Implemented as the shared `signOut()` helper in `_nav-helpers.js`.
+
+**Behaviour:**
+- Confirms with the member ("Sign out of your Evida account?")
+- On confirm, redirects to `login.html?s=signin&signedout=1` — a **clean sign-in screen**, not the marketing site
+- The sign-in screen shows a "You've been signed out" confirmation banner
+- **Local state is intentionally preserved.** The prototype has no session token, so member data in localStorage is left intact and signing back in resumes the same state. Wiping all state is a separate, explicit action ("Reset to zero" in the demo gear).
+
+> **Sign out vs. "View website" vs. "Reset to zero":** three distinct exits. *Sign out* → login screen, data kept. *View website ↗* (gear panel / header) → marketing site `/`, data kept, still "signed in". *Reset to zero* (gear panel) → wipes all state, returns to login.
+
+**Acceptance Criteria:**
+
+```
+GIVEN a signed-in member
+WHEN they tap "Sign out" and confirm
+THEN they are returned to the sign-in screen (not the marketing site)
+AND a "You've been signed out" banner is shown
+AND their data remains in localStorage so signing back in resumes their state
+```
+
+---
+
+### 4.4 Notification Panel
+
+**Trigger:** Notification bell in the header (every authenticated screen). Implemented centrally in `_nav-helpers.js` (`initNotifications()` / `buildNotifPanel()`).
+
+**Behaviour:**
+- The bell carries an unread badge driven by `EvidaStore.prefs.notifCount()` (default 3)
+- Tapping the bell opens a panel anchored under the header with a list of recent notifications (static demo content — no backend)
+- Each notification is tappable and routes to the relevant screen (results → insights, message → messages, appointment → dashboard appointments)
+- "Mark all as read" calls `EvidaStore.prefs.markNotifsRead()`, zeroes the badge across all screens, and shows the empty "You're all caught up" state
+- Closes on outside-click, on a notification tap, or `Esc`
+
+> **Note:** The header bell and the dark-mode toggle share the `.notif-bell` CSS class but are distinct controls — the bell is `aria-label="Notifications"`, the toggle is `aria-label="Toggle dark mode"`. `initNotifications()` targets only the former.
+
+**Acceptance Criteria:**
+
+```
+GIVEN a member on any authenticated screen
+WHEN they tap the notification bell
+THEN a panel of recent notifications opens
+AND tapping a notification navigates to the related screen
+AND tapping "Mark all as read" clears the unread badge everywhere
+```
+
+---
+
+### 4.5 Cancel Membership
+
+**Screen:** `settings.html` → "Manage membership" card (distinct from "Delete account" in the danger zone).
+
+**Behaviour:** Backed by `EvidaStore.membership` with three states:
+
+| Status | Meaning | Card shows |
+|--------|---------|-----------|
+| `active` | Paid and renewing (default) | "Active · Renews 1 Jun 2027", action: **Cancel** |
+| `cancelling` | Cancelled after the 14-day window; access runs to term end | "Cancelling · Active until 1 Jun 2027", action: **Reactivate** |
+| `cancelled` | Cancelled inside the 14-day cooling-off window; refunded immediately | "Cancelled", action: **Rejoin** |
+
+- The cancel confirmation branches on the 14-day cooling-off window (membership start + 14 days): inside the window → immediate end + full refund (`cancel(false)` → `cancelled`); outside → runs to end of paid term (`cancel(true)` → `cancelling`)
+- Reactivate / Rejoin restores `active`
+- **Cancel ≠ Delete.** Cancelling stops the subscription; deleting removes the account and login (clinical records retained 8 years per CQC). Both are documented; deletion remains a simulated toast.
+
+**Acceptance Criteria:**
+
+```
+GIVEN an active member past their 14-day cooling-off period
+WHEN they cancel their membership
+THEN they are told access continues until the renewal date and won't renew
+AND the membership card shows a "Cancelling" status with a Reactivate action
+
+GIVEN an active member within their 14-day cooling-off period
+WHEN they cancel their membership
+THEN they are offered an immediate end with a full refund
+AND the membership card shows a "Cancelled" status
+
+GIVEN a cancelled/cancelling member
+WHEN they tap Reactivate/Rejoin
+THEN the membership returns to Active and renewal resumes
+```
+
+---
+
 ## 5. Journey 3: Existing Member Re-booking
 
 ### Overview
@@ -501,26 +622,51 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 
 ## 6. Screen State Reference
 
-### Complete State Table
+### 6.1 Complete State Table
+
+Loading states (spinner/disabled while a simulated async op runs) are listed explicitly — each is a real, observable UI state.
 
 | Screen | States count | States |
 |--------|-------------|--------|
-| `login.html` | 6 | landing, signin, signup, verify-email, account-created, account-pending |
-| `booking.html` | 7+ | step3 (blood), step4 (gp), step5 (pay), step7 (confirmation), slot-released, payment-failed, skip-to-onboarding |
+| `login.html` | 9 | landing, signin, signin-loading, **forgot-password**, **forgot-loading**, **reset-link-sent**, signup, verify-email (+ verify-loading), account-created (success), account-pending. Plus a **signed-out** banner variant of signin (`?signedout=1`) |
+| `booking.html` | 7+ | step3 (blood), step4 (gp), step5 (pay), **payment-processing** (2s spinner), step7 (confirmation), slot-released, payment-failed, skip-to-onboarding |
 | `onboarding.html` | 3 | tour1 (welcome), tour2 (protocol), tour3 (setup + ID verification inline + pending banner) |
 | `dashboard.html` | 4 | pre-booking, post-booking/pre-consult, post-consult, pending-payment |
 | `post-consult.html` | 2 | empty, post-consult (with 4 sub-tabs) |
 | `insights.html` | 2 | overview default, activity/sleep/heart/biomarkers sub-views |
-| `ask-evi.html` | 2 | initial suggestions, active conversation |
-| `messages.html` | 2 | thread list, detail overlay |
+| `ask-evi.html` | 3 | initial suggestions, **ai-typing** (600ms delay), active conversation |
+| `messages.html` | 3 | **empty state** (no threads), thread list, detail overlay |
 | `wearables.html` | 3 | empty, device list, connect modal |
-| `profile.html` | 3 | info view, ID verification, health questionnaire (3 steps) |
-| `settings.html` | 6+ | membership card, payment history, privacy, security, notifications, account management |
-| `faq.html` | 2 | expanded category, search results |
+| `profile.html` | 3 | info view, ID verification (pending/uploaded/verified — §3.6), health questionnaire (now incl. goals + diet) |
+| `settings.html` | 7+ | membership card, **manage-membership / cancel (active/cancelling/cancelled — §4.5)**, payment history, privacy, security, notifications, account management (delete) |
+| `faq.html` | 3 | expanded category, search results, **no-results** (search yields nothing) |
 | `contact.html` | 2 | topic selector, message form |
-| `documents.html` | 2 | document list (with 5 doc viewers) |
-| `questionnaire.html` | 3 | step1 (conditions/medications), step2 (family history/allergies), step3 (lifestyle) |
+| `documents.html` | 2+ | document list (with 5 doc viewers), **upload-progress** (simulated progress bar) |
+| `questionnaire.html` | 4 | step1 (conditions/medications), step2 (family history/allergies), step3 (lifestyle), **step4 (goals + diet)**, + **save-loading** (600ms) |
 | `search.html` | 1 | search results |
+
+Shared overlays available on authenticated screens (injected by `_nav-helpers.js`): **notification panel** (§4.4), **"More" nav sheet** (§3.5), dark-mode toggle.
+
+### 6.2 URL Parameter & Hash Registry
+
+Central registry of every query param and hash anchor the prototype reads.
+
+| Screen | Param / hash | Values | Effect |
+|--------|-------------|--------|--------|
+| `login.html` | `?s=` | `landing`, `signin`, `signup`, `forgot-password`, `reset-link-sent`, `verify-email`, `success`, `account-pending` | Jump directly to that screen (state is shareable) |
+| `login.html` | `?signedout=1` | flag | Show sign-in with the "You've been signed out" banner (set by `signOut()`) |
+| `login.html` | `?resume=payment` | flag | Immediately redirect to `booking.html?flow=signup&resume=payment` |
+| `booking.html` | `?step=` | `3`–`7` | Open the wizard at that step |
+| `booking.html` | `?flow=signup` | flag | New-member flow (back from step 3 → login.html) |
+| `booking.html` | `?resume=payment` | flag | Return to the payment step |
+| `onboarding.html` | `?pending=1` | flag | Show "membership pending — complete payment" banner |
+| `onboarding.html` | `?restart=1` | flag | Clear tour + setup tasks and restart |
+| `dashboard.html` | `?pending=payment` | flag | Show the pending-payment alert with "Pay now" |
+| `dashboard.html` | `#appointments` | hash | Scroll/route to the Appointments panel (used by the Appointments nav item) |
+| `documents.html` | `?from=onboarding` | flag | Return path back into the onboarding flow |
+| `questionnaire.html` | `?step=` | `1`–`4` | Restore step position |
+| `profile.html` | `#health-questionnaire`, `#id-verification` | hash | Anchor to that section (deep-linked from checklist reminders) |
+| `post-consult.html` | tab state | in-page | 4 tabs (Reports / Prevention Plan / Biomarkers / Reminders) — not URL-backed |
 
 ---
 
@@ -539,7 +685,7 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 | 9 | Pending membership during onboarding | `onboarding.html` | Amber banner with "Pay now" link |
 | 10 | Tour resumed from stored state | `onboarding.html` | `onboarding.tourStep()` restored on load |
 | 11 | Restart tour | `onboarding.html` | `?restart=1` clears all tour + setup state |
-| 12 | Demo payment failure | `_uat.js` | Setting `evida:demo:fail-payment` flag guarantees ~20% failure becomes 100% |
+| 12 | Demo payment failure | `_uat.js` → `booking.html` | Payment is **deterministic — it never fails unless armed**. The gear-panel "Fail next payment" sets the `evida:demo:fail-payment` flag; `handlePayment()` checks it and **consumes it on use (one-shot)**, so exactly the next payment declines and subsequent attempts succeed. There is no random failure rate. |
 | 13 | Empty dashboard (pre-booking) | `dashboard.html` | Booking hero CTA shown, checklist hidden, stat cards empty |
 | 14 | Celebration banner timing | `dashboard.html` | Only shown for 30s after `onboarding.completedAt()` |
 | 15 | Wearables as optional task | `dashboard.html` | Checklist: 3/4 tasks count (wearables excluded from denominator) |
@@ -553,6 +699,26 @@ Dashboard → Booking (reboot) → Step 3–5 → Confirmation → Dashboard
 | 23 | UAT state collisions | `_uat.js` | Running multiple demo buttons without clearing can mix states |
 | 24 | Invoice download | `booking.html` | Opens new window with HTML invoice → browser's Save as PDF |
 | 25 | Phone verification | `login.html` | `6-digit code` 482719 must be entered correctly; invalid codes show error |
+| 26 | Forgot password | `login.html` | "Forgot password?" → dedicated reset screen → "reset-link-sent" confirmation (neutral "if an account exists" wording); front-end only |
+| 27 | Sign out | `_nav-helpers.js` `signOut()` | Returns to `login.html?s=signin&signedout=1` with a confirmation banner; localStorage preserved (see §4.3) |
+| 28 | ID uploaded vs verified | `idVerification` | Upload sets `uploaded` (counts for checklist); clinical review sets `verified` (gates clinical service) — see §3.6 |
+| 29 | Cancel membership | `settings.html` | Cooling-off (≤14 days) → immediate refund (`cancelled`); after → end-of-term (`cancelling`); reactivatable (see §4.5) |
+| 30 | Messages empty state | `messages.html` | Shown when there are no threads (`THREADS.length === 0`); wired, not decorative |
+| 31 | Notifications read | `_nav-helpers.js` | "Mark all as read" zeroes the badge across screens via `prefs.markNotifsRead()` |
+
+### 7.2 Error & Degraded-State Register
+
+The prototype has no backend, so these are localStorage/environment failure modes. Every `EvidaStore` getter is null/parse-safe and returns a sensible default, so the app degrades rather than crashing.
+
+| Condition | Current prototype behaviour | v2 / real-app requirement |
+|-----------|----------------------------|---------------------------|
+| `localStorage` unavailable (private mode, disabled) | All `EvidaStore` reads/writes are wrapped in try/catch; reads return defaults, writes silently no-op. The app runs but state doesn't persist between screens. | Detect and warn ("We can't save your progress in private mode"); fall back to in-memory session |
+| `localStorage` quota full | Writes fail silently (caught); the UI proceeds as if saved | Surface a non-blocking error and retry/trim |
+| Corrupt stored JSON | `readJSON` catches parse errors and returns the fallback | Same; log for diagnostics |
+| API call fails (v2) | N/A — no API in the prototype | Inline error + retry on every network action (sign-in, payment, booking, save) |
+| Payment declined | Documented (§3.3, edge case #12): "Payment unsuccessful — slots still held", retry or choose new slots | Real PSP decline codes mapped to member-friendly messages |
+| Slot hold expired | "Your slot was released" recovery screen → choose new slot | Real-time slot locking server-side |
+| Offline | Not handled | Offline banner; queue writes |
 
 ---
 
@@ -571,8 +737,9 @@ All state is centralised in `store.js`. This is the data-model contract for back
 | `questionnaire` | `evida:medical:questionnaire` | `get()`, `isCompleted()`, `save(data)`, `clear()` | `PUT /me/questionnaire` |
 | `account` | `evida:account:saved` + `evida:partial:account` | `saved()`, `save()`, `partial()`, `setPartial()`, `clearPartial()` | `POST /auth/signup` |
 | `profile` | `evida:profile:saved` | `get()`, `save(data)`, `clear()` | `GET/PUT /me/profile` |
-| `prefs` | `evida_notif_count` + `evida_dark_mode` + `evida:prefs:notif:channels` | `notifCount()`, `setNotifCount()`, `darkMode()`, `setDarkMode()`, `notifChannel()`, `setNotifChannel()` | `GET/PATCH /me/preferences` |
-| `idVerification` | `evida:profile:id-verified` | `isVerified()`, `setVerified()`, `clear()` | `POST /me/id-verification` |
+| `prefs` | `evida_notif_count` + `evida_dark_mode` + `evida:prefs:notif:channels` + `evida:prefs:notif:read` | `notifCount()`, `setNotifCount()`, `markNotifsRead()`, `notifsRead()`, `darkMode()`, `setDarkMode()`, `notifChannel()`, `setNotifChannel()` | `GET/PATCH /me/preferences` |
+| `idVerification` | `evida:profile:id-verified` | `status()`, `isUploaded()`, `isVerified()`, `markUploaded()`, `markVerified()`, `setVerified()` (deprecated), `clear()` | `POST /me/id-verification`, `GET /me/id-verification` |
+| `membership` | `evida:membership:status` | `status()`, `isActive()`, `cancel(endOfTerm)`, `reactivate()`, `clear()` | `GET /me/membership`, `POST /me/membership/cancel` |
 
 ### Key Shapes
 
@@ -609,10 +776,21 @@ interface Questionnaire {
   medications: string
   familyHistory: string
   allergies: string
-  smoking: string     // 'never' | 'ex' | 'occasional' | 'daily'
-  alcohol: string     // 'none' | 'light' | 'moderate' | 'heavy'
-  exercise: string    // 'sedentary' | 'light' | 'moderate' | 'active'
-  completedAt: string // ISO
+  smoking: string      // 'never' | 'ex' | 'occasional' | 'daily'
+  alcohol: string      // 'none' | 'light' | 'moderate' | 'heavy'
+  exercise: string     // 'sedentary' | 'light' | 'moderate' | 'active'
+  diet: string         // 'omnivore' | 'flexitarian' | 'vegetarian' | 'vegan' | 'other'
+  goals: string[]      // multi-select: 'cardio' | 'weight' | 'energy' | 'fitness' | 'longevity'
+  goalNotes: string    // free-text health goals; feeds the personalised Prevention Plan
+  completedAt: string  // ISO
+}
+
+interface IdVerification {
+  status: 'pending' | 'uploaded' | 'verified'  // see §3.6
+}
+
+interface Membership {
+  status: 'active' | 'cancelling' | 'cancelled' // see §4.5
 }
 
 interface Account {
@@ -630,7 +808,8 @@ interface Profile {
 }
 
 interface Preferences {
-  notifCount: number          // default 3
+  notifCount: number          // default 3; reads as 0 once notifsRead is set
+  notifsRead: boolean         // "mark all as read" flag (zeroes the badge)
   darkMode: boolean
   notificationChannels: {
     email: boolean
@@ -658,9 +837,9 @@ A gear-button panel in the bottom-left corner of every screen exposes 7 controls
 |--------|-----------|----------------------|
 | **New user** | `EvidaStore.clearAll()` → `login.html` | Fresh account — no booking. Login screen shown. |
 | **Baseline booked** | `seedBooked()` (booking confirmed, future dates) → `dashboard.html` | Dashboard shows post-booking/pre-consult state (checklist with 0/3, appointment rows with upcoming dates, "Results pending") |
-| **Pre-consult complete** | `seedBooked()` + questionnaire + ID verification + 1 wearable → `dashboard.html` | All onboarding tasks done (100%), awaiting consultation. Dashboard shows completed checklist, connected device. |
-| **Post-consult** | `seedBooked(past)` + questionnaire + ID verification + 1 wearable + `markCompleted()` → `post-consult.html` | Dashboard shows post-consult state (checklist hidden, "Your results are ready" badge, completed appointments, populated stats); post-consult.html shows all 4 tabs |
-| **Fail next payment** | Sets `evida:demo:fail-payment` flag (one-shot, consumed by `booking.html`) | Booking step 5 will always fail payment → shows payment-failed recovery screen |
+| **Pre-consult complete** | `seedBooked()` + questionnaire (incl. goals/diet) + ID **uploaded** + 1 wearable → `dashboard.html` | All onboarding tasks done (100%), awaiting consultation. ID is *uploaded* (pending clinical review), which is enough to complete the checklist. Dashboard shows completed checklist, connected device. |
+| **Post-consult** | `seedBooked(past)` + questionnaire + ID **verified** + 1 wearable + `markCompleted()` → `post-consult.html` | Dashboard shows post-consult state (checklist hidden, "Your results are ready" badge, completed appointments, populated stats); post-consult.html shows all 4 tabs. ID is *verified* (reviewed) by this stage. |
+| **Fail next payment** | Sets `evida:demo:fail-payment` flag — **one-shot, consumed by `booking.html`** | Arms the next payment to decline → payment-failed recovery screen. After one failure the flag is cleared and subsequent payments succeed. Not persistent. |
 | **View website ↗** | `window.location.href = '/'` | Leaves the patient app for the marketing site |
 | **↩ Reset to zero** | `EvidaStore.clearAll()` → `login.html` | Wipes all state, returns to login |
 
@@ -689,7 +868,7 @@ Items the prototype hints at but does not fully implement:
 | Real search results | `dashboard.html` search → redirects to Ask Evi | Dedicated search results page |
 | Terra wearable integration | `wearables.html` connect modal | Real OAuth flow for Apple Watch, Garmin, Whoop, Oura |
 | Real-time biomarker charts | `insights.html` tabs | Historical trends, charts, comparisons |
-| Notification inbox | `messages.html` thread list | Real push notifications with inbox |
+| Notification inbox | `messages.html` thread list; header bell now opens a **basic notification panel** (§4.4) with mark-all-read | Real push notifications, server-driven feed, per-item read state, deep links |
 | 2FA / authenticator app | `settings.html` | Real TOTP setup flow |
 | Passkey / biometric auth | `settings.html` | WebAuthn passkey registration |
 | Payment methods management | `settings.html` payment history | Saved cards, PayPal, refunds |

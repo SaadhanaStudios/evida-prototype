@@ -612,7 +612,7 @@ function markTaskDone(checkEl) {
   var badge = document.getElementById('sbBadge');
 
   var booked      = EvidaStore.booking.isConfirmed();
-  var idDone      = EvidaStore.idVerification.isVerified();
+  var idDone      = EvidaStore.idVerification.isUploaded();  // member's action is done once submitted; clinical approval (isVerified) gates services, not the checklist
   var qDone       = EvidaStore.questionnaire.isCompleted();
   var wDone       = EvidaStore.wearables.list().length > 0;
   var postConsult = EvidaStore.consultations.hadConsultation();

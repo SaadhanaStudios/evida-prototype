@@ -86,6 +86,16 @@
     <div class="app-body-inner">
       <h1 class="content-page-title">Messages</h1>
 
+      <!-- Empty state — shown when the member has no message threads -->
+      <div class="empty-state" id="messagesEmpty" style="display:none">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--evida-teal-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--evida-teal-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+        </div>
+        <h3 class="text-h4" style="margin-bottom:4px">No messages yet</h3>
+        <p style="font-size:13px;color:var(--evida-fg-secondary);line-height:1.5;max-width:300px;margin:0 auto 16px">Messages from your GP, health coach, and the Evida team will appear here. Reach out any time.</p>
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='contact.html'">Contact Evida</button>
+      </div>
+
       <div id="messageList">
         <div class="thread-item" onclick="window.location.href='contact.html'">
           <div class="ti-av" style="background:var(--evida-teal)">?</div>
@@ -302,6 +312,16 @@ function openThread(index) {
 function closeThread() {
   document.getElementById('threadDetail').classList.remove('open');
 }
+
+// Show the empty state when there are no real conversation threads.
+// (The demo seeds threads, so this normally stays hidden — but it is wired,
+// not decorative: clear THREADS to see it.)
+(function initEmptyState() {
+  if (THREADS.length === 0) {
+    document.getElementById('messageList').style.display = 'none';
+    document.getElementById('messagesEmpty').style.display = '';
+  }
+})();
 
 function sendMessage() {
   var input = document.getElementById('tdInput');

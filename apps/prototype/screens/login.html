@@ -202,6 +202,10 @@
           <p class="text-body-small">Sign in to your Evida account</p>
         </div>
 
+        <div class="inline-alert alert-teal" id="signedOutBanner" style="display:none;margin-bottom:16px;border-radius:8px;padding:12px;font-size:13px;background:var(--evida-teal-light);color:var(--evida-teal-dark)">
+          <strong>You've been signed out.</strong> Sign back in any time — your data is safe.
+        </div>
+
         <div class="error-banner" id="signinError">
           <svg class="warning-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="9"/><path d="M10 6v4M10 13v1"/></svg>
           <span id="signinErrorText">Invalid email or password. Please try again.</span>
@@ -228,7 +232,7 @@
           </div>
         </div>
 
-        <div class="forgot-link"><a onclick="showToast('Reset link sent to your email')">Forgot password?</a></div>
+        <div class="forgot-link"><a onclick="showScreen('screen-forgot-password')">Forgot password?</a></div>
 
         <button class="btn btn-primary btn-form" id="signinBtn" onclick="handleSignIn()">
           <span class="btn-text">Sign in</span>
@@ -237,6 +241,45 @@
 
         <div class="form-footer">
           Not a member yet? <a onclick="showScreen('screen-landing')">View membership</a>
+        </div>
+      </div>
+
+      <!-- SCREEN 1b: FORGOT PASSWORD — request reset link -->
+      <div class="screen" id="screen-forgot-password">
+        <div class="brand-block">
+          <img class="brand-logo" src="../build/logo.svg" alt="Evida">
+          <h1 class="text-h2">Reset your password</h1>
+          <p class="text-body-small">Enter your email and we'll send you a secure link to set a new password.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="forgotEmail">Email address <span class="required">*</span></label>
+          <div class="input-wrap">
+            <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+          </div>
+          <div class="field-error" id="forgotEmailError">Please enter a valid email address</div>
+        </div>
+
+        <button class="btn btn-primary btn-form" id="forgotBtn" onclick="handleForgotPassword()">
+          <span class="btn-text">Send reset link</span>
+          <span class="btn-spinner"></span>
+        </button>
+
+        <div class="form-footer">
+          Remembered it? <a onclick="showScreen('screen-signin')">Back to sign in</a>
+        </div>
+      </div>
+
+      <!-- SCREEN 1c: RESET LINK SENT — confirmation -->
+      <div class="screen" id="screen-reset-link-sent">
+        <div class="success-state visible">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          </div>
+          <h2 class="text-h2">Check your email</h2>
+          <p class="text-body-small">If an account exists for <strong id="resetSentEmail">your email</strong>, we've sent a link to reset your password. It expires in 60 minutes.</p>
+          <button class="btn btn-primary" onclick="showScreen('screen-signin')" style="width:100%;max-width:280px">Back to sign in</button>
+          <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--evida-muted)">Didn't get it? <a class="text-link" style="cursor:pointer;font-weight:600" onclick="showToast('Reset link sent again')">Send again</a></div>
         </div>
       </div>
 
@@ -527,10 +570,17 @@ function showScreen(id) {
 
 // On load: jump to screen specified by ?s= param
 (function() {
-  var s = new URLSearchParams(location.search).get('s');
+  var params = new URLSearchParams(location.search);
+  var s = params.get('s');
   if (s === 'signin')  { showScreen('screen-signin'); }
   else if (s === 'signup') { showScreen('screen-signup'); nextSignupStep(1); }
   else if (s && document.getElementById('screen-' + s)) { showScreen('screen-' + s); }
+  // "You've been signed out" confirmation, set by signOut()
+  if (params.get('signedout') === '1') {
+    showScreen('screen-signin');
+    var b = document.getElementById('signedOutBanner');
+    if (b) b.style.display = 'block';
+  }
 })();
 
 document.getElementById('backBtn').addEventListener('click', function() {
@@ -538,8 +588,30 @@ document.getElementById('backBtn').addEventListener('click', function() {
     if (signupStep > 1) { prevSignupStep(); return; }
   }
   if (currentScreen === 'screen-verify-email') { showScreen('screen-signup'); return; }
+  if (currentScreen === 'screen-forgot-password' || currentScreen === 'screen-reset-link-sent') { showScreen('screen-signin'); return; }
   showScreen('screen-landing');
 });
+
+// Forgot password — request a reset link
+function handleForgotPassword() {
+  var email = document.getElementById('forgotEmail').value.trim();
+  var err = document.getElementById('forgotEmailError');
+  if (!email || email.indexOf('@') === -1) {
+    err.classList.add('visible');
+    document.getElementById('forgotEmail').focus();
+    return;
+  }
+  err.classList.remove('visible');
+  var btn = document.getElementById('forgotBtn');
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+  setTimeout(function() {
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
+    document.getElementById('resetSentEmail').textContent = email;
+    showScreen('screen-reset-link-sent');
+  }, 800);
+}
 
 // Sign in
 function handleSignIn() {
@@ -792,6 +864,7 @@ document.getElementById('legalModal').addEventListener('click', function(e) {
     // Sign-in form
     document.getElementById('signinEmail').value = 'james.chen@gmail.com';
     document.getElementById('signinPass').value  = 'MyHealth2026!';
+    document.getElementById('forgotEmail').value = 'james.chen@gmail.com';
   } catch(_) {}
   try {
     // Sign-up form

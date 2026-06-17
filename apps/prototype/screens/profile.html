@@ -213,6 +213,20 @@
               <option value="active">Active</option>
             </select>
           </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Diet pattern</label>
+            <select id="hqDiet">
+              <option value="omnivore" selected>Omnivore</option>
+              <option value="flexitarian">Flexitarian</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Health goals</label>
+          <textarea id="hqGoals" placeholder="What you want to get out of your membership — your prevention plan is built around this." style="min-height:52px">Lower cardiovascular risk, improve energy, build a sustainable exercise habit.</textarea>
         </div>
         <button class="btn btn-primary" onclick="saveQuestionnaire()" style="width:100%">Save questionnaire</button>
         <div class="hq-timestamp" id="hqTimestamp">Last updated: 8 Jun 2026</div>
@@ -272,7 +286,7 @@
             <div>
               <div class="action-label" style="color:var(--evida-coral)">Sign out</div>
             </div>
-            <button class="btn btn-danger-ghost btn-sm" onclick="if(confirm('Sign out of your Evida account?')){window.location.href='/'}">Sign out</button>
+            <button class="btn btn-danger-ghost btn-sm" onclick="signOut()">Sign out</button>
           </div>
         </div>
       </div>
@@ -358,22 +372,34 @@ function uploadID() {
   document.getElementById('idFileInput').click();
 }
 
-function markIdUploaded() {
+// Render the ID card to match the verification lifecycle:
+//   'uploaded' — submitted, awaiting clinical review
+//   'verified' — reviewed & approved by the clinical team
+function renderIdStatus(status) {
   var box = document.getElementById('idBox');
+  var badge = document.getElementById('idStatusBadge');
   box.classList.add('has-file');
   box.querySelector('.pb-icon').textContent = '✓';
-  box.querySelector('.pb-sub').textContent = 'Uploaded — pending review';
-  document.getElementById('idStatusBadge').className = 'id-status uploaded';
-  document.getElementById('idStatusBadge').textContent = 'Uploaded — pending review';
   document.getElementById('retakeBtn').style.display = 'inline-flex';
+  if (status === 'verified') {
+    box.querySelector('.pb-sub').textContent = 'Verified ✓';
+    badge.className = 'id-status verified';
+    badge.textContent = 'Verified';
+  } else {
+    box.querySelector('.pb-sub').textContent = 'Uploaded — pending review';
+    badge.className = 'id-status uploaded';
+    badge.textContent = 'Uploaded — pending review';
+  }
 }
 
 function handleIDUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
-  markIdUploaded();
-  EvidaStore.idVerification.setVerified();
-  showToast('ID uploaded for review');
+  // Uploading submits the ID for clinical review; approval (verified) happens
+  // server-side afterwards — we never jump straight to verified.
+  EvidaStore.idVerification.markUploaded();
+  renderIdStatus('uploaded');
+  showToast('ID uploaded — our clinical team will review it before your consultation');
 }
 
 function handlePhotoUpload(e) {
@@ -403,6 +429,9 @@ loadProfile();
   if (q.smoking)       document.getElementById('hqSmoking').value       = q.smoking;
   if (q.alcohol)       document.getElementById('hqAlcohol').value       = q.alcohol;
   if (q.exercise)      document.getElementById('hqExercise').value      = q.exercise;
+  if (q.diet)          document.getElementById('hqDiet').value          = q.diet;
+  var goalsText = q.goalNotes || (Array.isArray(q.goals) ? q.goals.join(', ') : q.goals);
+  if (goalsText)       document.getElementById('hqGoals').value         = goalsText;
   if (q.completedAt) {
     var ts = document.getElementById('hqTimestamp');
     if (ts) ts.textContent = 'Last updated: ' +
@@ -412,11 +441,13 @@ loadProfile();
 
 // Restore ID verification status on load
 (function() {
-  if (!EvidaStore.idVerification.isVerified()) return;
-  markIdUploaded();
+  var status = EvidaStore.idVerification.status();
+  if (status === 'pending') return;
+  renderIdStatus(status);
 })();
 
 function saveQuestionnaire() {
+  var existing = EvidaStore.questionnaire.get() || {};
   EvidaStore.questionnaire.save({
     conditions:    document.getElementById('hqConditions').value,
     medications:   document.getElementById('hqMedications').value,
@@ -425,6 +456,9 @@ function saveQuestionnaire() {
     smoking:       document.getElementById('hqSmoking').value,
     alcohol:       document.getElementById('hqAlcohol').value,
     exercise:      document.getElementById('hqExercise').value,
+    diet:          document.getElementById('hqDiet').value,
+    goalNotes:     document.getElementById('hqGoals').value.trim(),
+    goals:         Array.isArray(existing.goals) ? existing.goals : []  // preserve structured goals from onboarding
   });
   var now = new Date();
   var formatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });

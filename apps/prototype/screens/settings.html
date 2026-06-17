@@ -77,8 +77,26 @@
         <div class="plan-name">Evida Membership</div>
         <div class="plan-price"><span class="strike">&pound;320</span>&pound;160<span style="font-size:14px;font-weight:400;opacity:0.7">/yr</span></div>
         <div style="font-size:12px;opacity:0.8">Pilot pricing — standard renewal &pound;320/yr</div>
-        <div class="plan-status">Active &middot; Renews 1 Jun 2027</div>
+        <div class="plan-status" id="planStatus">Active &middot; Renews 1 Jun 2027</div>
         <div class="plan-dates">Started: 1 Jun 2026 &middot; Baseline: Blood test 3 Jun &middot; GP consult 10 Jun</div>
+      </div>
+
+      <!-- Manage membership -->
+      <div class="evida-card-bordered section-card">
+        <h2>Manage membership</h2>
+        <div class="settings-row">
+          <div class="settings-info">
+            <div class="settings-label">Renewal</div>
+            <div class="settings-desc" id="renewalDesc">Renews automatically on 1 Jun 2027 at &pound;320/yr</div>
+          </div>
+        </div>
+        <div class="settings-row" id="cancelRow">
+          <div class="settings-info">
+            <div class="settings-label">Cancel membership</div>
+            <div class="settings-desc">Stop your renewal. Your clinical access continues until the end of your paid term.</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="cancelBtn" onclick="cancelMembership()">Cancel</button>
+        </div>
       </div>
 
       <!-- Payment history -->
@@ -306,6 +324,61 @@ function confirmDeleteAccount() {
     showToast('Account deletion request submitted — you will receive a confirmation email within 24 hours');
   }
 }
+
+// ── Cancel membership (distinct from deleting the account) ─────────────────
+var MEMBERSHIP_START = new Date(2026, 5, 1);   // 1 Jun 2026
+var COOLING_OFF_DAYS = 14;
+var RENEWAL_LABEL = '1 Jun 2027';
+
+function withinCoolingOff() {
+  var deadline = new Date(MEMBERSHIP_START);
+  deadline.setDate(deadline.getDate() + COOLING_OFF_DAYS);
+  return new Date() <= deadline;
+}
+
+function cancelMembership() {
+  var coolingOff = withinCoolingOff();
+  var msg = coolingOff
+    ? 'You\'re within your 14-day cooling-off period.\n\nCancelling now ends your membership immediately and refunds your payment in full.\n\nContinue?'
+    : 'Cancel your Evida membership?\n\nYour access continues until ' + RENEWAL_LABEL + ', then your membership won\'t renew. You won\'t be charged again.\n\nYou can reactivate any time before then.';
+  if (!confirm(msg)) return;
+  EvidaStore.membership.cancel(!coolingOff);  // endOfTerm = true once past cooling-off
+  renderMembershipStatus();
+  showToast(coolingOff
+    ? 'Membership cancelled and refunded — confirmation email on its way'
+    : 'Membership cancelled — active until ' + RENEWAL_LABEL);
+}
+
+function reactivateMembership() {
+  EvidaStore.membership.reactivate();
+  renderMembershipStatus();
+  showToast('Welcome back — your membership will renew as normal');
+}
+
+function renderMembershipStatus() {
+  var status = EvidaStore.membership.status();
+  var planStatus = document.getElementById('planStatus');
+  var renewalDesc = document.getElementById('renewalDesc');
+  var cancelRow = document.getElementById('cancelRow');
+  var cancelBtn = document.getElementById('cancelBtn');
+  if (status === 'active') {
+    planStatus.innerHTML = 'Active &middot; Renews ' + RENEWAL_LABEL;
+    renewalDesc.innerHTML = 'Renews automatically on ' + RENEWAL_LABEL + ' at &pound;320/yr';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.setAttribute('onclick', 'cancelMembership()');
+  } else if (status === 'cancelling') {
+    planStatus.innerHTML = 'Cancelling &middot; Active until ' + RENEWAL_LABEL;
+    renewalDesc.innerHTML = 'Won\'t renew — access ends ' + RENEWAL_LABEL;
+    cancelBtn.textContent = 'Reactivate';
+    cancelBtn.setAttribute('onclick', 'reactivateMembership()');
+  } else { // cancelled
+    planStatus.textContent = 'Cancelled';
+    renewalDesc.textContent = 'Membership cancelled and refunded';
+    cancelBtn.textContent = 'Rejoin';
+    cancelBtn.setAttribute('onclick', 'reactivateMembership()');
+  }
+}
+renderMembershipStatus();
 
 // Restore notification channel states from store on load
 (function restoreNotifChannels() {

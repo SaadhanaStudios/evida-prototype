@@ -119,7 +119,102 @@ function initBottomNav() {
   }
 }
 
-/* ---- Notification Bell ---- */
+/* ---- Notifications ----
+   The bell opens a panel of recent notifications. Content is a static demo
+   list (no backend); "Mark all as read" zeroes the unread badge across screens
+   via EvidaStore.prefs. */
+var NOTIFICATIONS = [
+  { title: 'Your blood results are ready', desc: 'Randox — 42 biomarkers analysed and available to view.', time: '2h ago', href: 'insights.html', accent: 'var(--evida-teal)' },
+  { title: 'Dr. Sarah Chen sent you a message', desc: 'A note has been added to your prevention plan.', time: '5h ago', href: 'messages.html', accent: 'var(--evida-navy)' },
+  { title: 'Upcoming: GP consultation', desc: 'Your virtual consult is coming up — check the details.', time: '1d ago', href: 'dashboard.html#appointments', accent: 'var(--evida-amber)' }
+];
+
+function syncNotifBadge() {
+  var bell = document.querySelector('.notif-bell[aria-label="Notifications"]');
+  if (!bell) return;
+  var badge = bell.querySelector('.notif-badge');
+  if (!badge) return;
+  var count = EvidaStore.prefs.notifCount();
+  badge.textContent = count > 99 ? '99+' : count;
+  badge.style.display = count <= 0 ? 'none' : '';
+}
+
+function buildNotifPanel() {
+  if (document.getElementById('notifPanel')) return;
+  var css = document.createElement('style');
+  css.textContent =
+    '#notifOverlay{position:fixed;inset:0;z-index:1200;display:none}' +
+    '#notifOverlay.open{display:block}' +
+    '#notifPanel{position:fixed;top:calc(var(--header-h,56px) + 6px);right:12px;z-index:1201;width:min(340px,calc(100vw - 24px));' +
+      'background:var(--evida-surface);border:1px solid var(--evida-border);border-radius:var(--radius-lg);' +
+      'box-shadow:var(--shadow-lg,0 12px 32px rgba(0,0,0,0.18));overflow:hidden;' +
+      'opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity 150ms,transform 150ms}' +
+    '#notifPanel.open{opacity:1;transform:translateY(0);pointer-events:auto}' +
+    '#notifPanel .np-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--evida-border)}' +
+    '#notifPanel .np-head h3{font-size:14px;font-weight:700;margin:0;color:var(--evida-fg)}' +
+    '#notifPanel .np-mark{background:none;border:none;color:var(--color-link);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px}' +
+    '#notifPanel .np-list{max-height:min(60vh,420px);overflow-y:auto}' +
+    '#notifPanel .np-item{display:flex;gap:12px;padding:13px 16px;cursor:pointer;border-bottom:1px solid var(--evida-border);transition:background 120ms;text-align:left;width:100%;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit}' +
+    '#notifPanel .np-item:last-child{border-bottom:none}' +
+    '#notifPanel .np-item:hover{background:var(--evida-bg)}' +
+    '#notifPanel .np-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}' +
+    '#notifPanel .np-body{flex:1;min-width:0}' +
+    '#notifPanel .np-title{font-size:13px;font-weight:600;color:var(--evida-fg);margin-bottom:2px}' +
+    '#notifPanel .np-desc{font-size:12px;color:var(--evida-fg-secondary);line-height:1.4}' +
+    '#notifPanel .np-time{font-size:11px;color:var(--evida-muted);margin-top:3px}' +
+    '#notifPanel .np-empty{padding:32px 16px;text-align:center;font-size:13px;color:var(--evida-muted)}';
+  document.head.appendChild(css);
+
+  var overlay = document.createElement('div');
+  overlay.id = 'notifOverlay';
+  overlay.addEventListener('click', closeNotifPanel);
+  document.body.appendChild(overlay);
+
+  var panel = document.createElement('div');
+  panel.id = 'notifPanel';
+  var allRead = EvidaStore.prefs.notifsRead();
+  var itemsHtml = allRead
+    ? '<div class="np-empty">You\'re all caught up — no new notifications.</div>'
+    : NOTIFICATIONS.map(function(n) {
+        return '<button class="np-item" onclick="navTo(\'' + n.href + '\')">' +
+          '<span class="np-dot" style="background:' + n.accent + '"></span>' +
+          '<span class="np-body">' +
+            '<span class="np-title">' + n.title + '</span>' +
+            '<span class="np-desc">' + n.desc + '</span>' +
+            '<span class="np-time">' + n.time + '</span>' +
+          '</span></button>';
+      }).join('');
+  panel.innerHTML =
+    '<div class="np-head"><h3>Notifications</h3>' +
+      (allRead ? '' : '<button class="np-mark" onclick="markNotifsRead()">Mark all as read</button>') +
+    '</div>' +
+    '<div class="np-list">' + itemsHtml + '</div>';
+  document.body.appendChild(panel);
+}
+
+var notifOpen = false;
+function openNotifPanel() {
+  buildNotifPanel();
+  document.getElementById('notifOverlay').classList.add('open');
+  document.getElementById('notifPanel').classList.add('open');
+  notifOpen = true;
+}
+function closeNotifPanel() {
+  var o = document.getElementById('notifOverlay'), p = document.getElementById('notifPanel');
+  if (o) o.classList.remove('open');
+  if (p) p.classList.remove('open');
+  notifOpen = false;
+}
+function markNotifsRead() {
+  EvidaStore.prefs.markNotifsRead();
+  syncNotifBadge();
+  closeNotifPanel();
+  // Rebuild so the next open reflects the read state
+  var p = document.getElementById('notifPanel');
+  if (p) { p.remove(); }
+  showToast('All notifications marked as read');
+}
+
 function initNotifications() {
   // Target only the notification bell, not the dark-mode toggle (which shares the class)
   var bell = document.querySelector('.notif-bell[aria-label="Notifications"]');
@@ -127,16 +222,24 @@ function initNotifications() {
   var badge = bell.querySelector('.notif-badge');
   var badgeHtml = badge ? badge.outerHTML : '<span class="notif-badge" style="display:none">0</span>';
   bell.innerHTML = SVG_BELL + badgeHtml;
-  badge = bell.querySelector('.notif-badge');
-  var count = EvidaStore.prefs.notifCount();
-  if (badge) {
-    badge.textContent = count > 99 ? '99+' : count;
-    if (count <= 0) badge.style.display = 'none';
-  }
+  syncNotifBadge();
   bell.addEventListener('click', function(e) {
     e.stopPropagation();
-    showToast('No new notifications');
+    notifOpen ? closeNotifPanel() : openNotifPanel();
   });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && notifOpen) closeNotifPanel();
+  });
+}
+
+/* ---- Sign out ----
+   Returns to a clean signed-in entry point (the login screen), not the
+   marketing site. The prototype has no session token, so member data in
+   localStorage is intentionally preserved — signing back in resumes state.
+   "Reset to zero" in the demo gear is the destructive wipe. */
+function signOut() {
+  if (!confirm('Sign out of your Evida account?')) return;
+  window.location.href = 'login.html?s=signin&signedout=1';
 }
 
 /* ---- Dark Mode Toggle ---- */
