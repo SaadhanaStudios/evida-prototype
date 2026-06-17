@@ -247,3 +247,15 @@
 body.modal-open {
   overflow: hidden;
 }
+
+/* ── Footer social icons — more prominent (site-wide) ── */
+.div-footer-social { gap: 14px; align-items: center; }
+.a-footer-social__link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(33,106,116,0.08); border: 1px solid rgba(33,106,116,0.18);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.a-footer-social__link:hover { background: #216a74; border-color: #216a74; transform: translateY(-2px); }
+.a-footer-social__link img { width: 22px; height: 22px; display: block; }
+.a-footer-social__link:hover img { filter: brightness(0) invert(1); }
