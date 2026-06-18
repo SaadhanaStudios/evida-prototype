@@ -876,3 +876,62 @@ Items the prototype hints at but does not fully implement:
 | Evi AI chat backend | `ask-evi.html` | Real LLM integration with biomarker context |
 | Uploaded document viewer | `documents.html` with doc-upload-viewer.html | Real file storage and rendering |
 | Full invoice generation | `booking.html` `downloadInvoice()` | Server-side PDF generation |
+
+---
+
+## Appendix A: Open Findings & Backlog (gap analysis, 18 Jun 2026)
+
+> A handover punch-list from a second review pass across **both** the prototype (`apps/prototype/screens/`) and the marketing website (`apps/web/`). Severity: 🔴 launch blocker · 🟠 functional bug · 🟡 polish / consistency · ⚪ optimisation. Items here are *not yet fixed* unless noted.
+
+### A.1 Prototype findings
+
+| # | Sev | Finding | Where | Notes |
+|---|-----|---------|-------|-------|
+| P1 | 🟠 | **Divergent questionnaire schema corrupts data.** Three writers target `evida:medical:questionnaire`; `insights.html` writes `{meds, supps, family, lifestyle}` while the canonical screen/profile write `{conditions, medications, familyHistory, allergies, smoking, alcohol, exercise, diet, goals, goalNotes}`. Completing the insights modal clobbers real data; prefill then renders blank, and `isCompleted()` is true with a garbage shape. `store.js` JSDoc still documents the dead shape. | `insights.html:1123`, `store.js` questionnaire JSDoc | Fix: make the insights modal write the canonical schema (or drop it and link to `questionnaire.html`); correct the JSDoc. |
+| P2a | 🟠 | **Notification panel leaks duplicate DOM.** `markNotifsRead()` removes only `#notifPanel`; `buildNotifPanel()` re-appends a fresh `<style>` and `#notifOverlay` each rebuild, so mark-all-read → reopen accretes duplicate `<style>` blocks and duplicate-id overlays. | `_nav-helpers.js` notif panel | Introduced in v1.1. Split one-time scaffold from list render. |
+| P2b | 🟠 | **Notification bell isn't keyboard-operable.** Bell is `role="button" tabindex="0"` but only a `click` listener is attached (no Enter/Space). | `_nav-helpers.js` `initNotifications()` | a11y regression now that the bell does something. |
+| P3a | 🟡 | **Contact → Messages over-promises.** Contact form shows "Message sent", redirects to `messages.html`, and says "Replies appear in your Messages inbox" — but the sent message never appears (threads are static). | `contact.html:258-259` | Persist a thread, or soften the copy/redirect. |
+| P3b | 🟡 | **Notifications aren't lifecycle-aware.** Static panel list + hardcoded "3" badge on 18 screens show "blood results ready" etc. to a brand-new pre-booking member. | `_nav-helpers.js`, all headers | Gate on real state. |
+| P3c | 🟡 | **Profile shows fabricated medical history for empty-store members.** Hardcoded James Chen conditions/meds + "Last updated: 8 Jun 2026" render for a fresh "New user" who never entered anything. | `profile.html:174+` | Only populate from store; show an empty/prompt state otherwise. |
+| P4 | ⚪ | **Header cluster duplicated inline across ~18 screens** (bell + dark-toggle + avatar). Drift is why `login`/`booking` lack the bell. Inject via `_nav-helpers.js` like the sidebar/sheet. | all screens | |
+| P5 | ⚪ | **`.notif-bell` class overloaded** — the dark-mode toggle reuses it. Rename to a neutral `.header-icon-btn`. | all screens, `_nav-helpers.js` | |
+
+### A.2 Website findings (`apps/web`)
+
+Architecture note: the site is a Webflow export rendered via `dangerouslySetInnerHTML`, with hand-maintained scripts in `lib/site-scripts.ts`. Most findings stem from that.
+
+| # | Sev | Finding | Where |
+|---|-----|---------|-------|
+| W1 | 🔴 | **`CopyTester` dev widget is live in production.** Floating V1/V2/V3 + "Edit copy" toolbar (`z-index:99999`) on the homepage; also overwrites the hero copy on mount (defaults to V1's pillar list, overriding the V2 sentence in the HTML). | `content.tsx:106`, `components/CopyTester.tsx` |
+| W2 | 🔴 | **Placeholder testimonials shipped on the homepage** — "Placeholder quote … Swap this for a real story before launch", credit "Member name, age" (×2). | `content.tsx` "Member stories" |
+| W3 | 🟠 | **Footer newsletter form is non-functional** — Webflow `<form method="get">` with no action and no Webflow form handler loaded; submit reloads the page. On every page. | all page footers |
+| W4 | 🟠 | **Orphaned HubSpot forms.** `#hubspot-joinwaitlist-form` target exists nowhere; `#hubspot-getstarted-form` lives only in a modal that's now unreachable (CTAs redirect to the app instead of opening it). Only `#hubspot-contactus-form` is reachable. | `lib/site-scripts.ts`, blog post / privacy modal |
+| W5 | 🟠 | **Blog post defects:** broken CTA `href="/../go.evida.uk/baseline%3F…"` (404s on own domain); stale banner "Coming soon in 2026" (vs "Pilot now live"); truncated nav (missing Membership + Contact us in header and footer). | `lib/blog-posts.ts` |
+| W6 | 🟡 | **Blog SEO metadata generic** — `meta` hardcoded to title "Evida" + generic description for every post. | `lib/blog-posts.ts`, `app/post/[slug]/page.tsx` |
+| W7 | 🟡 | **Footer "Explore" nav inconsistent** — about-us and blog omit "Contact us" (blog also omits Membership). | `about-us`, `blog-posts.ts` |
+| W8 | 🟡 | **Empty GTM `<noscript><iframe src="">`** on home, about-us, how-it-works, privacy, posts (contact + blog have the correct id). | 5 page files |
+| W9 | 🟡 | **JS-only CTAs** — about-us / blog "Get Started" use `href="…#"` and rely entirely on the redirect script; no-JS = dead anchor (other pages degrade to `/app/screens/login.html`). | `about-us`, `blog-posts.ts` |
+| W10 | 🟡 | **Accessibility:** meaningful images (team photos, blog hero, partner logos, mission images) carry empty `alt=""`. | most pages |
+| W11 | ⚪ | **Duplicated content blocks** — homepage maintains the Evida Loop, "Powered by data / Led by experts", and the FAQ in 2–4 parallel renders (incl. a `w-dyn-list` *and* a `w-tabs` copy of the same answers). Drift risk. | `content.tsx` |
+
+### A.3 Cross-surface inconsistencies (web ↔ app)
+
+These contradict each other across the two surfaces — a prospect moving from site to app would notice. **Decide a single source of truth.**
+
+| Topic | Website says | App / this PRD says |
+|-------|--------------|---------------------|
+| **Pilot price** | £320/yr branded "Pilot pricing" (membership page) | £320 standard; **£160** is pilot (code `EVIDA160`) — see §1.2 |
+| **Biomarker count** | "100+ biomarkers" (membership, homepage) | "42 biomarkers" (Randox panel) — see §1.1 |
+| **Launch status** | "Pilot now live" sitewide | Blog post still says "Coming soon in 2026" |
+
+### A.4 Suggested priority & open decisions
+
+1. 🔴 **Launch blockers:** W1 (remove/gate CopyTester), W2 (real testimonials), and the £320-vs-£160 pricing contradiction.
+2. 🟠 **Functional bugs:** P1, P2a/b, W3, W4, W5.
+3. 🟡 **Polish/consistency:** P3a–c, W6–W10, biomarker count, footer nav.
+4. ⚪ **Optimisation:** P4, P5, W11.
+
+**Open product decisions blocking fixes:**
+- Canonical **pilot price** (£160 or £320?) and **biomarker count** (42 or 100+?).
+- Is **CopyTester** a dev-only tool (gate behind an env flag) or removed entirely?
+- For **P1**, should the insights questionnaire modal write the canonical schema, or be removed in favour of linking to `questionnaire.html`?
