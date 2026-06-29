@@ -30,17 +30,38 @@ type StatusKey = keyof typeof STATUS
 
 // ─── Contents / nav ─────────────────────────────────────────────────────────────
 
-const CONTENTS: { id: string; n: string; title: string; status: StatusKey }[] = [
-  { id: 'engine', n: '1', title: 'The operational engine', status: 'context' },
-  { id: 'subheadlines', n: '2', title: 'Homepage subheadline options', status: 'decision' },
-  { id: 'hero-structure', n: '3', title: 'Hero structure', status: 'decision' },
-  { id: 'framework', n: '4', title: 'Service framework', status: 'decision' },
-  { id: 'membership', n: '5', title: 'Membership page hero', status: 'decision' },
-  { id: 'swarm', n: '6', title: 'Full headline swarm (15)', status: 'reference' },
-  { id: 'pages', n: '7', title: 'Page architecture', status: 'reference' },
-  { id: 'cta-matrix', n: '8', title: 'CTA funnel matrix', status: 'reference' },
-  { id: 'positioning', n: '9', title: 'Positioning guardrails', status: 'context' },
-  { id: 'decisions', n: '10', title: 'Open decisions & UAT', status: 'action' },
+const CONTENTS_GROUPS: { group: string; items: { id: string; n: string; title: string; status: StatusKey }[] }[] = [
+  {
+    group: 'Movement I — Variants & framework',
+    items: [
+      { id: 'engine', n: '1', title: 'The operational engine', status: 'context' },
+      { id: 'subheadlines', n: '2', title: 'Homepage subheadline options', status: 'decision' },
+      { id: 'hero-structure', n: '3', title: 'Hero structure', status: 'decision' },
+      { id: 'framework', n: '4', title: 'Service framework', status: 'decision' },
+      { id: 'membership', n: '5', title: 'Membership page hero', status: 'decision' },
+      { id: 'swarm', n: '6', title: 'Full headline swarm (15)', status: 'reference' },
+      { id: 'pages', n: '7', title: 'Page architecture', status: 'reference' },
+      { id: 'cta-matrix', n: '8', title: 'CTA funnel matrix', status: 'reference' },
+      { id: 'positioning', n: '9', title: 'Positioning guardrails', status: 'context' },
+    ],
+  },
+  {
+    group: 'Movement II — Conversion & UX-writing layer',
+    items: [
+      { id: 'price', n: '10', title: 'The price story', status: 'decision' },
+      { id: 'objections', n: '11', title: 'Objections & risk reversal', status: 'decision' },
+      { id: 'cta-lab', n: '12', title: 'CTA microcopy lab', status: 'decision' },
+      { id: 'problem', n: '13', title: 'Problem framing', status: 'decision' },
+      { id: 'audience', n: '14', title: 'Is Evida for you', status: 'reference' },
+      { id: 'proof', n: '15', title: 'Proof that converts', status: 'reference' },
+    ],
+  },
+  {
+    group: 'Decide & validate',
+    items: [
+      { id: 'decisions', n: '16', title: 'Open decisions & UAT', status: 'action' },
+    ],
+  },
 ]
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -331,6 +352,95 @@ const CTA_MATRIX: [string, string, string, string][] = [
   ['About Us / Our Why', 'Book Baseline', 'Read Research', 'Funnel entry / outbound to Blog'],
 ]
 
+// ── Conversion & UX-writing layer ──────────────────────────────────────────────
+
+// Part 10 — the price story (mirrors the real membership pricing card)
+const MEMBERSHIP_INCLUSIONS = [
+  'Comprehensive biomarker blood panel at a Randox clinic (100+ markers)',
+  'Wearable integration — Oura, Apple, Garmin, Whoop',
+  'A 45-minute consultation with a GP who has read your results in advance',
+  'Your personalised prevention plan, in plain English',
+  '6-month follow-up (a further 45 minutes) to review progress',
+  'Two 15-minute check-in consults to use across the year',
+  'Evi, your daily companion, for non-clinical guidance and nudges',
+]
+
+const PRICE_FRAMINGS = [
+  {
+    tag: 'UNIT REFRAME',
+    headline: '£320 a year — about £27 a month.',
+    sub: 'Priced like a subscription, not a procedure. Less than many people spend on coffee, or a gym they barely use.',
+    note: 'Monthly mental accounting makes the annual figure feel small. Show the per-month equivalent everywhere the price appears.',
+  },
+  {
+    tag: 'ALTERNATIVE ANCHOR',
+    headline: 'One private GP visit buys you ten minutes. £320 buys you a year.',
+    sub: 'A private GP appointment runs ~£200 for a single rushed visit. A standalone blood panel is ~£250–300 with no one to interpret it. Evida is £320 for all of it — bloods, wearable integration and 90 minutes of GP time across the year.',
+    note: 'Anchoring against what £320 replaces reframes it from an expense into a saving. The strongest single lever for premium pricing.',
+  },
+  {
+    tag: 'FOUNDING MEMBER',
+    headline: 'Pilot pricing — locked for founding members.',
+    sub: 'Join the founding cohort at £320 and keep that rate as we grow. Pricing rises after the pilot.',
+    note: 'Turns the existing "Pilot pricing" label into legitimate urgency and belonging — honest scarcity, not a fake countdown.',
+  },
+]
+
+// Part 11 — objection handling & risk reversal
+const REASSURANCE_CHIPS = [
+  'No referral needed',
+  'Cancel anytime',
+  'Works alongside your NHS GP',
+  'No wearable? Still works',
+  'Results in 72 hours',
+  'GMC-licensed GPs',
+]
+
+const OBJECTIONS: [string, string][] = [
+  ["I don't have an Oura ring or Apple Watch.", 'Evida works fully without one. Your blood panel and GP consultations stand on their own — a wearable simply adds a richer, continuous picture if you have one.'],
+  ["Isn't this just a fancy blood test?", 'No. A test hands you numbers. Evida gives you 90 minutes with a GP who has read them in advance, a plan in plain English, and a year of follow-up.'],
+  ['Will this replace my NHS GP?', 'No — it complements it. Evida is preventative; your NHS GP stays your first port of call for acute care. We can share your plan with them.'],
+  ['£320 is a lot to pay up front.', 'It works out around £27 a month for a year of proactive care — less than a single private GP visit, which buys you ten minutes.'],
+]
+
+// Part 12 — CTA microcopy lab
+const CTA_VARIANTS: { label: string; sub: string | null; note: string }[] = [
+  { label: 'Get Started', sub: null, note: 'Current — generic. States no value and no next step.' },
+  { label: 'Book my baseline', sub: '£320 / year · cancel anytime', note: 'Names the concrete first action and removes commitment fear. First-person.' },
+  { label: 'Start my health plan', sub: 'No referral needed · results in 72 hours', note: 'First-person ownership plus two friction-killers in the microcopy.' },
+  { label: "See if Evida's right for me", sub: '2-minute eligibility check', note: 'Low-commitment entry for the not-yet-sure. Strong as a secondary CTA.' },
+  { label: 'Claim a founding membership', sub: 'Pilot pricing, locked for year one', note: 'Pairs the CTA with scarcity and belonging. For the founding-cohort push.' },
+]
+
+// Part 13 — problem framing (mirrors the homepage "Why Evida exists" statement)
+const PROBLEM_VARIANTS = [
+  { tag: 'CURRENT', text: 'Your wearable sees the trends. Your GP has ten minutes. Evida joins the dots.', note: 'Live on the homepage. Strong — names two failures and the bridge in one breath.' },
+  { tag: 'HEALTHSPAN GAP', text: "You'll likely live to 81. But the average person spends their final decade in poor health. Evida is built to change that math.", note: 'Leads with the 81-vs-healthspan stat already on the page. Big-picture, emotional stakes.' },
+  { tag: 'DATA STRANDED', text: 'Your watch counts every step. Your last blood test sits in a drawer. Nobody is connecting them — until now.', note: 'Concrete and visual. Targets people who already track but feel unseen.' },
+  { tag: 'TIME & EMPATHY', text: 'Ten-minute appointments can only react to illness. Evida gives a GP the time — and the data — to get ahead of it.', note: 'The antidote framing. Resonates with NHS frustration without naming it.' },
+]
+
+// Part 14 — audience self-identification
+const AUDIENCE = [
+  { who: 'The quantified optimiser', line: 'You already wear an Oura or Whoop. You have the data — what you lack is anyone qualified to tell you what it means.' },
+  { who: 'The time-poor professional', line: "You're 35+, your appointments feel rushed, and you'd rather prevent the problem now than react to it at 55." },
+  { who: 'The recently spooked', line: 'A scare, a diagnosis in the family, a number that came back off. You want a proper baseline and a real plan — not a leaflet.' },
+]
+
+// Part 15 — proof structure (mirrors the homepage "Member stories" cards)
+const PROOF_TEMPLATE: [string, string][] = [
+  ['The starting state', 'A specific, relatable situation — "I had three wearables and no idea what any of it meant."'],
+  ['What Evida surfaced', 'A concrete clinical insight — "My GP flagged an early marker my last check had missed."'],
+  ['The action taken', 'The change it led to — "We adjusted two things and built a six-month plan."'],
+  ['The outcome', 'A measurable or felt result — "Six months on it\'s back in range, and I finally understand my own health."'],
+]
+
+const TRUST_LINES = [
+  'In a world of AI, real experience matters more than ever.',
+  'AI surfaces the trends. A real GP decides what they mean for you.',
+  'Every insight is read, interpreted and signed off by a GMC-licensed doctor.',
+]
+
 // ─── Section wrapper ───────────────────────────────────────────────────────────
 
 function Section({ id, children, bg = CREAM, last = false }: { id?: string; children: React.ReactNode; bg?: string; last?: boolean }) {
@@ -485,19 +595,28 @@ export default function Content() {
 
             {/* Contents nav */}
             <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: '20px 22px' }}>
-              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 14px' }}>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 16px' }}>
                 On this page
               </p>
-              <div className="msg-contents">
-                {CONTENTS.map(c => (
-                  <a key={c.id} href={`#${c.id}`} className="msg-toc-link" style={{
-                    display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none',
-                    padding: '8px 10px', borderRadius: 8, transition: 'background 0.15s',
-                  }}>
-                    <span style={{ fontFamily: GF, fontSize: 13, fontWeight: 500, color: 'rgba(33,106,116,0.4)', minWidth: 18 }}>{c.n}</span>
-                    <span style={{ fontFamily: IF, fontSize: 14, fontWeight: 500, color: DARK, flex: 1 }}>{c.title}</span>
-                    <StatusBadge status={c.status} />
-                  </a>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                {CONTENTS_GROUPS.map(grp => (
+                  <div key={grp.group}>
+                    <p style={{ fontFamily: IF, fontSize: 10.5, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: TEAL, margin: '0 0 8px', paddingLeft: 10 }}>
+                      {grp.group}
+                    </p>
+                    <div className="msg-contents">
+                      {grp.items.map(c => (
+                        <a key={c.id} href={`#${c.id}`} className="msg-toc-link" style={{
+                          display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none',
+                          padding: '8px 10px', borderRadius: 8, transition: 'background 0.15s',
+                        }}>
+                          <span style={{ fontFamily: GF, fontSize: 13, fontWeight: 500, color: 'rgba(33,106,116,0.4)', minWidth: 18 }}>{c.n}</span>
+                          <span style={{ fontFamily: IF, fontSize: 14, fontWeight: 500, color: DARK, flex: 1 }}>{c.title}</span>
+                          <StatusBadge status={c.status} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1103,11 +1222,257 @@ export default function Content() {
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 10 — OPEN DECISIONS & UAT
+            MOVEMENT II BANNER
         ══════════════════════════════════════════════════════ */}
-        <Section id="decisions" bg={CREAM_WARM} last>
+        <div style={{ background: DARK, padding: 'clamp(48px, 6vw, 72px) 24px' }}>
+          <div style={{ maxWidth: 1080, margin: '0 auto' }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: YELLOW, margin: '0 0 12px' }}>
+              Movement II
+            </p>
+            <h2 style={{ fontFamily: GF, fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.1, color: WHITE, margin: '0 0 18px' }}>
+              The conversion &amp; UX-writing layer
+            </h2>
+            <p style={{ fontFamily: IF, fontSize: 16, lineHeight: 1.65, color: 'rgba(255,255,255,0.72)', margin: 0, maxWidth: '62ch' }}>
+              Movement I decides <em>what we say</em>. This is <em>how we get the click</em> — the mechanics that turn interest into a £320 membership:
+              anchoring the price, killing the objections, sharpening the buttons, mirroring the buyer, and proving it works.
+              Every block below is shaped like a real component already on the site, so the copy can be dropped straight in.
+            </p>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════
+            PART 10 — THE PRICE STORY
+        ══════════════════════════════════════════════════════ */}
+        <Section id="price">
           <SectionHeader
-            part="Part 10 — Open decisions & team execution"
+            part="Part 10 — The price story"
+            status="decision"
+            title="£320 is never shown naked"
+            intro="The membership card currently states the price as a number. These reframings anchor it so £320 reads as a saving, not a spend. Left: the real pricing card with the inclusions. Right: three ways to headline the price."
+          />
+
+          <div className="msg-fw2" style={{ alignItems: 'start' }}>
+            {/* Real pricing card mock */}
+            <div style={{ background: DARK, borderRadius: 16, padding: 'clamp(28px, 4vw, 36px)' }}>
+              <span style={{ fontFamily: IF, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: DARK, background: YELLOW, padding: '4px 11px', borderRadius: 999 }}>
+                Pilot pricing
+              </span>
+              <h3 style={{ fontFamily: GF, fontSize: 'clamp(20px, 2.6vw, 26px)', fontWeight: 400, color: WHITE, margin: '16px 0 4px', letterSpacing: '-0.01em' }}>
+                The Evida Baseline membership
+              </h3>
+              <p style={{ fontFamily: GF, fontSize: 'clamp(34px, 5vw, 46px)', fontWeight: 500, color: WHITE, margin: '14px 0 2px', letterSpacing: '-0.02em' }}>
+                £320 <span style={{ fontSize: 16, fontWeight: 400, color: 'rgba(255,255,255,0.45)' }}>/ year</span>
+              </p>
+              <p style={{ fontFamily: IF, fontSize: 14, color: YELLOW, margin: '0 0 22px' }}>≈ £27 a month · cancel anytime</p>
+              <ul style={{ margin: '0 0 26px', padding: 0, listStyle: 'none' }}>
+                {MEMBERSHIP_INCLUSIONS.map(item => (
+                  <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '7px 0', fontFamily: IF, fontSize: 14, color: 'rgba(255,255,255,0.80)', lineHeight: 1.5, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                    <span style={{ color: YELLOW, flexShrink: 0, marginTop: 1 }}>✓</span>{item}
+                  </li>
+                ))}
+              </ul>
+              <Btn label="Book my baseline" />
+            </div>
+
+            {/* Three framings */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {PRICE_FRAMINGS.map(f => (
+                <div key={f.tag} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: '20px 22px' }}>
+                  <p style={{ fontFamily: IF, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: TEAL, margin: '0 0 8px' }}>{f.tag}</p>
+                  <p style={{ fontFamily: GF, fontSize: 'clamp(17px, 2.1vw, 20px)', fontWeight: 400, color: DARK, lineHeight: 1.3, margin: '0 0 8px', letterSpacing: '-0.01em' }}>{f.headline}</p>
+                  <p style={{ fontFamily: IF, fontSize: 13.5, lineHeight: 1.55, color: MUTED, margin: '0 0 10px' }}>{f.sub}</p>
+                  <p style={{ fontFamily: IF, fontSize: 12.5, lineHeight: 1.5, color: TEAL, fontStyle: 'italic', margin: 0, paddingTop: 10, borderTop: `1px solid ${BORDER}` }}>{f.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 11 — OBJECTIONS & RISK REVERSAL
+        ══════════════════════════════════════════════════════ */}
+        <Section id="objections" bg={CREAM_WARM}>
+          <SectionHeader
+            part="Part 11 — Objections & risk reversal"
+            status="decision"
+            title="Answer the hesitation at the point of decision"
+            intro="The fastest way to lift conversion on a premium service is to remove fear, not add features. A reassurance strip rides under every CTA; the objection answers are written in the customer's own voice for the FAQ block."
+          />
+
+          {/* Reassurance strip */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 28 }}>
+            {REASSURANCE_CHIPS.map(c => (
+              <span key={c} style={{ display: 'flex', alignItems: 'center', gap: 7, background: WHITE, border: `1px solid ${TEAL}33`, borderRadius: 999, padding: '8px 16px', fontFamily: IF, fontSize: 13.5, fontWeight: 500, color: DARK }}>
+                <span style={{ color: TEAL }}>✓</span>{c}
+              </span>
+            ))}
+          </div>
+
+          {/* Objection → answer */}
+          <div className="msg-col2">
+            {OBJECTIONS.map(([q, a]) => (
+              <div key={q} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: '22px 24px' }}>
+                <p style={{ fontFamily: GF, fontSize: 17, fontWeight: 500, color: DARK, margin: '0 0 10px', lineHeight: 1.35 }}>
+                  <span style={{ color: CORAL }}>“</span>{q}<span style={{ color: CORAL }}>”</span>
+                </p>
+                <p style={{ fontFamily: IF, fontSize: 14, lineHeight: 1.6, color: MUTED, margin: 0 }}>{a}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 12 — CTA MICROCOPY LAB
+        ══════════════════════════════════════════════════════ */}
+        <Section id="cta-lab">
+          <SectionHeader
+            part="Part 12 — CTA microcopy lab"
+            status="decision"
+            title='Every button currently says "Get Started"'
+            intro="The button is the conversion moment and it's doing the least work on the site. Stronger CTAs are first-person, name the next concrete action, and pair with a line of friction-killing microcopy underneath."
+          />
+
+          <div className="msg-col3">
+            {CTA_VARIANTS.map((c, i) => (
+              <div key={c.label} style={{ background: i === 0 ? CREAM_WARM : WHITE, border: `1px solid ${i === 0 ? BORDER : `${TEAL}33`}`, borderRadius: 12, padding: '24px 22px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 7, marginBottom: 16 }}>
+                  <Btn label={c.label} />
+                  {c.sub && (
+                    <span style={{ fontFamily: IF, fontSize: 12, color: MUTED, letterSpacing: '0.01em' }}>{c.sub}</span>
+                  )}
+                </div>
+                <p style={{ fontFamily: IF, fontSize: 13, lineHeight: 1.55, color: i === 0 ? CORAL : TEAL, fontStyle: 'italic', margin: 'auto 0 0' }}>{c.note}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 13 — PROBLEM FRAMING
+        ══════════════════════════════════════════════════════ */}
+        <Section id="problem" bg={CREAM_WARM}>
+          <SectionHeader
+            part="Part 13 — Problem framing"
+            status="decision"
+            title='The "Why Evida exists" statement, four ways'
+            intro="Before the offer lands, the reader has to feel the problem. This is the homepage problem section — same slot, four emotional angles to test."
+          />
+
+          <div className="msg-col2">
+            {PROBLEM_VARIANTS.map(p => (
+              <div key={p.tag}>
+                <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 'clamp(28px, 4vw, 40px)' }}>
+                  <p style={{ fontFamily: IF, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: CORAL, margin: '0 0 16px' }}>{p.tag}</p>
+                  <p style={{ fontFamily: GF, fontSize: 'clamp(20px, 2.6vw, 27px)', fontWeight: 400, lineHeight: 1.3, color: DARK, margin: 0, letterSpacing: '-0.01em' }}>{p.text}</p>
+                </div>
+                <p style={{ fontFamily: IF, fontSize: 13, lineHeight: 1.55, color: MUTED, fontStyle: 'italic', margin: '10px 4px 0' }}>{p.note}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 14 — IS EVIDA FOR YOU
+        ══════════════════════════════════════════════════════ */}
+        <Section id="audience">
+          <SectionHeader
+            part="Part 14 — Is Evida for you"
+            status="reference"
+            title="Let the right person recognise themselves"
+            intro="People convert when they see themselves on the page. A self-identification block — three buyer profiles plus an honest 'not for you yet' — qualifies hard and earns trust at the same time. Sits well above the membership CTA."
+          />
+
+          <div className="msg-col3" style={{ marginBottom: 16 }}>
+            {AUDIENCE.map((a, i) => (
+              <div key={a.who} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${TEAL}`, borderRadius: 12, padding: '24px 22px' }}>
+                <p style={{ fontFamily: GF, fontSize: 12, fontWeight: 500, color: `${TEAL}99`, margin: '0 0 6px' }}>0{i + 1}</p>
+                <p style={{ fontFamily: GF, fontSize: 19, fontWeight: 500, color: DARK, margin: '0 0 10px', lineHeight: 1.25 }}>{a.who}</p>
+                <p style={{ fontFamily: IF, fontSize: 14, lineHeight: 1.6, color: MUTED, margin: 0 }}>{a.line}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: `${CORAL}0A`, border: `1px solid ${CORAL}26`, borderRadius: 12, padding: '20px 24px' }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: CORAL, margin: '0 0 6px' }}>Honest disclaimer — builds trust</p>
+            <p style={{ fontFamily: IF, fontSize: 14.5, lineHeight: 1.6, color: TEXT, margin: 0, maxWidth: '70ch' }}>
+              <strong style={{ color: DARK }}>Not for you (yet)?</strong> If you need acute or emergency care, that's your NHS GP — and we'll work alongside them. Evida is for staying ahead, not for treating what's already gone wrong.
+            </p>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 15 — PROOF THAT CONVERTS
+        ══════════════════════════════════════════════════════ */}
+        <Section id="proof" bg={CREAM_WARM}>
+          <SectionHeader
+            part="Part 15 — Proof that converts"
+            status="reference"
+            title="A template for member stories — not generic praise"
+            intro="The homepage member-story cards are still placeholders. When real quotes come in, collect them to this shape: a four-beat arc that proves the service worked. Generic 'great experience' praise doesn't convert; a specific marker plus a behaviour change does."
+          />
+
+          <div className="msg-fw2" style={{ alignItems: 'start' }}>
+            {/* Story template card */}
+            <div>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 12px' }}>
+                Member-story structure (template — not a real quote)
+              </p>
+              <div style={{ background: WHITE, border: `1px dashed ${TEAL}66`, borderRadius: 14, padding: 'clamp(24px, 3.5vw, 32px)' }}>
+                {PROOF_TEMPLATE.map(([beat, guide], i) => (
+                  <div key={beat} style={{ display: 'flex', gap: 14, padding: '12px 0', borderTop: i === 0 ? 'none' : `1px solid ${BORDER}` }}>
+                    <span style={{ fontFamily: GF, fontSize: 14, fontWeight: 500, color: TEAL, minWidth: 22 }}>{i + 1}</span>
+                    <div>
+                      <p style={{ fontFamily: GF, fontSize: 15.5, fontWeight: 500, color: DARK, margin: '0 0 3px' }}>{beat}</p>
+                      <p style={{ fontFamily: IF, fontSize: 13.5, lineHeight: 1.55, color: MUTED, margin: 0 }}>{guide}</p>
+                    </div>
+                  </div>
+                ))}
+                <p style={{ fontFamily: IF, fontSize: 13, color: TEXT, margin: '16px 0 0', paddingTop: 14, borderTop: `1px solid ${BORDER}` }}>
+                  — <strong style={{ color: DARK }}>Member name, age</strong> · <span style={{ color: MUTED }}>verified member</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Trust lines */}
+            <div>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 12px' }}>
+                Human-in-the-loop trust line — options
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {TRUST_LINES.map((t, i) => (
+                  <div key={t} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: '18px 20px' }}>
+                    <span style={{ fontFamily: GF, fontSize: 13, fontWeight: 500, color: `${TEAL}99`, marginRight: 8 }}>{String.fromCharCode(65 + i)}</span>
+                    <span style={{ fontFamily: GF, fontSize: 'clamp(15px, 1.9vw, 18px)', fontWeight: 400, color: DARK, lineHeight: 1.4 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 16, padding: '16px 18px', background: `${TEAL}0D`, border: `1px solid ${TEAL}22`, borderRadius: 10 }}>
+                <p style={{ fontFamily: IF, fontSize: 13, lineHeight: 1.6, color: DARK, margin: 0, fontStyle: 'italic' }}>
+                  Collection rule: every testimonial should name one specific thing Evida found or changed. No specific, no publish.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 16 — OPEN DECISIONS & UAT
+        ══════════════════════════════════════════════════════ */}
+        <Section id="decisions" last>
+          <SectionHeader
+            part="Part 16 — Open decisions & team execution"
             status="action"
             title="What's settled, what's pending, how to test it"
             intro="The running checklist. Settled items are locked; pending items need a call from this review; the UAT protocol is how we validate before going wider."
