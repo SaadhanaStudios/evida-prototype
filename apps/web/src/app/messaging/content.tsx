@@ -1,5 +1,6 @@
 // Internal messaging review page — not linked in nav, not indexed.
 // Pure TSX component (no PageClient / Webflow scripts needed).
+// Living repository of the June 29 copy review + Gemini analysis. Drives copy decisions.
 
 const DARK = '#09332E'
 const TEAL = '#216A74'
@@ -11,12 +12,40 @@ const MUTED = '#575757'
 const YELLOW = '#FEF2A7'
 const BORDER = 'rgba(33,106,116,0.12)'
 const WHITE = '#FFFFFF'
+const GREEN = '#138A7D'
 
 const GF = 'var(--font-geist, Geist, sans-serif)'
 const IF = 'var(--font-inter, Inter, sans-serif)'
 
+// ─── Status badge presets (used in section headers + contents nav) ──────────────
+
+const STATUS = {
+  context: { label: 'Context', color: TEAL, bg: `${TEAL}14` },
+  decision: { label: 'Decision needed', color: CORAL, bg: `${CORAL}16` },
+  reference: { label: 'Reference', color: MUTED, bg: 'rgba(45,39,0,0.06)' },
+  action: { label: 'Action items', color: '#9A7B00', bg: YELLOW },
+} as const
+
+type StatusKey = keyof typeof STATUS
+
+// ─── Contents / nav ─────────────────────────────────────────────────────────────
+
+const CONTENTS: { id: string; n: string; title: string; status: StatusKey }[] = [
+  { id: 'engine', n: '1', title: 'The operational engine', status: 'context' },
+  { id: 'subheadlines', n: '2', title: 'Homepage subheadline options', status: 'decision' },
+  { id: 'hero-structure', n: '3', title: 'Hero structure', status: 'decision' },
+  { id: 'framework', n: '4', title: 'Service framework', status: 'decision' },
+  { id: 'membership', n: '5', title: 'Membership page hero', status: 'decision' },
+  { id: 'swarm', n: '6', title: 'Full headline swarm (15)', status: 'reference' },
+  { id: 'pages', n: '7', title: 'Page architecture', status: 'reference' },
+  { id: 'cta-matrix', n: '8', title: 'CTA funnel matrix', status: 'reference' },
+  { id: 'positioning', n: '9', title: 'Positioning guardrails', status: 'context' },
+  { id: 'decisions', n: '10', title: 'Open decisions & UAT', status: 'action' },
+]
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
+// Part 1 — the curated subheadline shortlist (subset of the full swarm, in hero context)
 const SUBHEADLINES = [
   {
     id: 'A1',
@@ -37,7 +66,7 @@ const SUBHEADLINES = [
   {
     id: 'B1',
     approach: 'CONCRETE',
-    accentColor: '#138A7D',
+    accentColor: GREEN,
     preferred: false,
     sub: 'The clinical upgrade your wearable data has been waiting for.',
     note: 'Leads with wearable integration — identified as the main differentiator that hooks people in conversation. Targets existing device owners.',
@@ -45,7 +74,7 @@ const SUBHEADLINES = [
   {
     id: 'B2',
     approach: 'CONCRETE',
-    accentColor: '#138A7D',
+    accentColor: GREEN,
     preferred: false,
     sub: 'Comprehensive diagnostics meet unhurried GP care.',
     note: 'Blood panel + GP time in one line. Specific and service-forward. Strong for people who already know what they want.',
@@ -68,6 +97,63 @@ const SUBHEADLINES = [
   },
 ]
 
+// Part 1 — operational engine, the three-stage telemetry → clinical → action flow
+const ENGINE_STAGES = [
+  {
+    stage: 'INPUT',
+    sub: 'Telemetry',
+    accent: TEAL,
+    steps: [
+      ['i', 'Blood test', 'Baseline biomarkers via a Randox clinic'],
+      ['ii', 'Wearable data', 'Passive stream from Apple, Oura, Whoop, Garmin'],
+    ],
+  },
+  {
+    stage: 'TRANSLATION',
+    sub: 'Clinical human pivot',
+    accent: GREEN,
+    steps: [
+      ['iii', 'Book consult', '45-min video consultation with a GP'],
+      ['iv', 'Lifestyle-focused GP time', 'Unhurried interpretation, prevention not symptoms'],
+    ],
+  },
+  {
+    stage: 'OUTPUT',
+    sub: 'Action protocol',
+    accent: CORAL,
+    steps: [
+      ['v', 'Informed action / recommendations', 'A clear plan, partner network, ongoing support from Evi'],
+    ],
+  },
+]
+
+// Part 1 — discrepancy audit: what the automated notes missed
+const AUDIT_NOTES = [
+  {
+    title: 'The 5-step sequence was missing',
+    body: 'The whiteboard numbers the service i → v. Automated notes scattered these as unlinked bullets. This chronology is the backbone every page should reflect.',
+  },
+  {
+    title: '90 minutes of GP time, not 45',
+    body: 'The live prototype still advertises a single 45-min consult + 6-month follow-up. Reality: 45 min up front PLUS a further 45 min of follow-up time = 90 core minutes. (2 × 15 optional check-ins on top — mention, don’t headline.)',
+  },
+  {
+    title: 'Track / Tailor / Act is a structural pivot',
+    body: 'Treated as a copy tweak in the notes. It is a framework replacement — Data-Led → GP-Led Insights → Action — that should restructure the homepage, not just reword it.',
+  },
+  {
+    title: 'Convenience has three distinct moments',
+    body: 'The whiteboard splits TIME / CONVENIENCE into Booking, Results, and Actions/Recs. Any "convenient" claim must demonstrate time saved at all three touchpoints.',
+  },
+]
+
+const CONVENIENCE = [
+  ['Booking', 'Easy, fast, no friction to get started'],
+  ['Results', 'Delivered to one place, not scattered across apps'],
+  ['Actions / Recs', 'Clear, clinician-authored next steps — not generic advice'],
+]
+
+// Part 4 — membership page hero options
 const MEMBERSHIP_HEROES = [
   {
     label: 'CURRENT',
@@ -88,18 +174,168 @@ const MEMBERSHIP_HEROES = [
   {
     label: 'OPTION B',
     tag: 'Concrete-first',
-    tagColor: '#138A7D',
+    tagColor: GREEN,
     title: 'Your data. Your GP. Your plan.',
     sub: 'Blood tests, wearable integration, and 90 minutes of GP-led consultation — in one annual membership.',
     note: 'Skips the ephemeral layer entirely. Leads with the concrete service for people who need specifics before they engage.',
   },
 ]
 
+// Part 6 — the full headline swarm (15 across three psychological approaches)
+const HEADLINE_SWARM = [
+  {
+    key: 'A',
+    approach: 'ASPIRATIONAL',
+    accent: TEAL,
+    angle: 'Targets the emotional benefit of long-term vitality — for people focused on wellness and longevity.',
+    headlines: [
+      'Your annual membership to healthier years.',
+      'More than a health check. A lifelong plan for vitality.',
+      'Invest in your healthspan. Live better, longer.',
+      "Don't just track your lifespan. Extend your healthy years.",
+      'The preventative healthcare membership built for your life.',
+    ],
+    sub: 'Most health data sits scattered across devices, unread and unlinked. Evida unites your baseline biomarkers with daily wearable tracking, giving a dedicated GP the clear picture needed to safeguard your future.',
+    valueProps: [
+      ['Continuous health optimization', 'Passive wearable tracking combined with deep clinical diagnostics.'],
+      ['Unbiased longevity planning', 'A custom strategy designed by medical professionals to protect your future health.'],
+      ['Dedicated clinical continuity', 'Two comprehensive 45-minute physician consultations focused entirely on your long-term wellness.'],
+    ],
+  },
+  {
+    key: 'B',
+    approach: 'CONCRETE',
+    accent: GREEN,
+    angle: 'Targets practical buyers who want to know exactly what they get for their money — time, data, access.',
+    headlines: [
+      'Comprehensive diagnostics meet unhurried GP care.',
+      'Your biomarkers, wearables, and medical history. Finally in one place.',
+      '100+ biomarkers. Continuous data sync. 90 minutes of expert GP care.',
+      'The clinical upgrade your wearable data has been waiting for.',
+      'Complete preventative health management for £320 a year.',
+    ],
+    sub: 'Standard health assessments offer quick check-ins and generic advice. Evida gives you an automated, secure data network and up to 90 minutes of clinical analysis per year to keep you ahead of potential illness.',
+    valueProps: [
+      ['Advanced lab diagnostics', 'Your baseline biomarkers mapped via premier Randox clinical draws.'],
+      ['Unified wearable integration', 'Turn daily telemetry into actionable steps with our integrated platform API.'],
+      ['Extended physician access', '90 total minutes of video consultations per year with a dedicated, GMC-licensed GP.'],
+    ],
+  },
+  {
+    key: 'C',
+    approach: 'DIRECT CONTRAST',
+    accent: CORAL,
+    angle: 'For people frustrated by short, rushed, reactive medical visits and the lack of personal guidance.',
+    headlines: [
+      'More than a health check. Because your doctor needs time to listen.',
+      "Rushed appointments won't protect your health. Evida will.",
+      'Your wearable spots the trends. We give your GP time to read them.',
+      'Stop guessing about your health data. Get real clinical direction.',
+      'A premium healthcare service designed around prevention, not reactions.',
+    ],
+    sub: 'The typical health check lasts ten minutes and only reacts after you get sick. Evida combines technology with deep clinical analysis, giving you the space and insight needed to stop chronic issues before they appear.',
+    valueProps: [
+      ['Deep-dive analysis', 'Move past rushed appointments with detailed, 45-minute clinical reviews.'],
+      ['Connected digital records', 'Bring your wearable data out of isolation and into a secure clinical space.'],
+      ['Proactive action tracking', 'Clear, expert guidance paired with concrete lifestyle steps and structured 6-month checks.'],
+    ],
+  },
+]
+
+// Part 7 — multi-page architecture blueprint
+const PAGES = [
+  {
+    name: 'Homepage',
+    role: 'The ecosystem overview',
+    objective: 'Hook interest, prove medical authority, drive to the membership funnel.',
+    sections: [
+      'Hero — "More than a health check" + unified delivery statement + dual CTA',
+      'Trust bar — CQC / GMC / GDPR validation',
+      'The problem — 81-year lifespan vs ~47 healthy years',
+      'The framework — Data → Insights → Action (replaces Track. Tailor. Act.)',
+      'Product visuals — real dashboard: wearable trends + biomarker indicators',
+      'Social proof — high-intent member testimonials (replace placeholders)',
+    ],
+    primary: 'Book Now',
+    secondary: 'See How It Works',
+  },
+  {
+    name: 'Membership',
+    role: 'The value-realization sheet',
+    objective: 'Address financial objections, clarify inclusions, justify the £320 annual rate.',
+    sections: [
+      'Hero — "Your year of health" positioning',
+      'Core matrix — flat static 3-column (Data / Insights / Action), no carousel',
+      'Data column — full Randox panel + multi-device API integration',
+      'Insights column — 90 total minutes of GP time across the year',
+      'Action column — longevity roadmap + partner wellness network',
+    ],
+    primary: 'Activate Membership',
+    secondary: 'View Biomarkers',
+  },
+  {
+    name: 'How It Works',
+    role: 'The service timeline',
+    objective: 'Remove execution ambiguity; walk through the actual journey step by step.',
+    sections: [
+      'Phase 1 (Days 1–3) — onboarding, account setup, wearable pairing',
+      'Phase 2 (Week 1) — Randox clinic blood draw',
+      'Phase 3 (Week 2) — results delivered, book the 45-min consult',
+      'Phase 4 (Months 1–6) — follow the roadmap, continuous monitoring',
+      'Phase 5 (Month 6) — second 45-min follow-up vs baseline',
+    ],
+    primary: 'Start Your Journey',
+    secondary: null,
+  },
+  {
+    name: 'About Us',
+    role: 'The "why" & governance profile',
+    objective: 'Build institutional trust for stakeholders, investors, and selective consumers.',
+    sections: [
+      'Vision — shifting healthcare from reactive to protective',
+      'Clinical governance — leadership, GMC registrations, NHS background',
+      'Human-in-the-loop — AI surfaces trends; a real GP always interprets',
+    ],
+    primary: 'Join the Waitlist / Book Now',
+    secondary: 'Read Research',
+  },
+  {
+    name: 'FAQs',
+    role: 'The friction-reduction matrix',
+    objective: 'Address specific objections that block conversion. (Aman + Drew to draft.)',
+    sections: [
+      'Biomarker detail — hormones, metabolic, cardiovascular, vitamins',
+      'Hardware compatibility — Oura, Apple Health, Whoop, Garmin',
+      'NHS coordination — how Evida works alongside your regular GP',
+      'Data security; what happens with no wearable',
+    ],
+    primary: 'Ready? Book Your Baseline',
+    secondary: null,
+  },
+  {
+    name: 'Blog',
+    role: 'The longevity publication engine',
+    objective: 'Distribute research-backed advice and drive organic SEO traffic.',
+    sections: ['Longevity & lifestyle articles', 'Outbound link target from About Us "Read Research"'],
+    primary: '—',
+    secondary: null,
+  },
+]
+
+// Part 8 — CTA funnel matrix
+const CTA_MATRIX: [string, string, string, string][] = [
+  ['Homepage hero', 'Book Baseline', 'Learn More', 'Funnel entry / smooth scroll to How It Works'],
+  ['Homepage footer', 'Book Baseline', '—', 'Direct account creation'],
+  ['Membership details', 'Activate Membership', 'View Biomarkers', 'Secure checkout / jump to FAQ anchor'],
+  ['How It Works timeline', 'Get Started', '—', 'Funnel entry'],
+  ['About Us / Our Why', 'Book Baseline', 'Read Research', 'Funnel entry / outbound to Blog'],
+]
+
 // ─── Section wrapper ───────────────────────────────────────────────────────────
 
-function Section({ children, bg = CREAM, last = false }: { children: React.ReactNode; bg?: string; last?: boolean }) {
+function Section({ id, children, bg = CREAM, last = false }: { id?: string; children: React.ReactNode; bg?: string; last?: boolean }) {
   return (
-    <div style={{ background: bg, padding: `clamp(40px, 5vw, 64px) 24px ${last ? 'clamp(64px, 8vw, 96px)' : 'clamp(40px, 5vw, 64px)'}` }}>
+    <div id={id} style={{ background: bg, padding: `clamp(40px, 5vw, 64px) 24px ${last ? 'clamp(64px, 8vw, 96px)' : 'clamp(40px, 5vw, 64px)'}`, scrollMarginTop: 52 }}>
       <div style={{ maxWidth: 1080, margin: '0 auto' }}>
         {children}
       </div>
@@ -107,16 +343,28 @@ function Section({ children, bg = CREAM, last = false }: { children: React.React
   )
 }
 
-function SectionHeader({ part, title, intro }: { part: string; title: string; intro: string }) {
+function StatusBadge({ status }: { status: StatusKey }) {
+  const s = STATUS[status]
+  return (
+    <span style={{ fontFamily: IF, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: s.color, background: s.bg, padding: '3px 9px', borderRadius: 999, whiteSpace: 'nowrap' }}>
+      {s.label}
+    </span>
+  )
+}
+
+function SectionHeader({ part, title, intro, status }: { part: string; title: string; intro: string; status?: StatusKey }) {
   return (
     <div style={{ marginBottom: 32 }}>
-      <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: CORAL, margin: '0 0 6px' }}>
-        {part}
-      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '0 0 6px', flexWrap: 'wrap' }}>
+        <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: CORAL, margin: 0 }}>
+          {part}
+        </p>
+        {status && <StatusBadge status={status} />}
+      </div>
       <h2 style={{ fontFamily: GF, fontSize: 'clamp(22px, 2.8vw, 30px)', fontWeight: 400, letterSpacing: '-0.01em', color: DARK, margin: '0 0 10px' }}>
         {title}
       </h2>
-      <p style={{ fontFamily: IF, fontSize: 15, lineHeight: 1.6, color: MUTED, margin: 0, maxWidth: '58ch' }}>
+      <p style={{ fontFamily: IF, fontSize: 15, lineHeight: 1.6, color: MUTED, margin: 0, maxWidth: '64ch' }}>
         {intro}
       </p>
     </div>
@@ -175,17 +423,28 @@ export default function Content() {
   return (
     <>
       <style>{`
+        html { scroll-behavior: smooth; }
         .msg-col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .msg-col3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .msg-fw2  { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+        .msg-contents { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .msg-engine { display: flex; align-items: stretch; gap: 0; }
+        .msg-engine-arrow { display: flex; align-items: center; justify-content: center; padding: 0 12px; flex-shrink: 0; }
+        .msg-conv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .msg-swarm-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; }
+        .msg-pages { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media (max-width: 860px) {
-          .msg-col2, .msg-col3, .msg-fw2 { grid-template-columns: 1fr; }
+          .msg-col2, .msg-col3, .msg-fw2, .msg-pages, .msg-swarm-grid, .msg-conv { grid-template-columns: 1fr; }
+          .msg-contents { grid-template-columns: 1fr; }
+          .msg-engine { flex-direction: column; }
+          .msg-engine-arrow { padding: 6px 0; transform: rotate(90deg); }
         }
         .msg-framework-old-cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
         .msg-framework-new-cols  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         @media (max-width: 640px) {
           .msg-framework-new-cols { grid-template-columns: 1fr; }
         }
+        .msg-toc-link:hover { background: rgba(33,106,116,0.07) !important; }
       `}</style>
 
       <div style={{ fontFamily: IF, background: CREAM, minHeight: '100vh' }}>
@@ -215,26 +474,136 @@ export default function Content() {
               Messaging Review
             </p>
             <h1 style={{ fontFamily: GF, fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1.08, color: DARK, margin: '0 0 20px' }}>
-              Copy & messaging<br />under consideration
+              The Evida copy<br />decision room
             </h1>
-            <p style={{ fontFamily: IF, fontSize: 16, lineHeight: 1.65, color: MUTED, margin: 0, maxWidth: '54ch' }}>
-              The hook <strong style={{ color: DARK, fontWeight: 600 }}>"More than a health check."</strong> is settled across all options.
-              Everything below is under consideration — all variants visible at once for direct comparison.
-              Source of truth: <code style={{ fontSize: 13, background: 'rgba(33,106,116,0.08)', padding: '2px 6px', borderRadius: 4, color: TEAL }}>messaging-framework.md</code>
+            <p style={{ fontFamily: IF, fontSize: 16, lineHeight: 1.65, color: MUTED, margin: '0 0 28px', maxWidth: '60ch' }}>
+              Everything from the June 29 review (Aman + Satyam) and the Gemini analysis, in one place.
+              The hook <strong style={{ color: DARK, fontWeight: 600 }}>"More than a health check."</strong> is settled.
+              Sections tagged <span style={{ color: CORAL, fontWeight: 600 }}>Decision needed</span> are live choices to make by direct comparison;
+              the rest is context and reference. Source of truth: <code style={{ fontSize: 13, background: 'rgba(33,106,116,0.08)', padding: '2px 6px', borderRadius: 4, color: TEAL }}>messaging-framework.md</code>
             </p>
+
+            {/* Contents nav */}
+            <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: '20px 22px' }}>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 14px' }}>
+                On this page
+              </p>
+              <div className="msg-contents">
+                {CONTENTS.map(c => (
+                  <a key={c.id} href={`#${c.id}`} className="msg-toc-link" style={{
+                    display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none',
+                    padding: '8px 10px', borderRadius: 8, transition: 'background 0.15s',
+                  }}>
+                    <span style={{ fontFamily: GF, fontSize: 13, fontWeight: 500, color: 'rgba(33,106,116,0.4)', minWidth: 18 }}>{c.n}</span>
+                    <span style={{ fontFamily: IF, fontSize: 14, fontWeight: 500, color: DARK, flex: 1 }}>{c.title}</span>
+                    <StatusBadge status={c.status} />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 1 — HOMEPAGE SUBHEADLINE OPTIONS
+            PART 1 — THE OPERATIONAL ENGINE
         ══════════════════════════════════════════════════════ */}
-        <Section>
+        <Section id="engine">
           <SectionHeader
-            part="Part 1 — Homepage subheadline options"
+            part="Part 1 — The operational engine"
+            status="context"
+            title="The 5-step service the whiteboard actually describes"
+            intro="This is the structural backbone all copy should reflect — telemetry in, clinical human translation, action out. The automated notes missed the numbered sequence; the audit below records the corrections it needs."
+          />
+
+          {/* Three-stage flow */}
+          <div className="msg-engine">
+            {ENGINE_STAGES.map((st, i) => (
+              <div key={st.stage} style={{ display: 'contents' }}>
+                <div style={{ flex: 1, background: WHITE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${st.accent}`, borderRadius: 12, padding: '22px 20px' }}>
+                  <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: st.accent, margin: '0 0 2px' }}>
+                    {st.stage}
+                  </p>
+                  <p style={{ fontFamily: IF, fontSize: 12, color: MUTED, margin: '0 0 16px', fontStyle: 'italic' }}>{st.sub}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    {st.steps.map(([num, label, desc]) => (
+                      <div key={num} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                        <span style={{ fontFamily: GF, fontSize: 15, fontWeight: 500, color: st.accent, minWidth: 24, lineHeight: 1.4 }}>{num}.</span>
+                        <span>
+                          <span style={{ display: 'block', fontFamily: GF, fontSize: 15, fontWeight: 500, color: DARK, lineHeight: 1.3 }}>{label}</span>
+                          <span style={{ display: 'block', fontFamily: IF, fontSize: 13, color: MUTED, lineHeight: 1.5, marginTop: 2 }}>{desc}</span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {i < ENGINE_STAGES.length - 1 && (
+                  <div className="msg-engine-arrow">
+                    <span style={{ fontFamily: GF, fontSize: 22, color: 'rgba(33,106,116,0.4)' }}>→</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* The three pillars derived from the engine */}
+          <p style={{ fontFamily: IF, fontSize: 14, lineHeight: 1.6, color: TEXT, margin: '24px 0 0', maxWidth: '70ch' }}>
+            Grouped as the new three pillars: <strong style={{ color: TEAL }}>Data-Led</strong> (bloods + wearables + history) →{' '}
+            <strong style={{ color: GREEN }}>GP-Led Insights</strong> (unhurried clinical translation) →{' '}
+            <strong style={{ color: CORAL }}>Action / Recommendations</strong> (practical next steps + partner integrations).
+            This replaces Track → Tailor → Act — see Part 4.
+          </p>
+
+          {/* Convenience three touchpoints */}
+          <div style={{ marginTop: 32 }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 12px' }}>
+              Convenience is three distinct moments — not one tag
+            </p>
+            <div className="msg-conv">
+              {CONVENIENCE.map(([t, d], i) => (
+                <div key={t} style={{ background: CREAM_WARM, border: `1px solid ${BORDER}`, borderRadius: 10, padding: '16px 18px' }}>
+                  <p style={{ fontFamily: GF, fontSize: 15, fontWeight: 500, color: DARK, margin: '0 0 4px' }}>
+                    <span style={{ color: TEAL }}>{i + 1}.</span> {t}
+                  </p>
+                  <p style={{ fontFamily: IF, fontSize: 13, lineHeight: 1.5, color: MUTED, margin: 0 }}>{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Discrepancy audit */}
+          <div style={{ marginTop: 36, background: `${CORAL}0A`, border: `1px solid ${CORAL}26`, borderRadius: 14, padding: 'clamp(22px, 3vw, 30px)' }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: CORAL, margin: '0 0 4px' }}>
+              ⚑ Discrepancy audit
+            </p>
+            <p style={{ fontFamily: IF, fontSize: 14, lineHeight: 1.6, color: TEXT, margin: '0 0 20px', maxWidth: '66ch' }}>
+              Corrections the raw transcript + whiteboard make to the automated Granola notes. These are the things to get right before publishing copy.
+            </p>
+            <div className="msg-col2">
+              {AUDIT_NOTES.map((a, i) => (
+                <div key={a.title} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 10, padding: '18px 20px' }}>
+                  <p style={{ fontFamily: GF, fontSize: 16, fontWeight: 500, color: DARK, margin: '0 0 8px', lineHeight: 1.3 }}>
+                    <span style={{ color: CORAL, fontFamily: IF, fontWeight: 700, fontSize: 13 }}>{String(i + 1).padStart(2, '0')} · </span>{a.title}
+                  </p>
+                  <p style={{ fontFamily: IF, fontSize: 13.5, lineHeight: 1.6, color: MUTED, margin: 0 }}>{a.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 2 — HOMEPAGE SUBHEADLINE OPTIONS
+        ══════════════════════════════════════════════════════ */}
+        <Section id="subheadlines" bg={CREAM_WARM}>
+          <SectionHeader
+            part="Part 2 — Homepage subheadline options"
+            status="decision"
             title="Six subheadlines under consideration"
-            intro="The hook is fixed. These are the options for what sits below it, rendered in the hero context. Each represents a distinct psychological approach."
+            intro="The hook is fixed. These are the options for what sits below it, rendered in the hero context. Each represents a distinct psychological approach. The full raw set of 15 is in Part 6."
           />
 
           <div className="msg-col2">
@@ -290,11 +659,12 @@ export default function Content() {
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 2 — HERO STRUCTURE VARIANTS
+            PART 3 — HERO STRUCTURE VARIANTS
         ══════════════════════════════════════════════════════ */}
-        <Section bg={CREAM_WARM}>
+        <Section id="hero-structure">
           <SectionHeader
-            part="Part 2 — Hero structure"
+            part="Part 3 — Hero structure"
+            status="decision"
             title="Three structural layouts for the same hero"
             intro="Hook and preferred subheadline (A1) are fixed. What changes is how the section is structured below — sentence only, pillar chips, or subheadline plus a concrete list."
           />
@@ -377,13 +747,14 @@ export default function Content() {
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 3 — SERVICE FRAMEWORK
+            PART 4 — SERVICE FRAMEWORK
         ══════════════════════════════════════════════════════ */}
-        <Section>
+        <Section id="framework" bg={CREAM_WARM}>
           <SectionHeader
-            part="Part 3 — Service framework"
+            part="Part 4 — Service framework"
+            status="decision"
             title="Track → Tailor → Act vs Data → Insights → Action"
-            intro={`"Track → Tailor → Act" is being retired. These are the old and proposed replacement rendered side by side — same service, different structural lens.`}
+            intro={`"Track → Tailor → Act" is being retired. These are the old and proposed replacement rendered side by side — same service, different structural lens. The new one maps directly onto the operational engine in Part 1.`}
           />
 
           <div className="msg-fw2">
@@ -459,11 +830,12 @@ export default function Content() {
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 4 — MEMBERSHIP PAGE HERO
+            PART 5 — MEMBERSHIP PAGE HERO
         ══════════════════════════════════════════════════════ */}
-        <Section bg={CREAM_WARM}>
+        <Section id="membership">
           <SectionHeader
-            part="Part 4 — Membership page hero"
+            part="Part 5 — Membership page hero"
+            status="decision"
             title="Three options for the membership page opening"
             intro="The membership page currently has its own hero separate from the homepage. These show what happens when we align it with the settled hook vs. keep it independent."
           />
@@ -513,13 +885,167 @@ export default function Content() {
         <Divider />
 
         {/* ══════════════════════════════════════════════════════
-            PART 5 — POSITIONING REFERENCE
+            PART 6 — FULL HEADLINE SWARM
         ══════════════════════════════════════════════════════ */}
-        <Section last>
+        <Section id="swarm" bg={CREAM_WARM}>
           <SectionHeader
-            part="Part 5 — Positioning (internal reference)"
-            title="Settled positioning — not a variant"
-            intro="These are the guardrails against which all of the above should be judged. From messaging-framework.md."
+            part="Part 6 — Full headline swarm"
+            status="reference"
+            title="All 15 headlines, three approaches, with value-prop sets"
+            intro="The complete raw material for A/B testing — beyond the curated shortlist in Part 2. Each approach carries its own subheadline and a matching three-bullet value-prop set for the membership page."
+          />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {HEADLINE_SWARM.map((g, gi) => (
+              <div key={g.key} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderLeft: `4px solid ${g.accent}`, borderRadius: 14, padding: 'clamp(24px, 3vw, 32px)' }}>
+                {/* Approach header */}
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 4, flexWrap: 'wrap' }}>
+                  <span style={{ fontFamily: GF, fontSize: 20, fontWeight: 500, color: g.accent }}>Approach {g.key}</span>
+                  <span style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: g.accent, background: `${g.accent}14`, padding: '3px 9px', borderRadius: 999 }}>
+                    {g.approach}
+                  </span>
+                </div>
+                <p style={{ fontFamily: IF, fontSize: 14, lineHeight: 1.6, color: MUTED, margin: '0 0 22px', maxWidth: '66ch' }}>{g.angle}</p>
+
+                <div className="msg-swarm-grid">
+                  {/* Headlines */}
+                  <div>
+                    <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 12px' }}>Headlines</p>
+                    <ol style={{ margin: 0, padding: 0, listStyle: 'none', counterReset: 'h' }}>
+                      {g.headlines.map((h, hi) => (
+                        <li key={h} style={{ display: 'flex', gap: 12, padding: '9px 0', borderTop: hi === 0 ? 'none' : `1px solid ${BORDER}` }}>
+                          <span style={{ fontFamily: GF, fontSize: 13, fontWeight: 500, color: `${g.accent}99`, minWidth: 20 }}>{gi * 5 + hi + 1}</span>
+                          <span style={{ fontFamily: GF, fontSize: 'clamp(15px, 1.8vw, 17px)', fontWeight: 400, color: DARK, lineHeight: 1.35 }}>{h}</span>
+                        </li>
+                      ))}
+                    </ol>
+
+                    {/* Subheadline block */}
+                    <div style={{ marginTop: 18, background: DARK, borderRadius: 10, padding: '18px 20px' }}>
+                      <p style={{ fontFamily: IF, fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', margin: '0 0 8px' }}>Subheadline</p>
+                      <p style={{ fontFamily: GF, fontSize: 'clamp(14px, 1.7vw, 16px)', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.5, color: 'rgba(255,255,255,0.78)', margin: 0 }}>{g.sub}</p>
+                    </div>
+                  </div>
+
+                  {/* Value props */}
+                  <div>
+                    <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: MUTED, margin: '0 0 12px' }}>Value-prop set</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {g.valueProps.map(([t, d]) => (
+                        <div key={t} style={{ background: CREAM, border: `1px solid ${BORDER}`, borderRadius: 10, padding: '14px 16px' }}>
+                          <p style={{ fontFamily: GF, fontSize: 14.5, fontWeight: 500, color: DARK, margin: '0 0 3px' }}>{t}</p>
+                          <p style={{ fontFamily: IF, fontSize: 13, lineHeight: 1.5, color: MUTED, margin: 0 }}>{d}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 7 — PAGE ARCHITECTURE
+        ══════════════════════════════════════════════════════ */}
+        <Section id="pages">
+          <SectionHeader
+            part="Part 7 — Page architecture"
+            status="reference"
+            title="The multi-page blueprint"
+            intro="How the messaging maps across the whole site. Each page has one job, a section stack, and a primary/secondary CTA pair. Conversion funnels into the membership flow from every page."
+          />
+
+          <div className="msg-pages">
+            {PAGES.map(p => (
+              <div key={p.name} style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 'clamp(22px, 3vw, 28px)', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 2, flexWrap: 'wrap' }}>
+                  <h3 style={{ fontFamily: GF, fontSize: 22, fontWeight: 500, color: DARK, margin: 0 }}>{p.name}</h3>
+                  <span style={{ fontFamily: IF, fontSize: 12, color: TEAL, fontStyle: 'italic' }}>{p.role}</span>
+                </div>
+                <p style={{ fontFamily: IF, fontSize: 13.5, lineHeight: 1.55, color: MUTED, margin: '0 0 16px' }}>{p.objective}</p>
+
+                <ul style={{ margin: '0 0 18px', padding: 0, listStyle: 'none', flex: 1 }}>
+                  {p.sections.map(s => (
+                    <li key={s} style={{ display: 'flex', gap: 9, padding: '5px 0', fontFamily: IF, fontSize: 13, color: TEXT, lineHeight: 1.5 }}>
+                      <span style={{ color: CORAL, flexShrink: 0, marginTop: 3, fontSize: 9 }}>✦</span>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, paddingTop: 14, borderTop: `1px solid ${BORDER}` }}>
+                  <span style={{ fontFamily: IF, fontSize: 12, fontWeight: 600, color: DARK, background: YELLOW, padding: '5px 12px', borderRadius: 8 }}>
+                    {p.primary}
+                  </span>
+                  {p.secondary && (
+                    <span style={{ fontFamily: IF, fontSize: 12, fontWeight: 500, color: TEAL, border: `1px solid ${TEAL}44`, padding: '5px 12px', borderRadius: 8 }}>
+                      {p.secondary}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontFamily: IF, fontSize: 13, color: MUTED, margin: '20px 0 0' }}>
+            Proposed nav order (left → right): <strong style={{ color: DARK }}>How it works → Membership → About us → Blog → Contact us</strong>
+          </p>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 8 — CTA FUNNEL MATRIX
+        ══════════════════════════════════════════════════════ */}
+        <Section id="cta-matrix" bg={CREAM_WARM}>
+          <SectionHeader
+            part="Part 8 — CTA funnel matrix"
+            status="reference"
+            title="Where each call-to-action points"
+            intro="Consistent primary / secondary CTA pairing across touchpoints so the funnel behaves predictably from any entry point."
+          />
+
+          <div style={{ overflowX: 'auto', background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
+              <thead>
+                <tr>
+                  {['Touchpoint', 'Primary CTA', 'Secondary CTA', 'Destination / behaviour'].map(h => (
+                    <th key={h} style={{ textAlign: 'left', fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: MUTED, padding: '16px 20px', borderBottom: `1px solid ${BORDER}`, background: CREAM }}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {CTA_MATRIX.map((row, i) => (
+                  <tr key={row[0]} style={{ borderTop: i === 0 ? 'none' : `1px solid ${BORDER}` }}>
+                    <td style={{ fontFamily: GF, fontSize: 14, fontWeight: 500, color: DARK, padding: '15px 20px' }}>{row[0]}</td>
+                    <td style={{ padding: '15px 20px' }}>
+                      <span style={{ fontFamily: IF, fontSize: 12.5, fontWeight: 600, color: DARK, background: YELLOW, padding: '4px 11px', borderRadius: 7, whiteSpace: 'nowrap' }}>{row[1]}</span>
+                    </td>
+                    <td style={{ fontFamily: IF, fontSize: 13, color: row[2] === '—' ? 'rgba(45,39,0,0.3)' : TEAL, padding: '15px 20px', whiteSpace: 'nowrap' }}>{row[2]}</td>
+                    <td style={{ fontFamily: IF, fontSize: 13, color: MUTED, padding: '15px 20px' }}>{row[3]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 9 — POSITIONING GUARDRAILS
+        ══════════════════════════════════════════════════════ */}
+        <Section id="positioning">
+          <SectionHeader
+            part="Part 9 — Positioning guardrails"
+            status="context"
+            title="Settled positioning — judge every option against this"
+            intro="The non-negotiables. Evida is a premium, tech-enabled service — not a faceless tracking app. From messaging-framework.md."
           />
 
           <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 16, padding: 'clamp(28px, 4vw, 40px) clamp(24px, 4vw, 40px)' }}>
@@ -571,6 +1097,97 @@ export default function Content() {
                 </div>
               </div>
             </div>
+          </div>
+        </Section>
+
+        <Divider />
+
+        {/* ══════════════════════════════════════════════════════
+            PART 10 — OPEN DECISIONS & UAT
+        ══════════════════════════════════════════════════════ */}
+        <Section id="decisions" bg={CREAM_WARM} last>
+          <SectionHeader
+            part="Part 10 — Open decisions & team execution"
+            status="action"
+            title="What's settled, what's pending, how to test it"
+            intro="The running checklist. Settled items are locked; pending items need a call from this review; the UAT protocol is how we validate before going wider."
+          />
+
+          <div className="msg-fw2">
+            {/* Settled */}
+            <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 'clamp(22px, 3vw, 28px)' }}>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: TEAL, margin: '0 0 14px' }}>✓ Settled</p>
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11 }}>
+                {[
+                  'Hook: "More than a health check."',
+                  'GP time: 90 min core (45 baseline + 45 follow-up); 2×15 optional, mention only.',
+                  'Framework pivot: Track/Tailor/Act → Data / GP-Led Insights / Action.',
+                  'Convenience framed as three touchpoints (booking, results, actions).',
+                  '"Healthier years" over "longevity" as core outcome language.',
+                ].map(t => (
+                  <li key={t} style={{ display: 'flex', gap: 9, fontFamily: IF, fontSize: 13.5, color: TEXT, lineHeight: 1.5 }}>
+                    <span style={{ color: TEAL, flexShrink: 0 }}>✓</span>{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Pending */}
+            <div style={{ background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 'clamp(22px, 3vw, 28px)' }}>
+              <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: CORAL, margin: '0 0 14px' }}>○ Pending decisions</p>
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 11 }}>
+                {[
+                  'Pick the homepage subheadline (Part 2) — A1 preferred.',
+                  'Pick the hero structure (Part 3).',
+                  'Pick the membership hero (Part 5).',
+                  'Add real dashboard screenshots to the homepage.',
+                  'Draft the FAQ question list (Aman + Drew).',
+                  'Pricing: separate page or absorbed into Membership?',
+                  'Replace two placeholder testimonials before any external share.',
+                ].map(t => (
+                  <li key={t} style={{ display: 'flex', gap: 9, fontFamily: IF, fontSize: 13.5, color: TEXT, lineHeight: 1.5 }}>
+                    <span style={{ color: CORAL, flexShrink: 0 }}>○</span>{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Known dev bugs */}
+          <div style={{ marginTop: 20, background: WHITE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 'clamp(22px, 3vw, 28px)' }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#9A7B00', margin: '0 0 14px' }}>⚙ Known site bugs (independent of copy)</p>
+            <div className="msg-col2">
+              {[
+                ['Hero copy typo', 'Reads "Start your health now. journey" — fix to "Start your health journey now."'],
+                ['Section duplication', 'Loop + Performance Radar blocks render twice (desktop + mobile containers). Remove the hidden duplicate.'],
+                ['Carousel → static grid', 'Replace the scrolling Track/Tailor/Act cards with a scannable static layout.'],
+                ['Placeholder testimonials', 'Two of three homepage member cards are still placeholder copy.'],
+              ].map(([t, d]) => (
+                <div key={t} style={{ fontFamily: IF, fontSize: 13.5, lineHeight: 1.55, color: TEXT }}>
+                  <strong style={{ color: DARK }}>{t}</strong> — <span style={{ color: MUTED }}>{d}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* UAT protocol */}
+          <div style={{ marginTop: 20, background: DARK, borderRadius: 14, padding: 'clamp(24px, 3.5vw, 34px)' }}>
+            <p style={{ fontFamily: IF, fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: YELLOW, margin: '0 0 10px' }}>How we validate — think-aloud UAT</p>
+            <p style={{ fontFamily: GF, fontSize: 'clamp(16px, 2vw, 19px)', fontWeight: 300, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)', margin: '0 0 20px', maxWidth: '64ch' }}>
+              Prioritise layout structure over final phrasing. Don't wait for perfect copy — ship a clean single-page version and refine it through live user interaction.
+            </p>
+            <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                'Run 30-minute screen-share calls with internal testers and early guinea pigs — not written surveys (they overcomplicate).',
+                'Give direct tasks: "Find what happens to your data if you don’t own an Oura ring", "Locate exactly what’s included in the £320 price".',
+                'Watch where the cursor lingers or falters — that surfaces hidden friction far faster than a questionnaire.',
+                'Olga remote: screen share, or a half-day at LBS if remote testing is an issue.',
+              ].map(t => (
+                <li key={t} style={{ display: 'flex', gap: 11, fontFamily: IF, fontSize: 14, color: 'rgba(255,255,255,0.78)', lineHeight: 1.55 }}>
+                  <span style={{ color: CORAL, flexShrink: 0, marginTop: 3, fontSize: 10 }}>✦</span>{t}
+                </li>
+              ))}
+            </ul>
           </div>
         </Section>
 
