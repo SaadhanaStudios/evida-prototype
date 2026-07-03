@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+ * Evida brand tokens — v2 marketing site.
+ * One consistent background (cream, from the logo plate) across every section,
+ * per the "Too Healthy" reference in the July 3 review. Teal is the single
+ * decisive accent; coral appears only in the logo mark and pull-quotes.
+ */
+@theme {
+  --color-cream: #fdfbef;
+  --color-surface: #fffef8;
+  --color-teal: #216a73;
+  --color-teal-dark: #17494f;
+  --color-teal-light: #ddebea;
+  --color-coral: #ff5a5f;
+  --color-amber: #c8862f;
+  --color-amber-light: #f6e9ce;
+  --color-ink: #22312f;
+  --color-ink-soft: #5b6a64;
+  --color-line: #e9e3cd;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-teal);
+  color: var(--color-cream);
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-teal;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors duration-150;
+  }
+
+  .btn-primary {
+    @apply bg-teal text-cream hover:bg-teal-dark;
+  }
+
+  .btn-secondary {
+    @apply border border-teal/30 text-teal hover:border-teal hover:bg-teal-light/40;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center text-sm font-semibold text-teal hover:text-teal-dark;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-surface p-8 shadow-[0_1px_2px_rgba(34,49,47,0.04)];
+  }
+
+  .h-display {
+    font-family: var(--font-display);
+    @apply font-medium tracking-tight text-teal-dark;
+  }
+}
