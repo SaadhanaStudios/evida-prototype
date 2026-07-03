@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CtaGroup from "@/components/CtaGroup";
 import { LINKS } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -48,7 +49,7 @@ export default function BlogPage() {
               href={post.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="card group transition-colors hover:border-teal/40"
+              className="card card-lift group"
             >
               <div className="text-xs font-medium uppercase tracking-wider text-ink-soft">
                 {post.author} · {post.date}
@@ -81,15 +82,13 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <section className="border-t border-line bg-surface">
+      <section className="hairline-t bg-surface">
         <div className="container-site py-16 text-center md:py-20">
           <h2 className="h-display mx-auto max-w-lg text-3xl">
-            Ready to move from reading to doing?
+            Ready to move from reading to <span className="accent-word">doing?</span>
           </h2>
           <div className="mt-8">
-            <a href={LINKS.book} className="btn-primary">
-              Book your baseline
-            </a>
+            <CtaGroup center />
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PullQuote from "@/components/PullQuote";
-import { LINKS } from "@/lib/site";
+import CtaGroup from "@/components/CtaGroup";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "How it works",
@@ -86,8 +86,8 @@ function StageSection({
           <p className="mt-4 max-w-xs leading-relaxed text-ink-soft">{intro}</p>
         </div>
         <ol className="space-y-6">
-          {steps.map((s) => (
-            <li key={s.n} className="card flex gap-6">
+          {steps.map((s, i) => (
+            <Reveal key={s.n} as="li" delay={i * 100} className="card flex gap-6">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal font-mono text-sm font-semibold tabular-nums text-cream">
                 {s.n}
               </span>
@@ -96,7 +96,7 @@ function StageSection({
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.body}</p>
                 <p className="mt-3 text-xs font-medium text-teal">{s.detail}</p>
               </div>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </div>
@@ -107,11 +107,12 @@ function StageSection({
 export default function HowItWorksPage() {
   return (
     <>
-      <section className="container-site pb-4 pt-16 md:pt-24">
+      <section className="hero-wash container-site pb-4 pt-16 md:pt-24">
         <div className="max-w-2xl">
           <p className="eyebrow">How it works</p>
           <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Six steps. Three stages.<br />One continuous picture of your health.
+            Six steps. Three stages.<br />
+            One continuous picture of <span className="accent-word">your health.</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-ink-soft">
             From your first blood draw to year-on-year monitoring, here is exactly
@@ -128,7 +129,7 @@ export default function HowItWorksPage() {
         steps={STAGE_1}
       />
 
-      <div className="border-y border-line bg-surface">
+      <div className="hairline-t hairline-b bg-surface">
         <PullQuote source="The Evida principle">
           No single data point tells the whole story.
         </PullQuote>
@@ -142,7 +143,7 @@ export default function HowItWorksPage() {
         steps={STAGE_2}
       />
 
-      <div className="border-y border-line bg-surface">
+      <div className="hairline-t hairline-b bg-surface">
         <PullQuote>
           Rushed appointments won&rsquo;t protect your health. Time will.
         </PullQuote>
@@ -157,21 +158,21 @@ export default function HowItWorksPage() {
       />
 
       {/* ————— Closing CTA ————— */}
-      <section className="border-t border-line bg-surface">
+      <section className="hairline-t bg-surface">
         <div className="container-site py-20 text-center md:py-24">
           <h2 className="h-display mx-auto max-w-xl text-3xl md:text-4xl">
-            Step one takes twenty minutes.
+            Step one takes <span className="accent-word">twenty minutes.</span>
           </h2>
           <p className="mx-auto mt-4 max-w-md text-ink-soft">
             Join today and your baseline can be drawn within two weeks.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/membership" className="btn-secondary">
-              See what&rsquo;s included
-            </Link>
-            <a href={LINKS.book} className="btn-primary">
-              Start your journey
-            </a>
+          <div className="mt-8">
+            <CtaGroup
+              center
+              primaryLabel="Start your journey"
+              secondaryLabel="See what's included"
+              secondaryHref="/membership"
+            />
           </div>
         </div>
       </section>

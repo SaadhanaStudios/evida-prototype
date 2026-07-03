@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PullQuote from "@/components/PullQuote";
-import { LINKS } from "@/lib/site";
+import CtaGroup from "@/components/CtaGroup";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "About us",
@@ -60,11 +61,12 @@ export default function AboutPage() {
   return (
     <>
       {/* ————— Why ————— */}
-      <section className="container-site pb-8 pt-16 md:pt-24">
+      <section className="hero-wash container-site pb-8 pt-16 md:pt-24">
         <div className="max-w-2xl">
           <p className="eyebrow">Why we exist</p>
           <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Healthcare waits for you to get sick. We couldn&rsquo;t accept that.
+            Healthcare waits for you to get sick.{" "}
+            <span className="accent-word">We couldn&rsquo;t accept that.</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-ink-soft">
             The average UK life lasts 81 years, but only around 47 of them are lived
@@ -81,15 +83,15 @@ export default function AboutPage() {
       </PullQuote>
 
       {/* ————— Principles ————— */}
-      <section className="border-y border-line bg-surface">
+      <section className="hairline-t hairline-b bg-surface">
         <div className="container-site py-16 md:py-20">
           <p className="eyebrow">What we believe</p>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {PRINCIPLES.map((p) => (
-              <div key={p.title} className="card">
+            {PRINCIPLES.map((p, i) => (
+              <Reveal key={p.title} delay={(i % 2) * 100} className="card">
                 <h2 className="h-display text-2xl">{p.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -111,7 +113,7 @@ export default function AboutPage() {
       </section>
 
       {/* ————— Team ————— */}
-      <section className="border-y border-line bg-surface">
+      <section className="hairline-t hairline-b bg-surface">
         <div className="container-site py-16 md:py-20">
           <p className="eyebrow">The team</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
@@ -167,15 +169,13 @@ export default function AboutPage() {
       </section>
 
       {/* ————— Closing CTA ————— */}
-      <section className="border-t border-line bg-surface">
+      <section className="hairline-t bg-surface">
         <div className="container-site py-20 text-center md:py-24">
           <h2 className="h-display mx-auto max-w-xl text-3xl md:text-4xl">
-            Be one of the members we build this with.
+            Be one of the members we <span className="accent-word">build this with.</span>
           </h2>
           <div className="mt-8">
-            <a href={LINKS.book} className="btn-primary">
-              Book your baseline
-            </a>
+            <CtaGroup center />
           </div>
         </div>
       </section>

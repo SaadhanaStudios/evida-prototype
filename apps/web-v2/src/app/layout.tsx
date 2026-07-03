@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import StickyMobileCta from "@/components/StickyMobileCta";
 
 // Inter carries the UI; Fraunces carries the editorial voice
 // (headlines + pull-quotes) — the magazine feel from the July 3 review.
@@ -38,6 +39,7 @@ export default function RootLayout({
         <Header />
         <main>{children}</main>
         <Footer />
+        <StickyMobileCta />
       </body>
     </html>
   );

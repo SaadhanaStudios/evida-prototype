@@ -29,6 +29,25 @@ Deployable as its own Vercel project with Root Directory `apps/web-v2/`.
 | About = Why · History · Team · Extend (whiteboard) | `app/about/page.tsx` |
 | Blog stays on-site with CTA; Substack for the newsletter | `app/blog/page.tsx` |
 
+## Round 2 — premium/clarity/conversion pass (July 3)
+
+Implemented on top of the round-1 structure (frozen copy in `../web-v2-r1`, port 3002):
+
+| # | Improvement | Where |
+|---|---|---|
+| S1 | Concrete-offer chip bar under hero (100+ biomarkers / wearables / 90 min GP / plan) | `OfferBar.tsx` |
+| S2 | Price shown on Home membership row ("£27/month, everything included") | Home |
+| S3 | 45-minute figures as chips in journey summary cards | Home |
+| S4 | Italic Fraunces accent word in headlines (coral used once, on Home) | `.accent-word` |
+| S5 | Depth pass: hero radial wash, softer/deeper shadows, rounded-3xl, gradient hairlines | `globals.css` |
+| S6 | Motion: fade-up reveals, hover-lift cards, 81/47 count-up (reduced-motion safe) | `Reveal.tsx`, `CountUp.tsx` |
+| S7 | Real-photo slot, gated off until an image lands at `public/images/consult.jpg` | `TeamPhoto.tsx`, flag in `lib/site.ts` |
+| S8 | Reassurance micro-copy under every primary CTA | `CtaGroup.tsx` |
+| S9 | Evi chat vignette ("Between visits" section) | `EviMoment.tsx`, Home |
+| S10 | Sticky mobile CTA bar (appears past the hero, mobile only) | `StickyMobileCta.tsx` |
+| S11 | True scarcity line (limited UK-launch baseline slots) on closing CTAs | Home, Membership |
+| S12 | Evidence quotes wired to citable sources (Health Foundation, LondonWorld) | `lib/site.ts`, Home |
+
 ## Placeholders to replace before external sharing
 
 - **About → Team**: three generic role cards, no real names/photos.

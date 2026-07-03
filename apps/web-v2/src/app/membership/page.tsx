@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PullQuote from "@/components/PullQuote";
 import TwoCol from "@/components/TwoCol";
+import CtaGroup from "@/components/CtaGroup";
+import Reveal from "@/components/Reveal";
+import TeamPhoto from "@/components/TeamPhoto";
 import { DataSourcesCard, ConsultCard, PlanCard } from "@/components/ProductVisuals";
-import { LINKS, PRICE } from "@/lib/site";
+import { PRICE, SCARCITY } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Membership",
@@ -68,11 +70,12 @@ export default function MembershipPage() {
   return (
     <>
       {/* ————— Pricing hero ————— */}
-      <section className="container-site grid items-start gap-12 pb-16 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
+      <section className="hero-wash">
+      <div className="container-site grid items-start gap-12 pb-16 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
         <div>
           <p className="eyebrow">Membership</p>
           <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Your membership to healthier years.
+            Your membership to <span className="accent-word">healthier years.</span>
           </h1>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
             One membership, everything included. No tiers, no add-ons, no upsell
@@ -85,17 +88,16 @@ export default function MembershipPage() {
           <p className="mt-2 text-sm text-ink-soft">
             Billed annually at {PRICE.perYear} ({PRICE.exactPerMonth}/month — about {PRICE.perDay} a day).
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#faq" className="btn-secondary">
-              Read the FAQs
-            </a>
-            <a href={LINKS.book} className="btn-primary">
-              Activate membership
-            </a>
+          <div className="mt-8">
+            <CtaGroup
+              primaryLabel="Activate membership"
+              secondaryLabel="Read the FAQs"
+              secondaryHref="#faq"
+            />
           </div>
         </div>
 
-        <div className="card">
+        <Reveal className="card">
           <div className="eyebrow">Everything included</div>
           <ul className="mt-5 space-y-3">
             {INCLUSIONS.map((item) => (
@@ -110,12 +112,13 @@ export default function MembershipPage() {
           <p className="mt-5 border-t border-line pt-4 text-xs text-ink-soft">
             * Bespoke scans and additional blood packs available as clinically advised.
           </p>
-        </div>
+        </Reveal>
+      </div>
       </section>
 
       {/* ————— Pillar 1: Data ————— */}
-      <div className="border-t border-line">
-        <TwoCol media={<DataSourcesCard />}>
+      <div className="hairline-t">
+        <TwoCol media={<Reveal><DataSourcesCard /></Reveal>}>
           <p className="eyebrow">01 · Data</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
             Your health data, finally in one place.
@@ -133,8 +136,17 @@ export default function MembershipPage() {
       </div>
 
       {/* ————— Pillar 2: Insights ————— */}
-      <div className="border-t border-line bg-surface">
-        <TwoCol flip media={<ConsultCard />}>
+      <div className="hairline-t bg-surface">
+        <TwoCol
+          flip
+          media={
+            <Reveal className="space-y-6">
+              <ConsultCard />
+              {/* Renders only once a real photo lands — see lib/site.ts (S7) */}
+              <TeamPhoto caption="Your consultation is a real conversation with a real GP — 45 unhurried minutes." />
+            </Reveal>
+          }
+        >
           <p className="eyebrow">02 · Insight</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
             A GP with the time to actually look.
@@ -152,8 +164,8 @@ export default function MembershipPage() {
       </div>
 
       {/* ————— Pillar 3: Action ————— */}
-      <div className="border-t border-line">
-        <TwoCol media={<PlanCard />}>
+      <div className="hairline-t">
+        <TwoCol media={<Reveal><PlanCard /></Reveal>}>
           <p className="eyebrow">03 · Action</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
             A plan you&rsquo;ll actually follow.
@@ -172,7 +184,7 @@ export default function MembershipPage() {
       </PullQuote>
 
       {/* ————— Comparison ————— */}
-      <section className="border-y border-line bg-surface">
+      <section className="hairline-t hairline-b bg-surface">
         <div className="container-site py-16 md:py-20">
           <p className="eyebrow">The honest comparison</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
@@ -228,18 +240,20 @@ export default function MembershipPage() {
       </section>
 
       {/* ————— Closing CTA ————— */}
-      <section className="border-t border-line bg-surface">
+      <section className="hairline-t bg-surface">
         <div className="container-site py-20 text-center md:py-24">
-          <h2 className="h-display mx-auto max-w-xl text-3xl md:text-4xl">
-            The years ahead are the ones you can still change.
+          <p className="eyebrow">{SCARCITY}</p>
+          <h2 className="h-display mx-auto mt-4 max-w-xl text-3xl md:text-4xl">
+            The years ahead are the ones you can{" "}
+            <span className="accent-word">still change.</span>
           </h2>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/how-it-works" className="btn-secondary">
-              See how it works
-            </Link>
-            <a href={LINKS.book} className="btn-primary">
-              Activate membership
-            </a>
+          <div className="mt-8">
+            <CtaGroup
+              center
+              primaryLabel="Activate membership"
+              secondaryLabel="See how it works"
+              secondaryHref="/how-it-works"
+            />
           </div>
         </div>
       </section>

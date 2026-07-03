@@ -1,13 +1,18 @@
 import Link from "next/link";
 import PullQuote from "@/components/PullQuote";
+import OfferBar from "@/components/OfferBar";
+import CtaGroup from "@/components/CtaGroup";
+import EviMoment from "@/components/EviMoment";
+import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
 import { DashboardCard } from "@/components/ProductVisuals";
-import { LINKS, PRICE } from "@/lib/site";
+import { EVIDENCE, LINKS, PRICE, SCARCITY } from "@/lib/site";
 
 /*
  * Home — a summary hub, per the July 3 whiteboard. Flow:
- * Hero → Membership summary (Data | Insight | Action) → pull-quote →
- * How-it-works summary (Initial / 6 months / Ongoing) → About teaser →
- * Blog + evidence carousel → closing pricing CTA.
+ * Hero → offer bar → Membership summary (Data | Insight | Action) →
+ * pull-quote → How-it-works summary → Evi between-visits → why-we-exist →
+ * evidence + blog → closing pricing CTA.
  * Each block anchors out to its full page.
  */
 
@@ -31,6 +36,7 @@ const STAGES = [
     n: "01",
     title: "Initial",
     when: "Your first two weeks",
+    stat: "100+ biomarkers drawn",
     body: "Join, connect your wearable, complete your history, and have your baseline bloods drawn at a Randox clinic.",
     href: "/how-it-works#initial",
   },
@@ -38,30 +44,17 @@ const STAGES = [
     n: "02",
     title: "Grounding",
     when: "Your first six months",
-    body: "A 45-minute consultation with a lifestyle-medicine GP, and a prevention plan built around your own numbers.",
+    stat: "45-minute GP consultation",
+    body: "An unhurried consultation with a lifestyle-medicine GP, and a prevention plan built around your own numbers.",
     href: "/how-it-works#six-months",
   },
   {
     n: "03",
     title: "Ongoing",
     when: "Year after year",
-    body: "A 45-minute follow-up at month six, optional check-ins, and monitoring that compounds — every year adds context.",
+    stat: "45-minute follow-up + check-ins",
+    body: "A full follow-up at month six, optional check-ins, and monitoring that compounds — every year adds context.",
     href: "/how-it-works#ongoing",
-  },
-];
-
-const EVIDENCE = [
-  {
-    quote: "Around half of UK adults now track their health with a wearable — yet that data rarely reaches a clinician.",
-    source: "LondonWorld, on UK health-tracking adoption",
-  },
-  {
-    quote: "We live to 81 on average in the UK — but only around 47 of those years are spent in good health.",
-    source: "The Health Foundation, REAL Centre",
-  },
-  {
-    quote: "Forming a healthy habit alone succeeds 29% of the time. With someone in the loop, 59%. Add commitment: 72%.",
-    source: "Micro Habits, Humphrey & Hughes",
   },
 ];
 
@@ -69,52 +62,66 @@ export default function Home() {
   return (
     <>
       {/* ————— Hero ————— */}
-      <section className="container-site grid items-center gap-12 pb-16 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
-        <div>
-          <p className="eyebrow">Preventative health membership</p>
-          <h1 className="h-display mt-4 text-5xl leading-[1.05] md:text-6xl">
-            More than a<br />health check.
-          </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
-            Your membership to healthier years. Evida unites your blood biomarkers,
-            wearable data and medical history in one place — and gives a GP the time
-            to actually read them.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link href="/how-it-works" className="btn-secondary">
-              How it works
-            </Link>
-            <a href={LINKS.book} className="btn-primary">
-              Book your baseline
-            </a>
+      <div className="hero-wash">
+        <section className="container-site grid items-center gap-12 pb-12 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
+          <div>
+            <p className="eyebrow">Preventative health membership</p>
+            <h1 className="h-display mt-4 text-5xl leading-[1.05] md:text-6xl">
+              More than a<br />
+              <span className="accent-word">health check.</span>
+            </h1>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
+              Your membership to healthier years. Evida unites your blood biomarkers,
+              wearable data and medical history in one place — and gives a GP the time
+              to actually read them.
+            </p>
+            <div className="mt-8">
+              <CtaGroup secondaryLabel="How it works" secondaryHref="/how-it-works" />
+            </div>
+            <p className="mt-8 text-xs font-medium uppercase tracking-wider text-ink-soft">
+              GMC-registered GPs &nbsp;·&nbsp; Randox diagnostics &nbsp;·&nbsp; UK GDPR compliant
+            </p>
           </div>
-          <p className="mt-8 text-xs font-medium uppercase tracking-wider text-ink-soft">
-            GMC-registered GPs &nbsp;·&nbsp; Randox diagnostics &nbsp;·&nbsp; UK GDPR compliant
-          </p>
-        </div>
-        <DashboardCard />
-      </section>
+          <Reveal>
+            <DashboardCard />
+          </Reveal>
+        </section>
+
+        {/* ————— Concrete offer, before any scrolling ————— */}
+        <Reveal>
+          <OfferBar />
+        </Reveal>
+      </div>
 
       {/* ————— Membership summary: Data | Insight | Action ————— */}
       <section className="container-site py-16 md:py-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow">The membership</p>
-            <h2 className="h-display mt-3 text-3xl md:text-4xl">
-              Data. Insight. Action.
-            </h2>
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">The membership</p>
+              <h2 className="h-display mt-3 text-3xl md:text-4xl">
+                Data. Insight. Action.
+              </h2>
+            </div>
+            <div className="text-right">
+              <Link href="/membership" className="btn-ghost">
+                Explore the membership →
+              </Link>
+              <p className="mt-1 text-sm text-ink-soft">
+                {PRICE.perMonth}/month, everything included
+              </p>
+            </div>
           </div>
-          <Link href="/membership" className="btn-ghost">
-            Explore the membership →
-          </Link>
-        </div>
+        </Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {PILLARS.map((p, i) => (
-            <Link key={p.title} href="/membership" className="card group transition-colors hover:border-teal/40">
-              <div className="font-mono text-xs font-semibold tabular-nums text-ink-soft">0{i + 1}</div>
-              <h3 className="h-display mt-3 text-2xl group-hover:text-teal">{p.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.body}</p>
-            </Link>
+            <Reveal key={p.title} delay={i * 100}>
+              <Link href="/membership" className="card card-lift group block h-full">
+                <div className="font-mono text-xs font-semibold tabular-nums text-ink-soft">0{i + 1}</div>
+                <h3 className="h-display mt-3 text-2xl group-hover:text-teal">{p.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.body}</p>
+              </Link>
+            </Reveal>
           ))}
         </div>
         <p className="mt-6 text-sm text-ink-soft">
@@ -128,112 +135,155 @@ export default function Home() {
       </PullQuote>
 
       {/* ————— How it works summary ————— */}
-      <section className="border-y border-line bg-surface">
+      <section className="hairline-t hairline-b bg-surface">
         <div className="container-site py-16 md:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow">How it works</p>
-              <h2 className="h-display mt-3 text-3xl md:text-4xl">
-                Three stages. One continuous picture.
-              </h2>
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="eyebrow">How it works</p>
+                <h2 className="h-display mt-3 text-3xl md:text-4xl">
+                  Three stages. One continuous picture.
+                </h2>
+              </div>
+              <Link href="/how-it-works" className="btn-ghost">
+                See the full journey →
+              </Link>
             </div>
-            <Link href="/how-it-works" className="btn-ghost">
-              See the full journey →
-            </Link>
-          </div>
+          </Reveal>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
-            {STAGES.map((s) => (
-              <li key={s.n}>
-                <Link href={s.href} className="card group block h-full transition-colors hover:border-teal/40">
+            {STAGES.map((s, i) => (
+              <Reveal key={s.n} as="li" delay={i * 100}>
+                <Link href={s.href} className="card card-lift group block h-full">
                   <div className="flex items-baseline justify-between">
                     <span className="font-mono text-xs font-semibold tabular-nums text-teal">{s.n}</span>
                     <span className="text-xs font-medium uppercase tracking-wider text-ink-soft">{s.when}</span>
                   </div>
                   <h3 className="h-display mt-3 text-2xl group-hover:text-teal">{s.title}</h3>
+                  <span className="mt-3 inline-block rounded-full bg-teal-light px-3 py-1 font-mono text-xs font-semibold tabular-nums text-teal-dark">
+                    {s.stat}
+                  </span>
                   <p className="mt-3 text-sm leading-relaxed text-ink-soft">{s.body}</p>
                 </Link>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* ————— Why Evida exists (About teaser) ————— */}
+      {/* ————— Between visits: Evi ————— */}
       <section className="container-site grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-20">
-        <div>
-          <p className="eyebrow">Why we exist</p>
+        <Reveal>
+          <p className="eyebrow">Between visits</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
-            Healthcare waits for you to get sick. We don&rsquo;t.
+            The membership doesn&rsquo;t pause between appointments.
           </h2>
           <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
-            The average UK life lasts 81 years — but only around 47 of them are spent
-            in good health. Closing that gap takes clinician time, lifestyle medicine,
-            and data that&rsquo;s actually joined up. That&rsquo;s what we built.
+            Evi — your GP-monitored assistant — keeps your plan moving: gentle
+            check-ins, trends flagged to your doctor, questions answered in plain
+            language. Every recommendation still comes from a licensed GP.
           </p>
-          <Link href="/about" className="btn-ghost mt-6">
-            Read our why →
+          <Link href="/membership" className="btn-ghost mt-6">
+            See what&rsquo;s included →
           </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="card text-center">
-            <div className="h-display font-mono text-5xl tabular-nums">81</div>
-            <div className="mt-2 text-sm text-ink-soft">years of average UK lifespan</div>
-          </div>
-          <div className="card border-coral/30 text-center">
-            <div className="h-display font-mono text-5xl tabular-nums text-coral">47</div>
-            <div className="mt-2 text-sm text-ink-soft">of them in good health</div>
-          </div>
-          <div className="card col-span-2 text-center">
-            <div className="h-display text-2xl">The other 34 are the point.</div>
-          </div>
+        </Reveal>
+        <Reveal delay={120}>
+          <EviMoment />
+        </Reveal>
+      </section>
+
+      {/* ————— Why Evida exists (About teaser) ————— */}
+      <section className="hairline-t bg-surface">
+        <div className="container-site grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-20">
+          <Reveal>
+            <p className="eyebrow">Why we exist</p>
+            <h2 className="h-display mt-3 text-3xl md:text-4xl">
+              Healthcare waits for you to get sick.{" "}
+              <span className="accent-word accent-coral">We don&rsquo;t.</span>
+            </h2>
+            <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
+              The average UK life lasts 81 years — but only around 47 of them are spent
+              in good health. Closing that gap takes clinician time, lifestyle medicine,
+              and data that&rsquo;s actually joined up. That&rsquo;s what we built.
+            </p>
+            <Link href="/about" className="btn-ghost mt-6">
+              Read our why →
+            </Link>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="card text-center">
+                <div className="h-display font-mono text-5xl tabular-nums">
+                  <CountUp to={81} />
+                </div>
+                <div className="mt-2 text-sm text-ink-soft">years of average UK lifespan</div>
+              </div>
+              <div className="card border-coral/30 text-center">
+                <div className="h-display font-mono text-5xl tabular-nums text-coral">
+                  <CountUp to={47} />
+                </div>
+                <div className="mt-2 text-sm text-ink-soft">of them in good health</div>
+              </div>
+              <div className="card col-span-2 text-center">
+                <div className="h-display text-2xl">The other 34 are the point.</div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ————— Evidence strip + blog ————— */}
-      <section className="border-y border-line bg-surface">
-        <div className="container-site py-16 md:py-20">
+      <section className="container-site py-16 md:py-20">
+        <Reveal>
           <p className="eyebrow">Insight, grounded in evidence</p>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {EVIDENCE.map((e) => (
-              <figure key={e.source} className="card">
-                <span aria-hidden className="font-[family-name:var(--font-display)] text-4xl leading-none text-coral">“</span>
-                <blockquote className="mt-1 text-sm leading-relaxed text-ink">{e.quote}</blockquote>
-                <figcaption className="mt-4 text-xs font-medium uppercase tracking-wider text-ink-soft">
-                  {e.source}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-            <p className="text-sm text-ink-soft">
-              We write about prevention, healthspan and lifestyle medicine.
-            </p>
-            <Link href="/blog" className="btn-ghost">
-              Read the blog →
-            </Link>
-          </div>
+        </Reveal>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {EVIDENCE.map((e, i) => (
+            <Reveal key={e.source} as="figure" delay={i * 100} className="card">
+              <span aria-hidden className="font-[family-name:var(--font-display)] text-4xl leading-none text-coral">“</span>
+              <blockquote className="mt-1 text-sm leading-relaxed text-ink">{e.quote}</blockquote>
+              <figcaption className="mt-4 text-xs font-medium uppercase tracking-wider text-ink-soft">
+                {e.href ? (
+                  <a href={e.href} target="_blank" rel="noopener noreferrer" className="hover:text-teal">
+                    {e.source} ↗
+                  </a>
+                ) : (
+                  e.source
+                )}
+              </figcaption>
+            </Reveal>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-ink-soft">
+            We write about prevention, healthspan and lifestyle medicine.
+          </p>
+          <Link href="/blog" className="btn-ghost">
+            Read the blog →
+          </Link>
         </div>
       </section>
 
       {/* ————— Closing pricing CTA ————— */}
-      <section className="container-site py-20 md:py-28">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="h-display text-4xl md:text-5xl">
-            {PRICE.perMonth} a month.
-          </h2>
-          <p className="mt-4 text-lg text-ink-soft">
-            Billed annually at {PRICE.perYear} — everything included, no tiers,
-            no surprise extras. Less than a gym membership, for the years the gym
-            is working towards.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link href="/membership" className="btn-secondary">
-              See what&rsquo;s included
-            </Link>
-            <a href={LINKS.book} className="btn-primary">
-              Book your baseline
-            </a>
-          </div>
+      <section className="hairline-t bg-surface">
+        <div className="container-site py-20 md:py-28">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow">{SCARCITY}</p>
+            <h2 className="h-display mt-4 text-4xl md:text-5xl">
+              {PRICE.perMonth} a month, for{" "}
+              <span className="accent-word">healthier years.</span>
+            </h2>
+            <p className="mt-4 text-lg text-ink-soft">
+              Billed annually at {PRICE.perYear} — everything included, no tiers,
+              no surprise extras.
+            </p>
+            <div className="mt-8">
+              <CtaGroup
+                center
+                secondaryLabel="See what's included"
+                secondaryHref="/membership"
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
