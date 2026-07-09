@@ -7,7 +7,7 @@ function JourneySvg() {
       role="img"
       aria-label="Your health journey rising from Evida through Data, Insights and Action to confidence in your future health"
       className="hidden min-w-[45%] self-end md:block"
-      style={{ width: "auto", height: "auto", maxWidth: 798, overflow: "visible" }}
+      style={{ width: "100%", height: "auto", maxWidth: 798, overflow: "visible" }}
     >
       <path
         d="M40 470 L170 470"
@@ -156,8 +156,8 @@ export default function HowItWorksHero() {
         }}
       >
         <div className="flex w-full flex-row items-end justify-between">
-          <div>
-            <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
+          <div className="shrink-0">
+            <h1 className="whitespace-nowrap text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
               Your Health Journey,
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-3">
