@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
 import Reveal from "@/components/Reveal";
@@ -162,21 +163,46 @@ export default function AboutPage() {
             Evida is led by GMC-registered doctors with NHS backgrounds, working
             alongside the technologists who make joined-up data possible.
           </p>
-          {/* PLACEHOLDER team cards — replace with real names, roles and photos */}
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {["Medical leadership", "Product & engineering", "Member experience"].map((role) => (
-              <div key={role} className="card">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal-light text-teal">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" />
-                  </svg>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {[
+              { name: "Abhishek Kumar",        role: "CEO",                              photo: "/images/team/abhishek-kumar.png",       linkedin: "https://www.linkedin.com/in/akumarevida/" },
+              { name: "Dr. Jonathan Andrews",  role: "Medical Director",                 photo: "/images/team/jonathan-andrews.png",     linkedin: "https://www.linkedin.com/in/drjonathanandrews/" },
+              { name: "Mark Woodward",         role: "Chief Technology Officer",         photo: "/images/team/mark-woodward.png",        linkedin: "https://www.linkedin.com/in/markwoodward23/" },
+              { name: "Laura Kubica Grigerova",role: "Chief Marketing Officer",          photo: "/images/team/laura-grigerova.png",      linkedin: "https://www.linkedin.com/in/lauragrigerova/" },
+              { name: "Dr Dominique O'Sullivan",role: "GP, Lifestyle Medicine Specialist",photo: "/images/team/dominique-osullivan.png", linkedin: "https://www.linkedin.com/in/dr-dominique-o-sullivan-b1155751/" },
+              { name: "Dhruv Gupta",           role: "AI Product Manager",              photo: "/images/team/dhruv-gupta.png",          linkedin: "https://www.linkedin.com/in/dhruv-gupta648/" },
+              { name: "Olga Shatalova",        role: "Voice of Customer Lead",          photo: "/images/team/olga-shatalova.png",       linkedin: "https://www.linkedin.com/in/shatalovaolga/" },
+            ].map((member) => (
+              <Reveal key={member.name}>
+                <div className="card group flex flex-col gap-4 p-0 overflow-hidden">
+                  <div className="relative aspect-square w-full overflow-hidden bg-surface">
+                    <Image
+                      src={member.photo}
+                      alt={member.name}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="flex items-end justify-between px-5 pb-5">
+                    <div>
+                      <p className="font-semibold text-ink leading-snug">{member.name}</p>
+                      <p className="mt-0.5 text-xs text-ink-soft">{member.role}</p>
+                    </div>
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${member.name} on LinkedIn`}
+                      className="shrink-0 text-ink-soft transition-colors hover:text-teal"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                    </a>
+                  </div>
                 </div>
-                <h3 className="h-display mt-4 text-xl">{role}</h3>
-                <p className="mt-2 text-sm text-ink-soft">
-                  Full team profiles coming soon.
-                </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
