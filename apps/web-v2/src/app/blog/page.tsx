@@ -45,8 +45,7 @@ function FeaturedCard({ post }: { post: PostMeta }) {
           ))}
         </div>
         <h2
-          style={{ fontFamily: "var(--font-display)" }}
-          className="mt-4 text-2xl font-medium leading-snug tracking-tight text-teal-dark transition-colors group-hover:text-teal md:text-3xl"
+          className="font-display mt-4 text-2xl font-medium leading-snug tracking-tight text-teal-dark transition-colors group-hover:text-teal md:text-3xl"
         >
           {post.title}
         </h2>
@@ -84,8 +83,7 @@ function PostCard({ post }: { post: PostMeta }) {
           ))}
         </div>
         <h2
-          style={{ fontFamily: "var(--font-display)" }}
-          className="mt-3 text-lg font-medium leading-snug tracking-tight text-teal-dark transition-colors group-hover:text-teal"
+          className="font-display mt-3 text-lg font-medium leading-snug tracking-tight text-teal-dark transition-colors group-hover:text-teal"
         >
           {post.title}
         </h2>
@@ -124,8 +122,7 @@ export default function BlogPage() {
           <div className="mx-auto max-w-md text-center">
             <p className="eyebrow">Newsletter</p>
             <h2
-              style={{ fontFamily: "var(--font-display)" }}
-              className="mt-3 text-2xl font-medium tracking-tight text-teal-dark md:text-3xl"
+              className="font-display mt-3 text-2xl font-medium tracking-tight text-teal-dark md:text-3xl"
             >
               Get the next one first.
             </h2>

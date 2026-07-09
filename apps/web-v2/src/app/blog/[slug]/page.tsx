@@ -69,8 +69,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* Title */}
         <h1
-          style={{ fontFamily: "var(--font-display)" }}
-          className="mt-5 max-w-3xl text-3xl font-medium leading-tight tracking-tight text-teal-dark md:text-4xl"
+          className="font-display mt-5 max-w-3xl text-3xl font-medium leading-tight tracking-tight text-teal-dark md:text-4xl"
         >
           {meta.title}
         </h1>

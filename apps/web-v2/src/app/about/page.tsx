@@ -75,8 +75,7 @@ export default function AboutPage() {
           <Reveal className="mx-auto max-w-2xl text-center">
             <p className="eyebrow">Our mission</p>
             <h2
-              style={{ fontFamily: "var(--font-display)" }}
-              className="mt-4 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+              className="font-display mt-4 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
             >
               Add{" "}
               <span className="accent-word">healthy years</span>{" "}

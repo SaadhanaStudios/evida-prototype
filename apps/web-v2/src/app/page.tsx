@@ -98,8 +98,7 @@ export default function Home() {
         <Reveal>
           <p className="eyebrow">The Evida service</p>
           <h2
-            style={{ fontFamily: "var(--font-display)" }}
-            className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+            className="font-display mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
           >
             Your membership to{" "}
             <span className="accent-word">healthier years</span>
@@ -225,7 +224,7 @@ export default function Home() {
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {EVIDENCE.map((e, i) => (
             <Reveal key={e.source} as="figure" delay={i * 100} className="card">
-              <span aria-hidden className="font-[family-name:var(--font-display)] text-4xl leading-none text-coral">“</span>
+              <span aria-hidden className="font-display text-4xl leading-none text-coral">“</span>
               <blockquote className="mt-1 text-sm leading-relaxed text-ink">{e.quote}</blockquote>
               <figcaption className="mt-4 text-xs font-medium uppercase tracking-wider text-ink-soft">
                 {e.href ? (

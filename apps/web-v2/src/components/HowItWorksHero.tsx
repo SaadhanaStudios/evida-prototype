@@ -54,84 +54,84 @@ function JourneySvg() {
       <rect x="716" y="66" width="8" height="8" fill="#fef2a7" rx="1" />
       <text
         x="40" y="444" textAnchor="start"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.06em" }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 20, letterSpacing: "0.06em" }}
         fill="#fff"
       >
         EVIDA
       </text>
       <text
         x="275" y="332" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
         fill="#fff"
       >
         DATA
       </text>
       <text
         x="275" y="353" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         Understand your
       </text>
       <text
         x="275" y="369" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         health signals
       </text>
       <text
         x="495" y="252" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
         fill="#fff"
       >
         INSIGHTS
       </text>
       <text
         x="495" y="273" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         Personalised insights and
       </text>
       <text
         x="495" y="289" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         recommendations
       </text>
       <text
         x="625" y="122" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 20, letterSpacing: "0.08em" }}
         fill="#fff"
       >
         ACTION
       </text>
       <text
         x="625" y="143" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         Take the right
       </text>
       <text
         x="625" y="159" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 12.5 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: 12.5 }}
         fill="rgba(255,255,255,0.62)"
       >
         next step
       </text>
       <text
         x="706" y="30" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 13 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: 13 }}
         fill="rgba(255,255,255,0.85)"
       >
         Confidence in your
       </text>
       <text
         x="706" y="47" textAnchor="middle"
-        style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 13 }}
+        style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: 13 }}
         fill="rgba(255,255,255,0.85)"
       >
         future health
