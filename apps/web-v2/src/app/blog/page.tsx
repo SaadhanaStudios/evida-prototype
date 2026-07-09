@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 import CtaGroup from "@/components/CtaGroup";
 import { LINKS } from "@/lib/site";
 
@@ -30,18 +31,11 @@ const POSTS = [
 export default function BlogPage() {
   return (
     <>
-      <section className="container-site pb-8 pt-16 md:pt-24">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Blog</p>
-          <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Insight, grounded in evidence.
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-            Writing on prevention, healthspan and lifestyle medicine — because
-            understanding your health shouldn&rsquo;t require a medical degree.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Blog"
+        title="Insight, grounded in evidence."
+        subtitle="Writing on prevention, healthspan and lifestyle medicine — because understanding your health shouldn't require a medical degree."
+      />
 
       <section className="container-site py-12 md:py-16">
         <div className="grid gap-6 md:grid-cols-2">

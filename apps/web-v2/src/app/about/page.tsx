@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import AboutHero from "@/components/AboutHero";
 import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
 import Reveal from "@/components/Reveal";
@@ -64,14 +65,17 @@ const PRINCIPLES = [
 export default function AboutPage() {
   return (
     <>
+      {/* ————— Hero ————— */}
+      <AboutHero />
+
       {/* ————— Why ————— */}
       <section className="hero-wash container-site pb-8 pt-16 md:pt-24">
         <div className="max-w-2xl">
           <p className="eyebrow">Why we exist</p>
-          <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
+          <h2 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
             Healthcare waits for you to get sick.{" "}
             <span className="accent-word">We couldn&rsquo;t accept that.</span>
-          </h1>
+          </h2>
           <p className="mt-6 text-lg leading-relaxed text-ink-soft">
             The average UK life lasts 81 years, but only around 47 of them are lived
             in good health. The gap isn&rsquo;t genetic destiny — it&rsquo;s decades

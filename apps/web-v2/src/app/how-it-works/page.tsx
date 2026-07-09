@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
 import Reveal from "@/components/Reveal";
@@ -109,19 +110,11 @@ function StageSection({
 export default function HowItWorksPage() {
   return (
     <>
-      <section className="hero-wash container-site pb-4 pt-16 md:pt-24">
-        <div className="max-w-2xl">
-          <p className="eyebrow">How it works</p>
-          <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Six steps. Three stages.<br />
-            One continuous picture of <span className="accent-word">your health.</span>
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-            From your first blood draw to year-on-year monitoring, here is exactly
-            what happens — and when.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="How it works"
+        title={<>Six steps. Three stages.<br />One continuous picture of <span className="accent-word">your health.</span></>}
+        subtitle="From your first blood draw to year-on-year monitoring, here is exactly what happens — and when."
+      />
 
       <StageSection
         id="initial"
