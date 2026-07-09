@@ -47,12 +47,37 @@ const INCLUSIONS: { label: string; items: string[] }[] = [
   },
 ];
 
-const COMPARISON: { label: string; evida: string; kit: string; nhs: string }[] = [
-  { label: "Blood biomarkers", evida: "100+ at a clinic", kit: "20–50 finger-prick", nhs: "A handful, if indicated" },
-  { label: "Wearable data", evida: "Integrated & clinically read", kit: "Not connected", nhs: "Not connected" },
-  { label: "GP time", evida: "60 min core across the year", kit: "None — PDF report", nhs: "~10 min, when ill" },
-  { label: "Focus", evida: "Prevention & lifestyle", kit: "Point-in-time snapshot", nhs: "Reactive treatment" },
-  { label: "Follow-up", evida: "Built in from day one", kit: "Buy another kit", nhs: "Only if something's wrong" },
+const COMPARISON: { label: string; other: string; evida: string; nhs: string }[] = [
+  {
+    label: "Focus",
+    other: "A snapshot in time",
+    evida: "A year of proactive prevention",
+    nhs: "Reactive — when you're unwell",
+  },
+  {
+    label: "Time with a doctor",
+    other: "Often none, or very brief",
+    evida: "60 min core across the year, unhurried",
+    nhs: "~10 min per appointment",
+  },
+  {
+    label: "Your data",
+    other: "Results handed over in isolation",
+    evida: "Bloods + wearables + history, joined up",
+    nhs: "Limited to what you report on the day",
+  },
+  {
+    label: "Follow-up",
+    other: "Buy another kit",
+    evida: "Built in at 6 months",
+    nhs: "When you book the next appointment",
+  },
+  {
+    label: "Cost",
+    other: "~£150–300 one-off",
+    evida: `£320 / year (≈ ${PRICE.perMonth}/mo)`,
+    nhs: "Free at point of use",
+  },
 ];
 
 const FAQS = [
@@ -144,29 +169,43 @@ export default function MembershipPage() {
       </section>
 
       {/* ————— Comparison ————— */}
-      <section className="hairline-t hairline-b bg-surface">
+      <section className="hairline-t bg-surface">
         <div className="container-site py-16 md:py-20">
           <p className="eyebrow">The honest comparison</p>
           <h2 className="h-display mt-3 text-3xl md:text-4xl">
             More than a test kit. More than a check-up.
           </h2>
           <div className="mt-10 overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[600px] overflow-hidden rounded-2xl border border-line text-left text-sm">
               <thead>
-                <tr className="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
-                  <th className="py-3 pr-4 font-semibold" scope="col"></th>
-                  <th className="py-3 pr-4 font-semibold text-teal" scope="col">Evida</th>
-                  <th className="py-3 pr-4 font-semibold" scope="col">One-off test kit</th>
-                  <th className="py-3 font-semibold" scope="col">Standard GP visit</th>
+                <tr>
+                  <th className="w-[22%] border-b border-r border-line bg-surface px-5 py-4" scope="col" />
+                  <th className="w-[26%] border-b border-r border-line bg-surface px-5 py-4 text-xs font-semibold uppercase tracking-widest text-ink-soft" scope="col">
+                    A one-off health check
+                  </th>
+                  <th className="w-[26%] border-b border-r border-line bg-teal px-5 py-4 text-xs font-semibold uppercase tracking-widest text-cream" scope="col">
+                    Evida membership
+                  </th>
+                  <th className="w-[26%] border-b border-line bg-surface px-5 py-4 text-xs font-semibold uppercase tracking-widest text-ink-soft" scope="col">
+                    Your NHS GP
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {COMPARISON.map((row) => (
-                  <tr key={row.label} className="border-b border-line">
-                    <th scope="row" className="py-4 pr-4 font-semibold text-ink">{row.label}</th>
-                    <td className="py-4 pr-4 font-medium text-teal-dark">{row.evida}</td>
-                    <td className="py-4 pr-4 text-ink-soft">{row.kit}</td>
-                    <td className="py-4 text-ink-soft">{row.nhs}</td>
+                {COMPARISON.map((row, i) => (
+                  <tr key={row.label} className={i < COMPARISON.length - 1 ? "border-b border-line" : ""}>
+                    <th scope="row" className="border-r border-line bg-surface px-5 py-5 text-xs font-bold uppercase tracking-widest text-ink">
+                      {row.label}
+                    </th>
+                    <td className="border-r border-line px-5 py-5 leading-snug text-ink-soft">
+                      {row.other}
+                    </td>
+                    <td className="border-r border-line bg-teal/5 px-5 py-5 font-semibold leading-snug text-ink">
+                      {row.evida}
+                    </td>
+                    <td className="px-5 py-5 leading-snug text-ink-soft">
+                      {row.nhs}
+                    </td>
                   </tr>
                 ))}
               </tbody>
