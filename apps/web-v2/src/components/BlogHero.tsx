@@ -1,28 +1,36 @@
 export default function BlogHero() {
   return (
     <section
-      className="relative flex min-h-[clamp(400px,50vw,580px)] flex-col justify-end overflow-hidden px-10 pb-14 md:px-14 md:pb-18"
+      className="relative flex min-h-[clamp(360px,46vw,540px)] items-end overflow-hidden px-10 pb-14 md:px-14 md:pb-18"
       style={{
         backgroundImage:
-          "linear-gradient(to top, rgba(11,11,11,0.78) 0%, rgba(11,11,11,0.38) 55%, rgba(11,11,11,0.18) 100%), url('/images/blog-hero.jpg')",
+          "linear-gradient(to top, rgba(11,11,11,0.80) 0%, rgba(11,11,11,0.42) 55%, rgba(11,11,11,0.20) 100%), url('/images/blog-hero.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center 30%",
       }}
     >
-      <div className="max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-widest text-cream/60">
-          The blog
-        </p>
-        <h1
-          style={{ fontFamily: "var(--font-display)" }}
-          className="mt-3 text-4xl font-medium leading-[1.08] tracking-tight text-cream md:text-5xl"
-        >
-          No single data point<br />
-          tells the whole story.
-        </h1>
-        <p className="mt-4 text-lg font-normal leading-relaxed text-cream/70">
-          Writing on prevention, healthspan and lifestyle medicine — from the Evida team.
-        </p>
+      <div className="grid w-full max-w-5xl gap-10 md:grid-cols-2 md:gap-16">
+        {/* Left — title */}
+        <div>
+          <h1
+            style={{ fontFamily: "var(--font-display)" }}
+            className="text-4xl font-medium leading-[1.08] tracking-tight text-cream md:text-5xl"
+          >
+            The Evida<br />
+            Health{" "}
+            <span className="font-medium italic text-cream/60">Blog</span>
+          </h1>
+        </div>
+
+        {/* Right — descriptor */}
+        <div className="flex flex-col justify-end">
+          <p className="text-lg font-medium leading-snug text-cream">
+            Clear, evidence-based insights to help you understand and improve your health.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-cream/65">
+            We break down the science of longevity, lifestyle medicine and habits — so you can take meaningful action.
+          </p>
+        </div>
       </div>
     </section>
   );
