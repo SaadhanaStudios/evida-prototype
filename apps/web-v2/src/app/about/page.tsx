@@ -176,10 +176,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <PullQuote source="The Evida principle">
-        No single data point tells the whole story.
-      </PullQuote>
-
       {/* ————— Principles ————— */}
       <section className="hairline-t hairline-b bg-surface">
         <div className="container-site py-16 md:py-20">
@@ -265,6 +261,10 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <PullQuote source="The Evida principle">
+        No single data point tells the whole story.
+      </PullQuote>
 
       {/* ————— Extend ————— */}
       <section className="container-site py-16 md:py-20">
