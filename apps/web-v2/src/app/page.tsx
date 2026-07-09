@@ -97,7 +97,7 @@ export default function Home() {
       {/* ————— The Evida Service ————— */}
       <section className="container-site py-16 md:py-20">
         <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="eyebrow">The Evida service</p>
               <h2
