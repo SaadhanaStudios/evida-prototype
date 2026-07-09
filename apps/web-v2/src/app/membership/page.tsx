@@ -143,6 +143,41 @@ export default function MembershipPage() {
       </div>
       </section>
 
+      {/* ————— Comparison ————— */}
+      <section className="hairline-t hairline-b bg-surface">
+        <div className="container-site py-16 md:py-20">
+          <p className="eyebrow">The honest comparison</p>
+          <h2 className="h-display mt-3 text-3xl md:text-4xl">
+            More than a test kit. More than a check-up.
+          </h2>
+          <div className="mt-10 overflow-x-auto">
+            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
+                  <th className="py-3 pr-4 font-semibold" scope="col"></th>
+                  <th className="py-3 pr-4 font-semibold text-teal" scope="col">Evida</th>
+                  <th className="py-3 pr-4 font-semibold" scope="col">One-off test kit</th>
+                  <th className="py-3 font-semibold" scope="col">Standard GP visit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map((row) => (
+                  <tr key={row.label} className="border-b border-line">
+                    <th scope="row" className="py-4 pr-4 font-semibold text-ink">{row.label}</th>
+                    <td className="py-4 pr-4 font-medium text-teal-dark">{row.evida}</td>
+                    <td className="py-4 pr-4 text-ink-soft">{row.kit}</td>
+                    <td className="py-4 text-ink-soft">{row.nhs}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-4 text-xs text-ink-soft">
+            Evida is complementary preventative care — it works alongside your NHS GP, not instead of them.
+          </p>
+        </div>
+      </section>
+
       {/* ————— Pillar 1: Data ————— */}
       <div className="hairline-t">
         <TwoCol media={<Reveal><DataSourcesCard /></Reveal>}>
@@ -209,41 +244,6 @@ export default function MembershipPage() {
       <PullQuote>
         Your wearable spots the trends. We give your GP time to read them.
       </PullQuote>
-
-      {/* ————— Comparison ————— */}
-      <section className="hairline-t hairline-b bg-surface">
-        <div className="container-site py-16 md:py-20">
-          <p className="eyebrow">The honest comparison</p>
-          <h2 className="h-display mt-3 text-3xl md:text-4xl">
-            More than a test kit. More than a check-up.
-          </h2>
-          <div className="mt-10 overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-b border-line text-xs uppercase tracking-wider text-ink-soft">
-                  <th className="py-3 pr-4 font-semibold" scope="col"></th>
-                  <th className="py-3 pr-4 font-semibold text-teal" scope="col">Evida</th>
-                  <th className="py-3 pr-4 font-semibold" scope="col">One-off test kit</th>
-                  <th className="py-3 font-semibold" scope="col">Standard GP visit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON.map((row) => (
-                  <tr key={row.label} className="border-b border-line">
-                    <th scope="row" className="py-4 pr-4 font-semibold text-ink">{row.label}</th>
-                    <td className="py-4 pr-4 font-medium text-teal-dark">{row.evida}</td>
-                    <td className="py-4 pr-4 text-ink-soft">{row.kit}</td>
-                    <td className="py-4 text-ink-soft">{row.nhs}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-4 text-xs text-ink-soft">
-            Evida is complementary preventative care — it works alongside your NHS GP, not instead of them.
-          </p>
-        </div>
-      </section>
 
       {/* ————— FAQ ————— */}
       <section id="faq" className="container-site py-16 md:py-20">
