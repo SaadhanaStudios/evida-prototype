@@ -27,7 +27,7 @@ export default function MembershipHero() {
             The Evida<br />
             Membership
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-cream/75">
+          <p className="mt-4 text-2xl font-normal leading-snug text-cream">
             A full year of care, not a single appointment.
           </p>
           <a
