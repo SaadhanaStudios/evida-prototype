@@ -5,7 +5,7 @@
  * These are stand-ins for real dashboard screenshots when ready.
  */
 
-function Sparkline({ points, stroke = "#216A73" }: { points: string; stroke?: string }) {
+function Sparkline({ points, stroke = "var(--color-teal)" }: { points: string; stroke?: string }) {
   return (
     <svg viewBox="0 0 120 36" className="h-9 w-full" preserveAspectRatio="none" aria-hidden>
       <polyline points={points} fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -36,7 +36,7 @@ export function DashboardCard() {
         <div className="rounded-xl border border-line bg-cream p-4">
           <div className="text-xs text-ink-soft">Resting heart rate · Oura</div>
           <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-teal-dark">58 bpm</div>
-          <Sparkline points="0,14 20,16 40,12 60,15 80,11 100,12 120,9" stroke="#C8862F" />
+          <Sparkline points="0,14 20,16 40,12 60,15 80,11 100,12 120,9" stroke="var(--color-amber)" />
           <div className="mt-1 text-xs font-medium text-amber">7-day trend, synced today</div>
         </div>
       </div>
