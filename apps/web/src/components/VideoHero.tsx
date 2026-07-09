@@ -29,13 +29,13 @@ export default function VideoHero() {
 
         {/* Content */}
         <div className="relative z-10 flex w-full flex-row items-end justify-between">
-          <div className="shrink-0">
+          <div className="min-w-0 md:pr-6">
             <h1 className="text-hero-display font-normal leading-[1.05] tracking-tight text-cream">
               More than a<br />
               <span className="accent-word">health check.</span>
             </h1>
-            <p className="mt-4 text-base font-normal leading-snug text-cream/80 md:text-lg xl:text-xl">
-              Blood Test &nbsp;|&nbsp; GP Consult &nbsp;|&nbsp; Wearable Data &nbsp;|&nbsp; Health Check
+            <p className="mt-4 text-sm font-normal leading-snug text-cream/80 md:text-lg xl:text-xl">
+              Blood&nbsp;Test&nbsp;| GP&nbsp;Consult&nbsp;| Wearable&nbsp;Data&nbsp;| Health&nbsp;Check
             </p>
             <p className="mt-2 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
               The data upgrade for your GP consult
@@ -43,8 +43,8 @@ export default function VideoHero() {
             <a href={LINKS.book} className="btn-hero">
               Get Started
             </a>
-            <p className="mt-8 text-xs font-medium uppercase tracking-wider text-cream/50">
-              CQC Registered &nbsp;&middot;&nbsp; GMC Licensed GPs &nbsp;&middot;&nbsp; UK GDPR Compliant
+            <p className="mt-8 text-[0.65rem] font-medium uppercase tracking-wider text-cream/50 md:text-xs">
+              CQC&nbsp;Registered&nbsp;&middot; GMC&nbsp;Licensed&nbsp;GPs&nbsp;&middot; UK&nbsp;GDPR&nbsp;Compliant
             </p>
           </div>
           <JourneySvg />
