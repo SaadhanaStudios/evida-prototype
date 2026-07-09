@@ -34,12 +34,18 @@ export default function VideoHero() {
               More than a<br />
               <span className="accent-word">health check.</span>
             </h1>
-            <p className="mt-4 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
+            <p className="mt-4 text-base font-normal leading-snug text-cream/80 md:text-lg xl:text-xl">
+              Blood Test &nbsp;|&nbsp; GP Consult &nbsp;|&nbsp; Wearable Data &nbsp;|&nbsp; Health Check
+            </p>
+            <p className="mt-2 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
               The data upgrade for your GP consult
             </p>
             <a href={LINKS.book} className="btn-hero">
               Get Started
             </a>
+            <p className="mt-8 text-xs font-medium uppercase tracking-wider text-cream/50">
+              CQC Registered &nbsp;&middot;&nbsp; GMC Licensed GPs &nbsp;&middot;&nbsp; UK GDPR Compliant
+            </p>
           </div>
           <JourneySvg />
         </div>
