@@ -6,7 +6,9 @@ import Reveal from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "How it works",
   description:
-    "How Evida works: join and connect in your first two weeks, meet your lifestyle-medicine GP for 45 minutes, follow a prevention plan, and monitor year after year.",
+    "How Evida works: join and book a baseline blood draw, meet your lifestyle-medicine GP for 45 minutes, follow a personalised prevention plan, and return for a 15-minute follow-up at six months.",
+  alternates: { canonical: "/how-it-works" },
+  openGraph: { title: "How it works — Evida", url: "/how-it-works" },
 };
 
 /*

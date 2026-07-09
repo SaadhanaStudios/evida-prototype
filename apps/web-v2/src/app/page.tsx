@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
@@ -6,6 +7,19 @@ import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
 import VideoHero from "@/components/VideoHero";
 import { EVIDENCE, LINKS, PRICE, SCARCITY } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Evida — More than a health check",
+  description:
+    "Evida gives you a 100+ biomarker blood panel, wearable integration and a 45-minute GP consultation — all joined up in one preventative health membership. £320/year.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Evida — More than a health check",
+    description:
+      "Evida gives you a 100+ biomarker blood panel, wearable integration and a 45-minute GP consultation — all joined up in one preventative health membership. £320/year.",
+    url: "/",
+  },
+};
 
 /*
  * Home — a summary hub, per the July 3 whiteboard. Flow:

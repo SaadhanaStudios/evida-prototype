@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: "Membership",
   description:
     "One membership, everything included: 100+ biomarkers at a Randox clinic, wearable integration, 60 minutes of lifestyle-focused GP time, and a prevention plan. £27 a month, billed annually at £320.",
+  alternates: { canonical: "/membership" },
+  openGraph: { title: "Membership — Evida", url: "/membership" },
 };
 
 /*

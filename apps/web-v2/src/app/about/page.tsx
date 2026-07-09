@@ -4,9 +4,11 @@ import CtaGroup from "@/components/CtaGroup";
 import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "About us",
+  title: "About",
   description:
     "Why Evida exists: shifting healthcare from reactive to preventative, with GP-led lifestyle medicine and data that's finally joined up.",
+  alternates: { canonical: "/about" },
+  openGraph: { title: "About — Evida", url: "/about" },
 };
 
 /*

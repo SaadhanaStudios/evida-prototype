@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Blog",
   description:
     "Writing on prevention, healthspan and lifestyle medicine from the Evida team.",
+  alternates: { canonical: "/blog" },
+  openGraph: { title: "Blog — Evida", url: "/blog" },
 };
 
 /*
