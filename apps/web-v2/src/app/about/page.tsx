@@ -82,6 +82,60 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ————— Mission + Values ————— */}
+      <section className="hairline-t bg-surface">
+        <div className="container-site py-16 md:py-20">
+          {/* Mission statement */}
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow">Our mission</p>
+            <h2
+              style={{ fontFamily: "var(--font-display)" }}
+              className="mt-4 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+            >
+              Add{" "}
+              <span className="accent-word">healthy years</span>{" "}
+              to lives around the world
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-ink-soft">
+              We are on a mission to achieve longevity for all through better insights and earlier detection.
+            </p>
+          </Reveal>
+
+          {/* Value cards */}
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                label: "Our vision",
+                heading: "Healthcare that protects, not just reacts.",
+                body: "Most healthcare waits for something to go wrong. Evida exists to get ahead of it — pairing your data with real clinical time so problems are caught early and prevented, not just treated.",
+              },
+              {
+                label: "Clinical governance",
+                heading: "Real doctors, properly accountable.",
+                body: "Every Evida consultation is with a GMC-licensed, NHS-experienced GP. We are CQC registered and GDPR compliant. Your care is led by named clinicians — not an algorithm.",
+              },
+              {
+                label: "Human in the loop",
+                heading: "Technology surfaces. Doctors decide.",
+                body: "We use technology to spot patterns across your bloods and wearables. But every insight is read, interpreted and signed off by a real GP. You are always seen by a person.",
+              },
+            ].map((card, i) => (
+              <Reveal key={card.label} delay={i * 100} className="card">
+                <p className="text-xs font-semibold uppercase tracking-widest text-teal">
+                  {card.label}
+                </p>
+                <h3 className="h-display mt-3 text-xl leading-snug md:text-2xl">
+                  {card.heading}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  {card.body}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ————— Stats ————— */}
       <section className="hairline-t bg-surface">
         <div className="container-site grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-20">
