@@ -4,7 +4,6 @@ import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
 import EviMoment from "@/components/EviMoment";
 import Reveal from "@/components/Reveal";
-import CountUp from "@/components/CountUp";
 import VideoHero from "@/components/VideoHero";
 import { EVIDENCE, LINKS, PRICE, SCARCITY } from "@/lib/site";
 
@@ -216,46 +215,6 @@ export default function Home() {
         <Reveal delay={120}>
           <EviMoment />
         </Reveal>
-      </section>
-
-      {/* ————— Why Evida exists (About teaser) ————— */}
-      <section className="hairline-t bg-surface">
-        <div className="container-site grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-20">
-          <Reveal>
-            <p className="eyebrow">Why we exist</p>
-            <h2 className="h-display mt-3 text-3xl md:text-4xl">
-              Healthcare waits for you to get sick.{" "}
-              <span className="accent-word accent-coral">We don&rsquo;t.</span>
-            </h2>
-            <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
-              The average UK life lasts 81 years — but only around 47 of them are spent
-              in good health. Closing that gap takes clinician time, lifestyle medicine,
-              and data that&rsquo;s actually joined up. That&rsquo;s what we built.
-            </p>
-            <Link href="/about" className="btn-ghost mt-6">
-              Read our why →
-            </Link>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="card text-center">
-                <div className="h-display font-mono text-5xl tabular-nums">
-                  <CountUp to={81} />
-                </div>
-                <div className="mt-2 text-sm text-ink-soft">years of average UK lifespan</div>
-              </div>
-              <div className="card border-coral/30 text-center">
-                <div className="h-display font-mono text-5xl tabular-nums text-coral">
-                  <CountUp to={47} />
-                </div>
-                <div className="mt-2 text-sm text-ink-soft">of them in good health</div>
-              </div>
-              <div className="card col-span-2 text-center">
-                <div className="h-display text-2xl">The other 34 are the point.</div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
       </section>
 
       {/* ————— Evidence strip + blog ————— */}
