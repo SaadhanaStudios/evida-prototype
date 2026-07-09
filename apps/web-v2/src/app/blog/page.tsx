@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/PageHero";
+import BlogHero from "@/components/BlogHero";
 import CtaGroup from "@/components/CtaGroup";
 import { LINKS } from "@/lib/site";
 
@@ -31,11 +31,7 @@ const POSTS = [
 export default function BlogPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Blog"
-        title="Insight, grounded in evidence."
-        subtitle="Writing on prevention, healthspan and lifestyle medicine — because understanding your health shouldn't require a medical degree."
-      />
+      <BlogHero />
 
       <section className="container-site py-12 md:py-16">
         <div className="grid gap-6 md:grid-cols-2">
