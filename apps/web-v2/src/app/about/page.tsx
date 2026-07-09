@@ -68,24 +68,6 @@ export default function AboutPage() {
       {/* ————— Hero ————— */}
       <AboutHero />
 
-      {/* ————— Why ————— */}
-      <section className="hero-wash container-site pb-8 pt-16 md:pt-24">
-        <div className="max-w-2xl">
-          <p className="eyebrow">Why we exist</p>
-          <h2 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
-            Healthcare waits for you to get sick.{" "}
-            <span className="accent-word">We couldn&rsquo;t accept that.</span>
-          </h2>
-          <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-            The average UK life lasts 81 years, but only around 47 of them are lived
-            in good health. The gap isn&rsquo;t genetic destiny — it&rsquo;s decades
-            of small, invisible drift that no ten-minute appointment was ever going
-            to catch. Evida exists to catch it: comprehensive data, unhurried GP
-            time, and a plan that turns both into healthier years.
-          </p>
-        </div>
-      </section>
-
       {/* ————— Mission + Values ————— */}
       <section className="hairline-t bg-surface">
         <div className="container-site py-16 md:py-20">
@@ -137,6 +119,24 @@ export default function AboutPage() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ————— Why ————— */}
+      <section className="hairline-t container-site pb-8 pt-16 md:pt-20">
+        <div className="max-w-2xl">
+          <p className="eyebrow">Why we exist</p>
+          <h2 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
+            Healthcare waits for you to get sick.{" "}
+            <span className="accent-word">We couldn&rsquo;t accept that.</span>
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-ink-soft">
+            The average UK life lasts 81 years, but only around 47 of them are lived
+            in good health. The gap isn&rsquo;t genetic destiny — it&rsquo;s decades
+            of small, invisible drift that no ten-minute appointment was ever going
+            to catch. Evida exists to catch it: comprehensive data, unhurried GP
+            time, and a plan that turns both into healthier years.
+          </p>
         </div>
       </section>
 
