@@ -1,11 +1,330 @@
-import type { Metadata } from 'next'
-import Content from './content'
+import type { Metadata } from "next";
+import MembershipHero from "@/components/MembershipHero";
+import PullQuote from "@/components/PullQuote";
+import TwoCol from "@/components/TwoCol";
+import CtaGroup from "@/components/CtaGroup";
+import Reveal from "@/components/Reveal";
+import TeamPhoto from "@/components/TeamPhoto";
+import { DataSourcesCard, ConsultCard, PlanCard } from "@/components/ProductVisuals";
+import { PRICE, SCARCITY } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Membership — Evida",
-  description: "The Evida Membership: £320/year. Comprehensive baseline blood panel, a 45-minute GP consultation, a personalised prevention plan, and a full year of support.",
-}
+  title: "Membership",
+  description:
+    "One membership, everything included: 100+ biomarkers at a Randox clinic, wearable integration, 60 minutes of lifestyle-focused GP time, and a prevention plan. £27 a month, billed annually at £320.",
+  alternates: { canonical: "/membership" },
+  openGraph: { title: "Membership — Evida", url: "/membership" },
+};
 
-export default function Page() {
-  return <Content />
+/*
+ * Membership — whiteboard layout: Pricing ++ at the top, then the
+ * Data → Insights → Action pillars as alternating two-column sections,
+ * comparison table, FAQ anchor.
+ */
+
+const INCLUSIONS: { label: string; items: string[] }[] = [
+  {
+    label: "Diagnostics & Data",
+    items: [
+      "Baseline blood panel — 100+ biomarkers at a Randox clinic",
+      "Wearable integration — Apple Health, Oura, Whoop, Garmin",
+      "Full medical history, brought into one secure record",
+      "Results delivered to one place, in plain language",
+    ],
+  },
+  {
+    label: "Your Consultation",
+    items: [
+      "45-minute baseline consultation with a lifestyle-medicine GP",
+      "A personal prevention plan, agreed with your GP",
+    ],
+  },
+  {
+    label: "Ongoing Care",
+    items: [
+      "15-minute follow-up consultation at six months",
+      "2 × optional 15-minute check-in consultations",
+      "Evi — GP-monitored support between appointments",
+    ],
+  },
+];
+
+const COMPARISON: { label: string; other: string; evida: string; nhs: string }[] = [
+  {
+    label: "Focus",
+    other: "A snapshot in time",
+    evida: "A year of proactive prevention",
+    nhs: "Reactive — when you're unwell",
+  },
+  {
+    label: "Time with a doctor",
+    other: "Often none, or very brief",
+    evida: "60 min core across the year, unhurried",
+    nhs: "~10 min per appointment",
+  },
+  {
+    label: "Your data",
+    other: "Results handed over in isolation",
+    evida: "Bloods + wearables + history, joined up",
+    nhs: "Limited to what you report on the day",
+  },
+  {
+    label: "Follow-up",
+    other: "Buy another kit",
+    evida: "Built in at 6 months",
+    nhs: "When you book the next appointment",
+  },
+  {
+    label: "Cost",
+    other: "~£150–300 one-off",
+    evida: `£320 / year (≈ ${PRICE.perMonth}/mo)`,
+    nhs: "Free at point of use",
+  },
+];
+
+const FAQS = [
+  {
+    q: "What exactly is included in the blood panel?",
+    a: "Your baseline is drawn at a Randox clinic and covers 100+ biomarkers across heart, metabolic, hormonal, liver, kidney, vitamin and inflammation markers. Your GP walks you through every flag — nothing arrives as an unexplained PDF.",
+  },
+  {
+    q: "Which wearables work with Evida?",
+    a: "Apple Health, Oura, Whoop and Garmin connect out of the box. Your daily data — sleep, heart rate, activity — is read alongside your bloods by your GP, not just charted.",
+  },
+  {
+    q: "What if I don't have a wearable?",
+    a: "The membership works fully without one. Your baseline bloods, history and GP consultations stand on their own; a wearable simply adds a continuous stream between tests.",
+  },
+  {
+    q: "How does this work with my NHS GP?",
+    a: "Evida is preventative care that works alongside the NHS, not instead of it. Anything that needs treatment is referred back into your existing care with a clear summary you can share.",
+  },
+  {
+    q: "How is my data protected?",
+    a: "Your record is held securely in the UK under UK GDPR. It is shared only with the clinicians who treat you — never sold, never used for advertising.",
+  },
+  {
+    q: "Why is it billed annually?",
+    a: `Prevention is a year-round practice, not a one-off test — the membership is priced as ${PRICE.perYear} for the full year (which works out at ${PRICE.exactPerMonth} a month). You get the baseline, the six-month follow-up, and everything between.`,
+  },
+];
+
+export default function MembershipPage() {
+  return (
+    <>
+      <MembershipHero />
+
+      {/* ————— Pricing hero ————— */}
+      <section className="hero-wash">
+      <div className="container-site grid items-start gap-12 pb-16 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
+        <div>
+          <p className="eyebrow">Membership</p>
+          <h1 className="h-display mt-4 text-4xl leading-tight md:text-5xl">
+            Your membership to <span className="accent-word">healthier years.</span>
+          </h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
+            One membership, everything included. No tiers, no add-ons, no upsell
+            at the clinic door.
+          </p>
+          <div className="mt-8 flex items-baseline gap-3">
+            <span className="h-display font-mono text-6xl tabular-nums">{PRICE.perMonth}</span>
+            <span className="text-lg text-ink-soft">a month</span>
+          </div>
+          <p className="mt-2 text-sm text-ink-soft">
+            Billed annually at {PRICE.perYear} ({PRICE.exactPerMonth}/month — about {PRICE.perDay} a day).
+          </p>
+          <div className="mt-8">
+            <CtaGroup
+              primaryLabel="Activate membership"
+              secondaryLabel="Read the FAQs"
+              secondaryHref="#faq"
+            />
+          </div>
+        </div>
+
+        <Reveal className="card">
+          <div className="eyebrow">Everything included</div>
+          <div className="mt-5 space-y-5">
+            {INCLUSIONS.map((section) => (
+              <div key={section.label}>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-teal">
+                  {section.label}
+                </p>
+                <ul className="space-y-2">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink">
+                      <svg className="mt-0.5 shrink-0 text-teal" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 border-t border-line pt-4 text-xs text-ink-soft">
+            Plus a summary letter to your NHS GP, with prescriptions and referrals where clinically appropriate.
+          </p>
+        </Reveal>
+      </div>
+      </section>
+
+      {/* ————— Comparison ————— */}
+      <section className="hairline-t bg-surface">
+        <div className="container-site py-16 md:py-20">
+          <p className="eyebrow">The honest comparison</p>
+          <h2 className="h-display mt-3 text-3xl md:text-4xl">
+            More than a test kit. More than a check-up.
+          </h2>
+          <div className="mt-10 overflow-x-auto">
+            <table className="w-full min-w-[600px] overflow-hidden rounded-2xl border border-line text-left text-sm">
+              <thead>
+                <tr>
+                  <th className="w-[22%] border-b border-r border-line bg-surface px-5 py-4" scope="col" />
+                  <th className="w-[26%] border-b border-r border-line bg-surface px-5 py-4 text-xs font-semibold uppercase tracking-widest text-ink-soft" scope="col">
+                    A one-off health check
+                  </th>
+                  <th className="w-[26%] border-b border-r border-line bg-teal px-5 py-4 text-xs font-semibold uppercase tracking-widest text-cream" scope="col">
+                    Evida membership
+                  </th>
+                  <th className="w-[26%] border-b border-line bg-surface px-5 py-4 text-xs font-semibold uppercase tracking-widest text-ink-soft" scope="col">
+                    Your NHS GP
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map((row, i) => (
+                  <tr key={row.label} className={i < COMPARISON.length - 1 ? "border-b border-line" : ""}>
+                    <th scope="row" className="border-r border-line bg-surface px-5 py-5 text-xs font-bold uppercase tracking-widest text-ink">
+                      {row.label}
+                    </th>
+                    <td className="border-r border-line px-5 py-5 leading-snug text-ink-soft">
+                      {row.other}
+                    </td>
+                    <td className="border-r border-line bg-teal/5 px-5 py-5 font-semibold leading-snug text-ink">
+                      {row.evida}
+                    </td>
+                    <td className="px-5 py-5 leading-snug text-ink-soft">
+                      {row.nhs}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-4 text-xs text-ink-soft">
+            Evida is complementary preventative care — it works alongside your NHS GP, not instead of them.
+          </p>
+        </div>
+      </section>
+
+      {/* ————— Pillar 1: Data ————— */}
+      <div className="hairline-t">
+        <TwoCol media={<Reveal><DataSourcesCard /></Reveal>}>
+          <p className="eyebrow">01 · Data</p>
+          <h2 className="h-display mt-3 text-3xl md:text-4xl">
+            Your health data, finally in one place.
+          </h2>
+          <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
+            Most health data sits scattered — a blood test here, a sleep score there,
+            a paper history somewhere else, none of it talking. Evida joins your
+            100+ baseline biomarkers, your wearable&rsquo;s daily stream and your
+            medical history into a single record your GP reads before you ever meet.
+          </p>
+          <p className="mt-4 max-w-md text-sm text-ink-soft">
+            Works with Apple Health, Oura, Whoop and Garmin — and works fully without one.
+          </p>
+        </TwoCol>
+      </div>
+
+      {/* ————— Pillar 2: Insights ————— */}
+      <div className="hairline-t bg-surface">
+        <TwoCol
+          flip
+          media={
+            <Reveal className="space-y-6">
+              <ConsultCard />
+              {/* Renders only once a real photo lands — see lib/site.ts (S7) */}
+              <TeamPhoto caption="Your consultation is a real conversation with a real GP — 45 unhurried minutes." />
+            </Reveal>
+          }
+        >
+          <p className="eyebrow">02 · Insight</p>
+          <h2 className="h-display mt-3 text-3xl md:text-4xl">
+            A GP with the time to actually look.
+          </h2>
+          <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
+            The typical appointment lasts ten minutes and starts from zero. Your Evida
+            GP starts from your data and gives you 45 unhurried minutes — twice a
+            year — focused on lifestyle medicine and prevention, not prescriptions.
+          </p>
+          <p className="mt-4 max-w-md text-sm text-ink-soft">
+            60 minutes of core GP time across the year, plus two optional 15-minute
+            check-ins when you need them.
+          </p>
+        </TwoCol>
+      </div>
+
+      {/* ————— Pillar 3: Action ————— */}
+      <div className="hairline-t">
+        <TwoCol media={<Reveal><PlanCard /></Reveal>}>
+          <p className="eyebrow">03 · Action</p>
+          <h2 className="h-display mt-3 text-3xl md:text-4xl">
+            A plan you&rsquo;ll actually follow.
+          </h2>
+          <p className="mt-5 max-w-md leading-relaxed text-ink-soft">
+            Insight without action is trivia. You leave your consultation with a
+            prevention plan agreed with your GP — specific, small, sustainable — and
+            Evi keeps it moving between visits. At six months, you measure what
+            changed against your own baseline.
+          </p>
+        </TwoCol>
+      </div>
+
+      <PullQuote>
+        Your wearable spots the trends. We give your GP time to read them.
+      </PullQuote>
+
+      {/* ————— FAQ ————— */}
+      <section id="faq" className="container-site py-16 md:py-20">
+        <p className="eyebrow">Questions, answered</p>
+        <h2 className="h-display mt-3 text-3xl md:text-4xl">Before you ask</h2>
+        <div className="mt-10 grid gap-4 md:grid-cols-2">
+          {FAQS.map((f) => (
+            <details key={f.q} className="card group p-0">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <span className="text-teal transition-transform group-open:rotate-45">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </summary>
+              <p className="px-6 pb-6 text-sm leading-relaxed text-ink-soft">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* ————— Closing CTA ————— */}
+      <section className="hairline-t bg-surface">
+        <div className="container-site py-20 text-center md:py-24">
+          <p className="eyebrow">{SCARCITY}</p>
+          <h2 className="h-display mx-auto mt-4 max-w-xl text-3xl md:text-4xl">
+            The years ahead are the ones you can{" "}
+            <span className="accent-word">still change.</span>
+          </h2>
+          <div className="mt-8">
+            <CtaGroup
+              center
+              primaryLabel="Activate membership"
+              secondaryLabel="See how it works"
+              secondaryHref="/how-it-works"
+            />
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
