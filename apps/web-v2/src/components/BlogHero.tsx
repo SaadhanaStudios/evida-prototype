@@ -16,7 +16,7 @@ export default function BlogHero() {
             style={{ fontFamily: "var(--font-display)" }}
             className="text-4xl font-medium leading-[1.08] tracking-tight text-cream md:text-5xl"
           >
-            The Evida<br />
+            The Evida<span className="text-cream/45">y</span><br />
             Health{" "}
             <span className="font-medium italic text-cream/60">Blog</span>
           </h1>
