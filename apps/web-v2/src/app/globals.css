@@ -67,6 +67,22 @@ body {
     @apply rounded-3xl border border-line bg-surface p-8 shadow-[0_2px_16px_rgba(34,49,47,0.05),0_1px_2px_rgba(34,49,47,0.04)];
   }
 
+  /* Frosted-glass pill — VideoHero overlay on dark video */
+  .pill-glass {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
   /* Hover-lift for interactive cards (S6) */
   .card-lift {
     @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:border-teal/40 hover:shadow-[0_10px_32px_rgba(34,49,47,0.10),0_2px_6px_rgba(34,49,47,0.05)];
@@ -119,6 +135,65 @@ body {
       )
       1;
   }
+}
+
+/* ————— Article prose — used in blog/[slug] ————— */
+.prose-evida {
+  @apply text-base leading-[1.8] text-ink-soft;
+}
+
+.prose-evida h2 {
+  font-family: var(--font-display);
+  @apply mb-3 mt-10 text-2xl font-medium tracking-tight text-teal-dark;
+}
+
+.prose-evida h3 {
+  font-family: var(--font-display);
+  @apply mb-2 mt-8 text-xl font-medium tracking-tight text-teal-dark;
+}
+
+.prose-evida p {
+  @apply mt-5;
+}
+
+.prose-evida blockquote {
+  @apply my-8 border-l-4 border-teal pl-6;
+}
+
+.prose-evida blockquote p {
+  @apply mt-0 text-xl font-medium italic leading-snug text-ink;
+}
+
+.prose-evida strong {
+  @apply font-semibold text-ink;
+}
+
+.prose-evida em {
+  @apply italic;
+}
+
+.prose-evida ul {
+  @apply mt-5 space-y-2 pl-6;
+}
+
+.prose-evida ol {
+  @apply mt-5 space-y-2 pl-6;
+}
+
+.prose-evida ul li {
+  @apply list-disc;
+}
+
+.prose-evida ol li {
+  @apply list-decimal;
+}
+
+.prose-evida hr {
+  @apply my-10 border-line;
+}
+
+.prose-evida a {
+  @apply text-teal underline underline-offset-2 hover:text-teal-dark;
 }
 
 /* ————— Scroll reveal (S6) — driven by the <Reveal> component ————— */
