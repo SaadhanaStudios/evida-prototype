@@ -143,7 +143,7 @@ function JourneySvg() {
 export default function HowItWorksHero() {
   return (
     <section className="px-2 pt-2">
-      <div className="flex items-center justify-center rounded-t-3xl bg-[#f8b6aa] px-4 py-2 text-center text-xs font-semibold text-[#22312F]">
+      <div className="announcement-bar">
         Pilot now live &mdash; book your Baseline today
       </div>
       <div
@@ -157,27 +157,21 @@ export default function HowItWorksHero() {
       >
         <div className="flex w-full flex-row items-end justify-between">
           <div className="shrink-0">
-            <h1 className="whitespace-nowrap text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
+            <h1 className="text-hero-display whitespace-nowrap font-normal leading-[1.05] tracking-tight text-cream">
               Your Health Journey,
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-3">
-              <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
+              <h1 className="text-hero-display font-normal leading-[1.05] tracking-tight text-cream">
                 Guided by
               </h1>
-              <h1
-                style={{ fontFamily: "var(--font-display)" }}
-                className="text-4xl font-normal italic leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl"
-              >
+              <h1 className="text-hero-display font-display font-normal italic leading-[1.05] tracking-tight text-cream">
                 Evida
               </h1>
             </div>
             <p className="mt-4 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
               Data. Insights. Action &mdash; three steps to a healthier you.
             </p>
-            <a
-              href={LINKS.book}
-              className="mt-6 inline-flex items-center justify-center rounded-xl bg-[#fef2a7] px-5 py-3 text-base font-semibold text-teal transition-all duration-150 hover:bg-[#f0e48f]"
-            >
+            <a href={LINKS.book} className="btn-hero">
               Get Started
             </a>
           </div>

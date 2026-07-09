@@ -5,7 +5,7 @@ export default function MembershipHero() {
   return (
     <section className="px-2 pt-2">
       {/* Announcement bar */}
-      <div className="flex items-center justify-center rounded-t-3xl bg-[#f8b6aa] px-4 py-2 text-center text-xs font-semibold text-[#22312F]">
+      <div className="announcement-bar">
         Pilot now live — book your Baseline today
       </div>
 
