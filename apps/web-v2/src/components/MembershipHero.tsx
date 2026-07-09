@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { LINKS } from "@/lib/site";
+import AnnouncementBar from "./AnnouncementBar";
 
 export default function MembershipHero() {
   return (
     <section className="px-2 pt-2">
-      {/* Announcement bar */}
-      <div className="announcement-bar">
-        Pilot now live — book your Baseline today
-      </div>
+      <AnnouncementBar>Pilot now live — book your Baseline today</AnnouncementBar>
 
       {/* Hero card */}
       <div

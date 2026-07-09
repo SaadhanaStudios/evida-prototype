@@ -1,4 +1,5 @@
 import { LINKS } from "@/lib/site";
+import AnnouncementBar from "./AnnouncementBar";
 
 function JourneySvg() {
   return (
@@ -143,9 +144,7 @@ function JourneySvg() {
 export default function HowItWorksHero() {
   return (
     <section className="px-2 pt-2">
-      <div className="announcement-bar">
-        Pilot now live &mdash; book your Baseline today
-      </div>
+      <AnnouncementBar>Pilot now live &mdash; book your Baseline today</AnnouncementBar>
       <div
         className="relative flex min-h-[clamp(460px,60vw,680px)] flex-col justify-end overflow-hidden rounded-b-3xl px-10 pb-12 md:px-14 md:pb-16"
         style={{
