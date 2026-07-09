@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MembershipHero from "@/components/MembershipHero";
 import PullQuote from "@/components/PullQuote";
 import TwoCol from "@/components/TwoCol";
 import CtaGroup from "@/components/CtaGroup";
@@ -69,6 +70,8 @@ const FAQS = [
 export default function MembershipPage() {
   return (
     <>
+      <MembershipHero />
+
       {/* ————— Pricing hero ————— */}
       <section className="hero-wash">
       <div className="container-site grid items-start gap-12 pb-16 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
