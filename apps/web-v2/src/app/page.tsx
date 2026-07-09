@@ -130,31 +130,29 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
-        <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-          <ul className="flex flex-wrap gap-2">
-            {[
-              "No referral needed",
-              "Works alongside your NHS GP",
-              "No wearable? Still works",
-              "Results in 72 hours",
-              "GMC-licensed GPs",
-            ].map((label) => (
-              <li key={label}>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-3.5 py-1.5 text-xs font-medium text-ink">
-                  <span className="text-teal" aria-hidden>✓</span>
-                  {label}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div className="text-right">
-            <Link href="/membership" className="btn-ghost">
-              Explore the membership →
-            </Link>
-            <p className="mt-1 text-sm text-ink-soft">
-              {PRICE.perMonth}/month, everything included
-            </p>
-          </div>
+        <ul className="mt-8 flex flex-wrap justify-center gap-2">
+          {[
+            "No referral needed",
+            "Works alongside your NHS GP",
+            "No wearable? Still works",
+            "Results in 72 hours",
+            "GMC-licensed GPs",
+          ].map((label) => (
+            <li key={label}>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-3.5 py-1.5 text-xs font-medium text-ink">
+                <span className="text-teal" aria-hidden>✓</span>
+                {label}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 text-right">
+          <Link href="/membership" className="btn-ghost">
+            Explore the membership →
+          </Link>
+          <p className="mt-1 text-sm text-ink-soft">
+            {PRICE.perMonth}/month, everything included
+          </p>
         </div>
       </section>
 
