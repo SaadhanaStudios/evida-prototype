@@ -34,7 +34,7 @@ const SERVICE_CARDS = [
     kicker: ["DATA", "-LED"],
     title: "What we combine",
     items: [
-      "Blood panel — 100+ biomarkers",
+      "Blood panel — 100+ biomarkers at a Randox clinic",
       "Wearable integration (Oura, Apple, Garmin, Whoop)",
       "Medical history in one secure record",
     ],
@@ -43,9 +43,9 @@ const SERVICE_CARDS = [
     kicker: ["GP-LED ", "INSIGHTS"],
     title: "What we discover",
     items: [
-      "45-min consult, lifestyle-focused",
+      "60 min of core GP time across the year",
+      "Unhurried, lifestyle-focused consultations",
       "Prevention plan in plain English",
-      "6-month follow-up included",
     ],
   },
   {
@@ -53,27 +53,13 @@ const SERVICE_CARDS = [
     title: "How you act",
     items: [
       "Personalised prevention plan",
+      "Support from Evi between visits",
       "Partner wellness network",
-      "Daily guidance from Evi",
       "Ongoing GP for continuity of care",
     ],
   },
 ];
 
-const PILLARS = [
-  {
-    title: "Data",
-    body: "A baseline blood panel of 100+ biomarkers at a Randox clinic, your wearable's daily stream, and your medical history — finally in one place.",
-  },
-  {
-    title: "Insight",
-    body: "60 minutes of core GP time across the year. Unhurried, lifestyle-focused consultations with a doctor who has actually read your data.",
-  },
-  {
-    title: "Action",
-    body: "A prevention plan agreed with your GP, support from Evi between visits, and a six-month follow-up to measure what changed.",
-  },
-];
 
 const STAGES = [
   {
@@ -110,18 +96,30 @@ export default function Home() {
 
       {/* ————— The Evida Service ————— */}
       <section className="container-site py-16 md:py-20">
-        <Reveal className="text-center">
-          <p className="eyebrow">The Evida service</p>
-          <h2
-            style={{ fontFamily: "var(--font-display)" }}
-            className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
-          >
-            Your membership to{" "}
-            <span className="accent-word">healthier years</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-ink-soft">
-            What we combine, what we discover, and how we help you act.
-          </p>
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">The Evida service</p>
+              <h2
+                style={{ fontFamily: "var(--font-display)" }}
+                className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+              >
+                Your membership to{" "}
+                <span className="accent-word">healthier years</span>
+              </h2>
+              <p className="mt-3 max-w-lg text-base leading-relaxed text-ink-soft">
+                What we combine, what we discover, and how we help you act.
+              </p>
+            </div>
+            <div className="text-right">
+              <Link href="/membership" className="btn-ghost">
+                Explore the membership →
+              </Link>
+              <p className="mt-1 text-sm text-ink-soft">
+                {PRICE.perMonth}/month, everything included
+              </p>
+            </div>
+          </div>
         </Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {SERVICE_CARDS.map((card, i) => (
@@ -141,47 +139,6 @@ export default function Home() {
                   ))}
                 </ul>
               </div>
-            </Reveal>
-          ))}
-        </div>
-        <Reveal>
-          <p className="mt-8 text-center text-sm text-ink-soft">
-            Data, insights and action work together{" "}
-            <em style={{ fontFamily: "var(--font-display)" }}>
-              to add healthy years to your life.
-            </em>
-          </p>
-        </Reveal>
-      </section>
-
-      {/* ————— Membership summary: Data | Insight | Action ————— */}
-      <section className="container-site py-16 md:py-20">
-        <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow">The membership</p>
-              <h2 className="h-display mt-3 text-3xl md:text-4xl">
-                Data. Insight. Action.
-              </h2>
-            </div>
-            <div className="text-right">
-              <Link href="/membership" className="btn-ghost">
-                Explore the membership →
-              </Link>
-              <p className="mt-1 text-sm text-ink-soft">
-                {PRICE.perMonth}/month, everything included
-              </p>
-            </div>
-          </div>
-        </Reveal>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {PILLARS.map((p, i) => (
-            <Reveal key={p.title} delay={i * 100}>
-              <Link href="/membership" className="card card-lift group block h-full">
-                <div className="font-mono text-xs font-semibold tabular-nums text-ink-soft">0{i + 1}</div>
-                <h3 className="h-display mt-3 text-2xl group-hover:text-teal">{p.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.body}</p>
-              </Link>
             </Reveal>
           ))}
         </div>
