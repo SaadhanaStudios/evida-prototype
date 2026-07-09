@@ -14,7 +14,7 @@ export default function HowItWorksHero() {
           backgroundPosition: "38% 50%",
         }}
       >
-        <div className="max-w-lg">
+        <div className="max-w-2xl">
           <h1 className="text-hero-display font-normal leading-[1.05] tracking-tight text-cream">
             Your Health Journey,<br />
             Guided by{" "}

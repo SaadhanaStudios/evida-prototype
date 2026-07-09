@@ -18,11 +18,11 @@ export default function MembershipHero() {
         }}
       >
         <div className="max-w-lg">
-          <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream md:text-6xl">
+          <h1 className="text-hero-display font-normal leading-[1.05] tracking-tight text-cream">
             The Evida<br />
             Membership
           </h1>
-          <p className="mt-4 text-lg font-normal leading-snug text-cream md:text-2xl">
+          <p className="mt-4 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
             A full year of care, not a single appointment.
           </p>
           <a
