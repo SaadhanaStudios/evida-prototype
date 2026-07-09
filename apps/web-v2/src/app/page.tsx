@@ -97,29 +97,17 @@ export default function Home() {
       {/* ————— The Evida Service ————— */}
       <section className="container-site py-16 md:py-20">
         <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow">The Evida service</p>
-              <h2
-                style={{ fontFamily: "var(--font-display)" }}
-                className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
-              >
-                Your membership to{" "}
-                <span className="accent-word">healthier years</span>
-              </h2>
-              <p className="mt-3 max-w-lg text-base leading-relaxed text-ink-soft">
-                What we combine, what we discover, and how we help you act.
-              </p>
-            </div>
-            <div className="text-right">
-              <Link href="/membership" className="btn-ghost">
-                Explore the membership →
-              </Link>
-              <p className="mt-1 text-sm text-ink-soft">
-                {PRICE.perMonth}/month, everything included
-              </p>
-            </div>
-          </div>
+          <p className="eyebrow">The Evida service</p>
+          <h2
+            style={{ fontFamily: "var(--font-display)" }}
+            className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+          >
+            Your membership to{" "}
+            <span className="accent-word">healthier years</span>
+          </h2>
+          <p className="mt-3 max-w-lg text-base leading-relaxed text-ink-soft">
+            What we combine, what we discover, and how we help you act.
+          </p>
         </Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {SERVICE_CARDS.map((card, i) => (
@@ -142,9 +130,19 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
-        <p className="mt-6 text-sm text-ink-soft">
-          No wearable? No problem — the membership works fully without one.
-        </p>
+        <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
+          <p className="text-sm text-ink-soft">
+            No wearable? No problem — the membership works fully without one.
+          </p>
+          <div className="text-right">
+            <Link href="/membership" className="btn-ghost">
+              Explore the membership →
+            </Link>
+            <p className="mt-1 text-sm text-ink-soft">
+              {PRICE.perMonth}/month, everything included
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* ————— Editorial pull-quote ————— */}
