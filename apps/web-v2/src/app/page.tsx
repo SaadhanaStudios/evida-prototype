@@ -29,6 +29,37 @@ export const metadata: Metadata = {
  * Each block anchors out to its full page.
  */
 
+const SERVICE_CARDS = [
+  {
+    kicker: ["DATA", "-LED"],
+    title: "What we combine",
+    items: [
+      "Blood panel — 100+ biomarkers",
+      "Wearable integration (Oura, Apple, Garmin, Whoop)",
+      "Medical history in one secure record",
+    ],
+  },
+  {
+    kicker: ["GP-LED ", "INSIGHTS"],
+    title: "What we discover",
+    items: [
+      "45-min consult, lifestyle-focused",
+      "Prevention plan in plain English",
+      "6-month follow-up included",
+    ],
+  },
+  {
+    kicker: ["INFORMED ", "ACTION"],
+    title: "How you act",
+    items: [
+      "Personalised prevention plan",
+      "Partner wellness network",
+      "Daily guidance from Evi",
+      "Ongoing GP for continuity of care",
+    ],
+  },
+];
+
 const PILLARS = [
   {
     title: "Data",
@@ -76,6 +107,52 @@ export default function Home() {
     <>
       {/* ————— Hero ————— */}
       <VideoHero />
+
+      {/* ————— The Evida Service ————— */}
+      <section className="container-site py-16 md:py-20">
+        <Reveal className="text-center">
+          <p className="eyebrow">The Evida service</p>
+          <h2
+            style={{ fontFamily: "var(--font-display)" }}
+            className="mt-3 text-3xl font-medium leading-tight tracking-tight text-ink md:text-4xl"
+          >
+            Your membership to{" "}
+            <span className="accent-word">healthier years</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-ink-soft">
+            What we combine, what we discover, and how we help you act.
+          </p>
+        </Reveal>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {SERVICE_CARDS.map((card, i) => (
+            <Reveal key={card.title} delay={i * 100}>
+              <div className="card h-full">
+                <p className="text-xs font-bold uppercase tracking-widest text-coral">
+                  {card.kicker[0]}
+                  <span className="font-extrabold">{card.kicker[1]}</span>
+                </p>
+                <h3 className="mt-3 text-xl font-semibold text-ink">{card.title}</h3>
+                <ul className="mt-4 space-y-2">
+                  {card.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-ink-soft">
+                      <span className="mt-0.5 shrink-0 text-teal" aria-hidden>+</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal>
+          <p className="mt-8 text-center text-sm text-ink-soft">
+            Data, insights and action work together{" "}
+            <em style={{ fontFamily: "var(--font-display)" }}>
+              to add healthy years to your life.
+            </em>
+          </p>
+        </Reveal>
+      </section>
 
       {/* ————— Membership summary: Data | Insight | Action ————— */}
       <section className="container-site py-16 md:py-20">
