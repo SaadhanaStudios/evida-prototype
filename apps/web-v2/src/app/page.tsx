@@ -130,10 +130,23 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
-        <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
-          <p className="text-sm text-ink-soft">
-            No wearable? No problem — the membership works fully without one.
-          </p>
+        <div className="mt-8 flex flex-wrap items-end justify-between gap-4">
+          <ul className="flex flex-wrap gap-2">
+            {[
+              "No referral needed",
+              "Works alongside your NHS GP",
+              "No wearable? Still works",
+              "Results in 72 hours",
+              "GMC-licensed GPs",
+            ].map((label) => (
+              <li key={label}>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-3.5 py-1.5 text-xs font-medium text-ink">
+                  <span className="text-teal" aria-hidden>✓</span>
+                  {label}
+                </span>
+              </li>
+            ))}
+          </ul>
           <div className="text-right">
             <Link href="/membership" className="btn-ghost">
               Explore the membership →
