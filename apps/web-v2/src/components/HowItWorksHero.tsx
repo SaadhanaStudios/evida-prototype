@@ -48,11 +48,11 @@ function JourneySvg() {
         strokeLinecap="round"
         strokeDasharray="2 7"
       />
-      <rect x="166" y="466" width="8" height="8" fill="#fef2a7" rx="1" />
-      <rect x="271" y="464" width="8" height="8" fill="#fef2a7" rx="1" />
-      <rect x="491" y="376" width="8" height="8" fill="#fef2a7" rx="1" />
-      <rect x="621" y="251" width="8" height="8" fill="#fef2a7" rx="1" />
-      <rect x="716" y="66" width="8" height="8" fill="#fef2a7" rx="1" />
+      <rect x="166" y="466" width="8" height="8" fill="var(--color-amber-yellow)" rx="1" />
+      <rect x="271" y="464" width="8" height="8" fill="var(--color-amber-yellow)" rx="1" />
+      <rect x="491" y="376" width="8" height="8" fill="var(--color-amber-yellow)" rx="1" />
+      <rect x="621" y="251" width="8" height="8" fill="var(--color-amber-yellow)" rx="1" />
+      <rect x="716" y="66" width="8" height="8" fill="var(--color-amber-yellow)" rx="1" />
       <text
         x="40" y="444" textAnchor="start"
         style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: 20, letterSpacing: "0.06em" }}

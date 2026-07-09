@@ -16,7 +16,7 @@ export default function PullQuote({
   return (
     <figure className="container-site py-16 md:py-20">
       <blockquote className="relative mx-auto max-w-3xl text-center">
-        <span aria-hidden className="block font-[family-name:var(--font-display)] text-6xl leading-none text-coral">
+        <span aria-hidden className="font-display block text-6xl leading-none text-coral">
           “
         </span>
         <p className="h-display mt-2 text-3xl leading-snug md:text-4xl">{children}</p>
