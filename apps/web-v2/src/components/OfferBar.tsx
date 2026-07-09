@@ -25,8 +25,8 @@ const OFFER = [
     ),
   },
   {
-    label: "90 min of GP time",
-    sub: "two unhurried 45-min consults",
+    label: "60 min of GP time",
+    sub: "45-min baseline + 15-min follow-up",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="9" />

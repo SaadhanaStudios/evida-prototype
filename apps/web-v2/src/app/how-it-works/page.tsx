@@ -52,7 +52,7 @@ const STAGE_2: Step[] = [
 const STAGE_3: Step[] = [
   {
     n: 5,
-    title: "Six-month follow-up — 45 minutes",
+    title: "Six-month follow-up — 15 minutes",
     body: "Retest what matters, then sit down with your GP again to measure progress against your own baseline — not a population average.",
     detail: "Plus two optional 15-minute check-ins whenever you need them.",
   },

@@ -1,11 +1,10 @@
 import Link from "next/link";
 import PullQuote from "@/components/PullQuote";
-import OfferBar from "@/components/OfferBar";
 import CtaGroup from "@/components/CtaGroup";
 import EviMoment from "@/components/EviMoment";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
-import { DashboardCard } from "@/components/ProductVisuals";
+import VideoHero from "@/components/VideoHero";
 import { EVIDENCE, LINKS, PRICE, SCARCITY } from "@/lib/site";
 
 /*
@@ -23,7 +22,7 @@ const PILLARS = [
   },
   {
     title: "Insight",
-    body: "90 minutes of core GP time across the year. Unhurried, lifestyle-focused consultations with a doctor who has actually read your data.",
+    body: "60 minutes of core GP time across the year. Unhurried, lifestyle-focused consultations with a doctor who has actually read your data.",
   },
   {
     title: "Action",
@@ -52,7 +51,7 @@ const STAGES = [
     n: "03",
     title: "Ongoing",
     when: "Year after year",
-    stat: "45-minute follow-up + check-ins",
+    stat: "15-minute follow-up + check-ins",
     body: "A full follow-up at month six, optional check-ins, and monitoring that compounds — every year adds context.",
     href: "/how-it-works#ongoing",
   },
@@ -62,36 +61,7 @@ export default function Home() {
   return (
     <>
       {/* ————— Hero ————— */}
-      <div className="hero-wash">
-        <section className="container-site grid items-center gap-12 pb-12 pt-16 md:grid-cols-2 md:gap-16 md:pt-24">
-          <div>
-            <p className="eyebrow">Preventative health membership</p>
-            <h1 className="h-display mt-4 text-5xl leading-[1.05] md:text-6xl">
-              More than a<br />
-              <span className="accent-word">health check.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-soft">
-              Your membership to healthier years. Evida unites your blood biomarkers,
-              wearable data and medical history in one place — and gives a GP the time
-              to actually read them.
-            </p>
-            <div className="mt-8">
-              <CtaGroup secondaryLabel="How it works" secondaryHref="/how-it-works" />
-            </div>
-            <p className="mt-8 text-xs font-medium uppercase tracking-wider text-ink-soft">
-              GMC-registered GPs &nbsp;·&nbsp; Randox diagnostics &nbsp;·&nbsp; UK GDPR compliant
-            </p>
-          </div>
-          <Reveal>
-            <DashboardCard />
-          </Reveal>
-        </section>
-
-        {/* ————— Concrete offer, before any scrolling ————— */}
-        <Reveal>
-          <OfferBar />
-        </Reveal>
-      </div>
+      <VideoHero />
 
       {/* ————— Membership summary: Data | Insight | Action ————— */}
       <section className="container-site py-16 md:py-20">

@@ -11,7 +11,7 @@ import { PRICE, SCARCITY } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "One membership, everything included: 100+ biomarkers at a Randox clinic, wearable integration, 90 minutes of lifestyle-focused GP time, and a prevention plan. £27 a month, billed annually at £320.",
+    "One membership, everything included: 100+ biomarkers at a Randox clinic, wearable integration, 60 minutes of lifestyle-focused GP time, and a prevention plan. £27 a month, billed annually at £320.",
 };
 
 /*
@@ -20,22 +20,37 @@ export const metadata: Metadata = {
  * comparison table, FAQ anchor.
  */
 
-const INCLUSIONS = [
-  "Baseline blood panel — 100+ biomarkers at a Randox clinic",
-  "Wearable integration — Apple Health, Oura, Whoop, Garmin",
-  "Full medical history, brought into one secure record",
-  "45-minute baseline consultation with a lifestyle-medicine GP",
-  "45-minute follow-up consultation at six months",
-  "2 × optional 15-minute check-in consultations",
-  "A personal prevention plan, agreed with your GP",
-  "Evi — GP-monitored support between appointments",
-  "Results delivered to one place, in plain language",
+const INCLUSIONS: { label: string; items: string[] }[] = [
+  {
+    label: "Diagnostics & Data",
+    items: [
+      "Baseline blood panel — 100+ biomarkers at a Randox clinic",
+      "Wearable integration — Apple Health, Oura, Whoop, Garmin",
+      "Full medical history, brought into one secure record",
+      "Results delivered to one place, in plain language",
+    ],
+  },
+  {
+    label: "Your Consultation",
+    items: [
+      "45-minute baseline consultation with a lifestyle-medicine GP",
+      "A personal prevention plan, agreed with your GP",
+    ],
+  },
+  {
+    label: "Ongoing Care",
+    items: [
+      "15-minute follow-up consultation at six months",
+      "2 × optional 15-minute check-in consultations",
+      "Evi — GP-monitored support between appointments",
+    ],
+  },
 ];
 
 const COMPARISON: { label: string; evida: string; kit: string; nhs: string }[] = [
   { label: "Blood biomarkers", evida: "100+ at a clinic", kit: "20–50 finger-prick", nhs: "A handful, if indicated" },
   { label: "Wearable data", evida: "Integrated & clinically read", kit: "Not connected", nhs: "Not connected" },
-  { label: "GP time", evida: "90 min core across the year", kit: "None — PDF report", nhs: "~10 min, when ill" },
+  { label: "GP time", evida: "60 min core across the year", kit: "None — PDF report", nhs: "~10 min, when ill" },
   { label: "Focus", evida: "Prevention & lifestyle", kit: "Point-in-time snapshot", nhs: "Reactive treatment" },
   { label: "Follow-up", evida: "Built in from day one", kit: "Buy another kit", nhs: "Only if something's wrong" },
 ];
@@ -102,18 +117,27 @@ export default function MembershipPage() {
 
         <Reveal className="card">
           <div className="eyebrow">Everything included</div>
-          <ul className="mt-5 space-y-3">
-            {INCLUSIONS.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink">
-                <svg className="mt-0.5 shrink-0 text-teal" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-                {item}
-              </li>
+          <div className="mt-5 space-y-5">
+            {INCLUSIONS.map((section) => (
+              <div key={section.label}>
+                <p className="mb-2 text-xs font-bold uppercase tracking-widest text-teal">
+                  {section.label}
+                </p>
+                <ul className="space-y-2">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-ink">
+                      <svg className="mt-0.5 shrink-0 text-teal" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
           <p className="mt-5 border-t border-line pt-4 text-xs text-ink-soft">
-            * Bespoke scans and additional blood packs available as clinically advised.
+            Plus a summary letter to your NHS GP, with prescriptions and referrals where clinically appropriate.
           </p>
         </Reveal>
       </div>
@@ -160,7 +184,7 @@ export default function MembershipPage() {
             year — focused on lifestyle medicine and prevention, not prescriptions.
           </p>
           <p className="mt-4 max-w-md text-sm text-ink-soft">
-            90 minutes of core GP time across the year, plus two optional 15-minute
+            60 minutes of core GP time across the year, plus two optional 15-minute
             check-ins when you need them.
           </p>
         </TwoCol>

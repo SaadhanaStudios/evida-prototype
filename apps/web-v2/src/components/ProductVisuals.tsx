@@ -99,7 +99,7 @@ export function ConsultCard() {
         <li className="flex gap-2.5"><span className="text-teal">—</span> A prevention plan agreed together</li>
       </ul>
       <div className="mt-5 rounded-xl border border-line bg-cream px-4 py-3 text-xs text-ink-soft">
-        Plus a 45-minute follow-up at six months, and two optional 15-minute check-ins
+        Plus a 15-minute follow-up at six months, and two optional 15-minute check-ins
         whenever you need them.
       </div>
     </div>
