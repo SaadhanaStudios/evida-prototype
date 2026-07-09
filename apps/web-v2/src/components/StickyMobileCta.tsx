@@ -31,7 +31,7 @@ export default function StickyMobileCta() {
           <div className="text-xs text-ink-soft">billed annually at {PRICE.perYear}</div>
         </div>
         <a href={LINKS.book} className="btn-primary shrink-0">
-          Book your baseline
+          Get Started
         </a>
       </div>
     </div>

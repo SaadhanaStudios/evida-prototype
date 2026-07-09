@@ -2,16 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { LINKS, NAV } from "@/lib/site";
 
-/*
- * Persistent header, per the July 3 whiteboard: logo left, nav centre,
- * login + the single primary CTA top-right on every page (primary sits
- * rightmost — "primary on the right").
- */
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-cream/90 backdrop-blur">
@@ -21,15 +18,24 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-ink-soft transition-colors hover:text-teal"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`text-sm font-medium transition-colors hover:text-teal ${
+                  active ? "text-teal" : "text-ink-soft"
+                }`}
+              >
+                {item.label}
+                {active && (
+                  <span className="mt-0.5 block h-0.5 rounded-full bg-teal" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden items-center gap-5 md:flex">
@@ -37,7 +43,7 @@ export default function Header() {
             Log in
           </a>
           <a href={LINKS.book} className="btn-primary">
-            Book your baseline
+            Get Started
           </a>
         </div>
 
@@ -60,22 +66,26 @@ export default function Header() {
 
       {open && (
         <nav className="border-t border-line bg-cream px-6 pb-6 pt-3 md:hidden" aria-label="Mobile">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block py-3 text-base font-medium text-ink"
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`block py-3 text-base font-medium ${active ? "text-teal" : "text-ink"}`}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           <div className="mt-4 flex items-center gap-4">
             <a href={LINKS.login} className="btn-secondary flex-1">
               Log in
             </a>
             <a href={LINKS.book} className="btn-primary flex-1">
-              Book now
+              Get Started
             </a>
           </div>
         </nav>

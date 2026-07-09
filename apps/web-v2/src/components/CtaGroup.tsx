@@ -7,7 +7,7 @@ import { LINKS, REASSURANCE } from "@/lib/site";
  * the click moment. Used wherever the primary CTA appears.
  */
 export default function CtaGroup({
-  primaryLabel = "Book your baseline",
+  primaryLabel = "Get Started",
   secondaryLabel,
   secondaryHref,
   center = false,
