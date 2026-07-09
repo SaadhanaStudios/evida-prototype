@@ -157,21 +157,21 @@ export default function HowItWorksHero() {
       >
         <div className="flex w-full flex-row items-end justify-between">
           <div>
-            <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream md:text-6xl">
+            <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
               Your Health Journey,
             </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-3">
-              <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream md:text-6xl">
+              <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl">
                 Guided by
               </h1>
               <h1
                 style={{ fontFamily: "var(--font-display)" }}
-                className="text-4xl font-normal italic leading-[1.05] tracking-tight text-cream md:text-6xl"
+                className="text-4xl font-normal italic leading-[1.05] tracking-tight text-cream lg:text-[55px] xl:text-6xl"
               >
                 Evida
               </h1>
             </div>
-            <p className="mt-4 text-lg font-normal leading-snug text-cream md:text-2xl">
+            <p className="mt-4 text-base font-normal leading-snug text-cream md:text-lg xl:text-2xl">
               Data. Insights. Action &mdash; three steps to a healthier you.
             </p>
             <a
