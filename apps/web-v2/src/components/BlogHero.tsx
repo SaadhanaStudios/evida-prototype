@@ -12,19 +12,21 @@ export default function BlogHero() {
       <div className="grid w-full max-w-5xl gap-10 md:grid-cols-2 md:gap-16">
         {/* Left — title */}
         <div>
-          <h1
-            style={{ fontFamily: "var(--font-display)" }}
-            className="text-4xl font-medium leading-[1.08] tracking-tight text-cream md:text-5xl"
-          >
+          <h1 className="text-4xl font-normal leading-[1.08] tracking-tight text-cream md:text-6xl">
             The Evida<span className="text-cream/45">y</span><br />
             Health{" "}
-            <span className="font-medium italic text-cream/60">Blog</span>
+            <span
+              style={{ fontFamily: "var(--font-display)" }}
+              className="font-normal italic text-cream/60"
+            >
+              Blog
+            </span>
           </h1>
         </div>
 
         {/* Right — descriptor */}
         <div className="flex flex-col justify-end">
-          <p className="text-lg font-medium leading-snug text-cream">
+          <p className="text-lg font-normal leading-snug text-cream md:text-2xl">
             Clear, evidence-based insights to help you understand and improve your health.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-cream/65">

@@ -20,19 +20,16 @@ export default function VideoHero() {
       <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/50 to-ink/72" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-24 text-center">
-        <h1
-          style={{ fontFamily: "var(--font-display)" }}
-          className="text-4xl font-medium leading-[1.05] tracking-tight text-cream md:text-6xl"
-        >
+        <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-cream md:text-6xl">
           More than a<br />
           <span className="accent-word">health check.</span>
         </h1>
 
-        <p className="mt-6 text-xl font-normal leading-snug text-cream/80">
+        <p className="mt-6 text-lg font-normal leading-snug text-cream/80 md:text-xl">
           Blood Test &nbsp;|&nbsp; GP Consult &nbsp;|&nbsp; Wearable Data &nbsp;|&nbsp; Health Check
         </p>
 
-        <p className="mt-2 text-2xl font-normal leading-snug text-cream">
+        <p className="mt-2 text-lg font-normal leading-snug text-cream md:text-2xl">
           The data upgrade for your GP consult
         </p>
 

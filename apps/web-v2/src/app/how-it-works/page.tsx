@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/PageHero";
+import HowItWorksHero from "@/components/HowItWorksHero";
 import PullQuote from "@/components/PullQuote";
 import CtaGroup from "@/components/CtaGroup";
 import Reveal from "@/components/Reveal";
@@ -110,11 +110,7 @@ function StageSection({
 export default function HowItWorksPage() {
   return (
     <>
-      <PageHero
-        eyebrow="How it works"
-        title={<>Six steps. Three stages.<br />One continuous picture of <span className="accent-word">your health.</span></>}
-        subtitle="From your first blood draw to year-on-year monitoring, here is exactly what happens — and when."
-      />
+      <HowItWorksHero />
 
       <StageSection
         id="initial"
