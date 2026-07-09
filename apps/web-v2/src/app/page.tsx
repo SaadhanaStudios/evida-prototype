@@ -157,8 +157,8 @@ export default function Home() {
       </section>
 
       {/* ————— Editorial pull-quote ————— */}
-      <PullQuote source="The Evida principle">
-        No single data point tells the whole story.
+      <PullQuote source="Evida">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
       </PullQuote>
 
       {/* ————— How it works summary ————— */}
