@@ -20,6 +20,13 @@
   --color-ink-soft: #5b6a64;
   --color-line: #e9e3cd;
 
+  /* Amber-yellow: CTA buttons on dark-background heroes */
+  --color-amber-yellow: #fef2a7;
+  --color-amber-yellow-dark: #f0e48f;
+
+  /* Pilot announcement bar — soft coral strip above hero cards */
+  --color-pilot: #f8b6aa;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
 }
@@ -134,6 +141,22 @@ body {
         transparent
       )
       1;
+  }
+
+  /* Pilot/announcement bar — the soft-coral strip that caps dark hero cards */
+  .announcement-bar {
+    @apply flex items-center justify-center rounded-t-3xl bg-pilot px-4 py-2 text-center text-xs font-semibold text-ink;
+  }
+
+  /* CTA button on dark-background hero cards (amber-yellow, not the teal btn-primary) */
+  .btn-hero {
+    @apply mt-6 inline-flex items-center justify-center rounded-xl bg-amber-yellow px-5 py-3 text-base font-semibold text-teal transition-all duration-150 hover:bg-amber-yellow-dark;
+  }
+
+  /* Responsive hero heading scale — matches the 3000 Webflow 4-step breakpoint sequence:
+     mobile 36px → desktop 55px → wide 60px */
+  .text-hero-display {
+    @apply text-4xl lg:text-[55px] xl:text-6xl;
   }
 }
 
